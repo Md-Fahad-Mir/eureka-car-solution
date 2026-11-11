@@ -1,0 +1,251 @@
+{
+  "meta": {
+    "siteName": "Eureka Car Solution",
+    "titleTemplate": "%s · Eureka Car Solution",
+    "defaultTitle": "Eureka Car Solution: new, reconditioned and used vehicles in Bangladesh",
+    "defaultDescription": "Discover, compare, finance and service EVs, hybrids, petrol, diesel, commercial vehicles and tractors with Eureka Car Solution, Bangladesh.",
+    "homeTitle": "Premium vehicles for Bangladesh",
+    "notFoundTitle": "Page not found"
+  },
+  "a11y": {
+    "skipToContent": "Skip to main content",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "close": "Close",
+    "mainNav": "Main navigation",
+    "footerNav": "Footer navigation",
+    "breadcrumb": "Breadcrumb",
+    "pagination": "Pagination",
+    "previous": "Previous",
+    "next": "Next",
+    "page": "Page {page}",
+    "currentPage": "Page {page}, current page",
+    "loading": "Loading",
+    "opensInNewTab": "(opens in a new tab)",
+    "notifications": "Notifications",
+    "stepOf": "Step {current} of {total}",
+    "completed": "Completed",
+    "selected": "Selected",
+    "noResults": "No matches",
+    "dismiss": "Dismiss"
+  },
+  "common": {
+    "home": "Home",
+    "learnMore": "Learn more",
+    "viewAll": "View all",
+    "back": "Back",
+    "continue": "Continue",
+    "submit": "Submit",
+    "cancel": "Cancel",
+    "reset": "Reset",
+    "clear": "Clear",
+    "apply": "Apply",
+    "search": "Search",
+    "retry": "Try again",
+    "or": "or",
+    "optional": "optional",
+    "required": "required"
+  },
+  "nav": {
+    "vehicles": "Vehicles",
+    "services": "Services",
+    "byFuel": "By fuel type",
+    "byCondition": "By condition",
+    "byCategory": "By category",
+    "buy": "Buying",
+    "finance": "Finance",
+    "ownership": "Ownership",
+    "shop": "Shop",
+    "own": "Own",
+    "learn": "Learn",
+    "company": "Company",
+    "fuel": {
+      "ev": "Electric (EV)",
+      "hybrid": "Hybrid",
+      "phev": "Plug-in hybrid",
+      "petrol": "Petrol / Octane",
+      "diesel": "Diesel"
+    },
+    "condition": {
+      "new": "Brand new",
+      "reconditioned": "Reconditioned",
+      "used": "Used"
+    },
+    "category": {
+      "car": "Cars",
+      "suv": "SUVs",
+      "mpv": "MPVs & vans",
+      "pickup": "Pickups",
+      "commercial": "Commercial",
+      "tractor": "Tractors",
+      "utility": "Utility"
+    },
+    "links": {
+      "allVehicles": "All vehicles",
+      "ev": "EV Centre",
+      "finance": "Finance",
+      "fleet": "Fleet",
+      "showrooms": "Showrooms",
+      "testDrive": "Book a test drive",
+      "inquiry": "Purchase inquiry",
+      "compare": "Compare vehicles",
+      "emi": "EMI calculator",
+      "financeApply": "Apply for financing",
+      "financeStatus": "Application status",
+      "savings": "Savings calculator",
+      "service": "Service & maintenance",
+      "serviceBook": "Book a service",
+      "serviceTrack": "Track a service",
+      "commercial": "Commercial & tractors",
+      "account": "My account",
+      "privacy": "Privacy",
+      "terms": "Terms"
+    },
+    "megaVehiclesLead": "Every powertrain, every condition: brand-new, Japanese reconditioned and inspected used.",
+    "megaVehiclesCta": "Browse all vehicles",
+    "megaServicesLead": "From the first test drive to the hundredth service, one team looks after you.",
+    "megaServicesCta": "See after-sales care"
+  },
+  "header": {
+    "compare": "Compare",
+    "compareCount": "{count, plural, =0 {Compare list is empty} one {# vehicle in compare} other {# vehicles in compare}}",
+    "favourites": "Saved",
+    "favouritesCount": "{count, plural, =0 {No saved vehicles} one {# saved vehicle} other {# saved vehicles}}",
+    "account": "Account",
+    "bookTestDrive": "Book a test drive",
+    "menu": "Menu"
+  },
+  "language": {
+    "label": "Language",
+    "switchTo": "বাংলা",
+    "switchToLong": "Switch to Bangla",
+    "en": "English",
+    "bn": "বাংলা"
+  },
+  "footer": {
+    "tagline": "A premium multi-brand marketplace for every kind of vehicle in Bangladesh.",
+    "contact": "Contact",
+    "hours": "Head office hours",
+    "hoursValue": "Saturday to Thursday, {open} to {close}",
+    "closedDay": "Closed on Friday",
+    "showrooms": "Showrooms",
+    "allShowrooms": "All showrooms & directions",
+    "rights": "© {year} Eureka Car Solution. All rights reserved.",
+    "illustrative": "Prices, rates and specifications on this site are illustrative and may change. Please confirm with our team before you buy.",
+    "placeholderContact": "Contact details shown are placeholders until launch."
+  },
+  "newsletter": {
+    "title": "Stay in the loop",
+    "lead": "New arrivals, EV guides and service offers, about once a month.",
+    "emailLabel": "Email address",
+    "emailPlaceholder": "you@example.com",
+    "submit": "Subscribe",
+    "successTitle": "You're on the list (demo)",
+    "successBody": "Demo mode: your email was not sent to Eureka. Reference {reference}."
+  },
+  "whatsapp": {
+    "chat": "Chat on WhatsApp",
+    "chatShort": "WhatsApp",
+    "floatingLabel": "Chat with Eureka on WhatsApp",
+    "panelTitle": "How can we help?",
+    "panelLead": "Pick a topic and WhatsApp opens with a ready-to-send message. Nothing is sent until you press send.",
+    "options": {
+      "page": "Ask about this page",
+      "vehicleInquiry": "Ask about a vehicle",
+      "emiInquiry": "Financing & EMI",
+      "testDrive": "Book a test drive",
+      "service": "Servicing",
+      "corporate": "Corporate & fleet",
+      "general": "Something else"
+    },
+    "templates": {
+      "vehicleInquiry": "Hello, I am interested in the {vehicle}. Please provide more details.{details}",
+      "emiInquiry": "Hello, I want to purchase {vehicle} through EMI. Please share the financing options.{details}",
+      "emiInquiryGeneric": "Hello, I want to purchase a vehicle through EMI. Please share the financing options.{details}",
+      "testDrive": "Hello, I would like to book a test drive for the {vehicle}.{details}",
+      "testDriveGeneric": "Hello, I would like to book a test drive.{details}",
+      "service": "Hello, I need servicing information for my vehicle.{details}",
+      "corporate": "Hello, I am interested in your corporate fleet solutions.{details}",
+      "general": "Hello, I would like to know more about Eureka Car Solution.{details}",
+      "savings": "Hello, I used your savings calculator and would like advice on the most economical option.{details}"
+    },
+    "detail": {
+      "year": "Year: {value}",
+      "condition": "Condition: {value}",
+      "reference": "Reference: {value}",
+      "link": "Link: {value}",
+      "vehicle": "Vehicle: {value}",
+      "registration": "Registration: {value}",
+      "emi": "Estimated EMI: {value}",
+      "tenure": "Tenure: {value} months",
+      "downPayment": "Down payment: {value}",
+      "savings": "Estimated savings: {value}"
+    }
+  },
+  "demo": {
+    "badge": "Demo",
+    "notice": "Demo mode: this request was not sent to Eureka. Reference {reference}.",
+    "noticeGeneric": "Demo mode: nothing on this page is sent to Eureka.",
+    "browserOnly": "Saved in this browser only (demo)",
+    "sample": "Sample content"
+  },
+  "validation": {
+    "required": "This field is required.",
+    "email": "Enter a valid email address.",
+    "phone": "Enter a Bangladeshi mobile number, for example 01712345678.",
+    "phoneServer": "Our system couldn't verify this number. Please check it and try again.",
+    "consent": "Please confirm that we may contact you.",
+    "minLength": "Please enter at least {min} characters.",
+    "maxLength": "Please keep this under {max} characters.",
+    "number": "Enter a number.",
+    "min": "Must be at least {min}.",
+    "max": "Must be at most {max}.",
+    "date": "Choose a date.",
+    "datePast": "Choose a date from today onwards.",
+    "select": "Please choose an option."
+  },
+  "toast": {
+    "errorTitle": "Something went wrong",
+    "errorBody": "Please try again in a moment."
+  },
+  "notFound": {
+    "eyebrow": "Error 404",
+    "title": "This road",
+    "titleAccent": "doesn't lead anywhere",
+    "body": "The page you're looking for has moved, been sold, or never existed. Let's get you back on track.",
+    "home": "Back to home",
+    "vehicles": "Browse vehicles"
+  },
+  "error": {
+    "eyebrow": "Unexpected error",
+    "title": "Something stalled",
+    "body": "This part of the page couldn't load. You can try again, or head back home.",
+    "retry": "Try again",
+    "home": "Back to home"
+  },
+  "home": {
+    "eyebrow": "Bangladesh · Since MMXXVI",
+    "title": "Every drive,",
+    "titleAccent": "considered.",
+    "lead": "EVs, hybrids, petrol, diesel, commercial vehicles and tractors: brand-new, reconditioned and used, with finance and after-sales care under one roof.",
+    "ctaBrowse": "Explore vehicles",
+    "ctaTestDrive": "Book a test drive",
+    "journeyTitle": "One journey, start to finish",
+    "journey": {
+      "discover": "Discover",
+      "learn": "Learn",
+      "calculate": "Calculate",
+      "compare": "Compare",
+      "testDrive": "Test drive",
+      "finance": "Finance",
+      "purchase": "Purchase",
+      "service": "Service"
+    },
+    "poster": {
+      "alt": "Illustration: a clay-white studio car with its door, seat, mirror and spare wheel lifted away and its battery floor lowered, as if laid out for inspection.",
+      "callout1": "Light-bar signature",
+      "callout2": "Battery floor, inspected",
+      "callout3": "Every part, accounted for"
+    }
+  }
+}

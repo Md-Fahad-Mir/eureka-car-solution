@@ -23,8 +23,31 @@ Source brief: [`docs/EUREKA_FRONTEND_PROMPT.md`](./EUREKA_FRONTEND_PROMPT.md). T
 | D8 | Vehicle images use an SVG silhouette placeholder per body type (no external images). `next/image` is used only when `Media.src` exists. | Rule 4. |
 | D9 | The 3D hero is a port of the reference into R3F, condensed to 4 chapters (Awakening → Form & Finish → Engineering/exploded → Arrival/hand-off) across ~400vh. It's loaded with `next/dynamic({ ssr:false })` after the HTML hero and an SVG/CSS poster render. A `.glb` is loaded from `public/models/hero-car.glb` only if it exists (probed with a HEAD request). The reference's cursor and file-drop UI are dropped. | Section 11. Performance first. |
 | D10 | Maps: a styled static SVG map card plus a Google Maps search URL, with no API key. The `MapCard` component interface is kept swappable. | Section 10.N. |
-| D11 | Fonts via `next/font/google`: Cormorant Garamond + Inter (en), and Noto Serif Bengali + Hind Siliguri (bn). Font CSS variables are switched by a `lang`-scoped selector; for `bn`, uppercase/tracking utilities are neutralised in CSS. | Section 7/8. |
+| D11 | **Fonts (user override, 2026-11-11): Montserrat for English, Hind Siliguri for Bangla; no other primary font.** They replace the brief's Cormorant Garamond / Inter / Noto Serif Bengali. Both load via `next/font/google`. A single `--font-body` variable is switched by `:lang(bn)`, so the language switch re-fonts the whole site. Only the active locale's font className is rendered, so English pages never preload Bangla files. On `bn` pages Latin words (EMI, SUV) fall back to Montserrat. For `bn`: no letter-spacing, no uppercase, no synthetic italics (accents use colour), and line-height 1.75 for body / 1.35 for headings. | User instruction; brief §7. |
+| D13 | Contrast fixes to brief tokens (WCAG 2.2 AA): `--muted` #6c7268 → **#5a6057** (3.9:1 → 5.0:1 on sage). Brass #9c8150 is only 3.0:1 on sage, so text on light surfaces uses **`--accent-ink` #7a6236** (4.6:1), and #9c8150 stays for borders, decoration and text on dark. EV teal text is #176660 (5.1:1). The WhatsApp button uses #1f7a4d so white text passes. | Brief §13 asks to check brass-on-sage. |
+| D14 | Under Cache Components, `usePathname()` suspends on routes with not-yet-known params. Pathname reads live in tiny Suspense-wrapped leaves (`components/layout/RouteAware.tsx`: `OnRouteChange`, `NavItemLink`; `LanguageSwitcher`; `FloatingWhatsApp`), so header/footer still prerender. `useSearchParams` always needs `<Suspense>`. Use `"use cache"` + `cacheLife` for time-based values in server components (e.g. footer year). | Next 16 docs: migrating-to-cache-components. |
+| D15 | `Math.random()`/`Date.now()` can't run while server components prerender. Mock **reads** used by server components (`getVehicles`, `getVehicleBySlug`, …) must be deterministic: no random latency on the server, and simulated latency only in the browser. Mock **writes** (random `DEMO-` refs) only run from client components. | Next 16 sync-IO rule. |
+| D16 | The reference images in `reference/*.jpeg` are third-party renders (real manufacturer cars). They're git-ignored and used **only as art direction**: no shapes, logos or images from them ship in the product. | Rule 4. |
 | D12 | Keep `AGENTS.md` (Next regenerates it) and reference it from `CLAUDE.md`. Replace the scaffold `README.md` in Phase 9. Remove the scaffold's unused `public/*.svg` and placeholder page in Phase 1. | Rule 8: no unused files. |
+
+## 3D hero art direction (from `reference/car-image1–4.jpeg`, applied in Phase 8)
+
+The four references share one visual language. We translate it into an original car and scene; we don't copy the referenced vehicles.
+
+| Ref | What it shows | How Eureka uses it |
+|---|---|---|
+| 1. Clay roadster, exploded side view | Matte clay-white body, soft studio light, doors/panels floating above the car on their own axes, soft contact shadow, seamless white backdrop | **Base look:** matte clay material (`--clay` #eeeeea, roughness ~0.55), soft key + large area fill, contact shadow, and parts that lift away along their own axes |
+| 2. X-ray chassis on concrete | Ghost body as cyan hairlines; chassis, suspension and drivetrain visible; red calipers as the only saturated accent; small tag labels | **Engineering chapter:** body fades to x-ray edges (`--xray` #8ad8cc line material) to reveal battery floor, twin motors and suspension. Red is kept for calipers/tail light only |
+| 3. Graphite studio, annotated exploded view | Dark graphite backdrop, glass-transparent panels, thin white leader lines with numbers | **Callout system:** numbered hairline leader lines (HTML overlay projected from 3D anchor points) on the dark graphite chapter. The same pattern is reused in UI (mega-menu numbering, poster, spec callouts) |
+| 4. Clay SUV, exploded front view on a grid cyclorama | Parts radiating outward (wheels, seats, suspension, brakes), faint grid wall | **Exploded view:** radial explode from the centre of mass with a slight stagger; faint grid cyclorama (`bg-studio-grid` in UI) |
+
+**Chapters (~400vh, then hand off to normal sections):**
+1. **Awakening** (0–25%): dark studio, the light bar draws across the nose, then studio lights rise to reveal the clay car. Headline and CTAs are in HTML.
+2. **Form & finish** (25–50%): slow orbit along the shoulder; clay → paint transition (brass, onyx, sage, ivory swatches); mirror floor reflection.
+3. **Engineering** (50–80%): backdrop shifts to graphite; the body turns x-ray; panels, doors, wheels and seats explode outward; the battery floor lowers; 3–4 numbered callouts.
+4. **Arrival** (80–100%): parts reassemble, camera settles to a three-quarter hero, and the scene hands over to the quick-search bar.
+
+**Fallback:** `components/home/HeroPoster.tsx` (built in Phase 1) is the static SVG of this direction and the LCP element. It's used on <768px, with reduced motion, without WebGL, or when `deviceMemory < 4`.
 
 ## Conflicts between existing code and the brief
 
@@ -41,23 +64,25 @@ None. The repo was empty apart from the brief and the reference demo. The only a
 - [x] Commit "chore: phase 0"
 
 ## Phase 1: Foundation
-- [ ] Install deps: next-intl, motion, lucide-react, clsx, tailwind-merge, zustand, react-hook-form, zod, @hookform/resolvers, recharts (three/R3F/drei deferred to Phase 8)
-- [ ] Dev deps: vitest, @vitejs/plugin-react, vite-tsconfig-paths, @playwright/test
-- [ ] `package.json` scripts: `dev`, `build`, `start`, `lint`, `typecheck`, `test`, `test:e2e`, `check` (all of them)
-- [ ] `.env.example` with `NEXT_PUBLIC_DATA_MODE=mock`, `NEXT_PUBLIC_SITE_URL`
-- [ ] `globals.css`: Tailwind v4 `@theme` tokens from section 8.1 (colours, status, EV teal, radii, fonts), base type, focus rings, reduced-motion, `bn` typography overrides
-- [ ] Fonts (`src/app/fonts.ts`): Cormorant Garamond, Inter, Noto Serif Bengali, Hind Siliguri
-- [ ] next-intl: `src/i18n/routing.ts`, `navigation.ts`, `request.ts`, `src/proxy.ts`, `next.config.ts` plugin; `messages/en.json` + `bn.json` with feature namespaces
-- [ ] `app/[locale]/layout.tsx`: html lang, fonts, providers (NextIntlClientProvider, Toaster), skip link, header, footer, floating WhatsApp, compare tray mount point; `generateStaticParams`; hreflang metadata base
-- [ ] `config/site.ts` (brand, `whatsappNumber` placeholder, contact), `config/nav.ts`
-- [ ] `lib/utils/cn.ts`, `lib/whatsapp.ts` (link builder + typed localised templates)
-- [ ] UI primitives (`components/ui`): Button (primary/accent/outline/ghost/whatsapp, sizes, loading), Input, Textarea, Select, Combobox, Slider, Checkbox, RadioCard, Tabs, Accordion, Dialog, Sheet, Toast, Tooltip, Badge/Chip, Skeleton, EmptyState, ErrorState, Stepper, Pagination, Breadcrumbs, DemoNotice
-- [ ] Layout: Header (sticky + compact on scroll), MegaMenu (Vehicles by fuel/condition/category; Services), MobileNav sheet, LanguageSwitcher (keeps path + query), Footer (sitemap, showrooms, hours, contact, newsletter mock, legal, language)
-- [ ] WhatsApp: WhatsAppButton, FloatingWhatsApp (context-aware quick options, hidden while a form field is focused on mobile)
-- [ ] `not-found.tsx`, `error.tsx`, `loading.tsx`, catch-all `[...rest]`
-- [ ] Temporary homepage shell (replaced in Phase 8) that uses only real links
-- [ ] Remove scaffold leftovers (`public/*.svg`, default page)
-- [ ] Verify: typecheck, lint, build; both locales render; commit
+- [x] Install deps: next-intl, motion, lucide-react, clsx, tailwind-merge, zustand, react-hook-form, zod, @hookform/resolvers, recharts (three/R3F/drei deferred to Phase 8)
+- [x] Dev deps: vitest, @playwright/test (+ Chromium). `@types/node` bumped for Vitest 5
+- [x] `package.json` scripts: `dev`, `build`, `start`, `lint`, `typecheck`, `test`, `test:e2e`, `check`
+- [x] `.env.example` with `NEXT_PUBLIC_DATA_MODE`, `NEXT_PUBLIC_SITE_URL`, `NEXT_PUBLIC_WHATSAPP_NUMBER`
+- [x] `globals.css`: `@theme` tokens (brief §8.1 + D13 contrast fixes + clay/graphite/x-ray), display/eyebrow/container utilities, studio grid, focus rings, reduced motion, `bn` typography rules
+- [x] Fonts (`src/app/fonts.ts`): Montserrat + Hind Siliguri (D11)
+- [x] next-intl: `i18n/routing.ts`, `navigation.ts`, `request.ts` (via `next/root-params`), `src/proxy.ts`, plugin in `next.config.ts`, typed messages (`src/global.d.ts`), `messages/en.json` + `bn.json`
+- [x] `app/[locale]/layout.tsx`: `<html lang>`, fonts, NextIntlClientProvider, skip link, header, footer, ClientShell (floating WhatsApp, toaster, store rehydration), `generateStaticParams`, metadata
+- [x] `config/site.ts` (non-working placeholder WhatsApp/phone/email), `config/nav.ts` (typed message keys)
+- [x] `lib/utils.ts` (`cn`), `lib/whatsapp.ts` (link builder + typed localised templates), `lib/seo.ts` (canonical + hreflang + OG), `lib/format/number.ts`, `lib/api/client.ts` + `inquiries.ts` (newsletter), `lib/validation/common.ts`
+- [x] UI primitives: Button/ButtonLink (primary/accent/outline/ghost/whatsapp/light/outline-light, sizes, loading), Input/Textarea/Select, Checkbox/RadioCard, Slider/RangeSlider, Combobox, Tabs, Accordion, Dialog/Sheet (native `<dialog>`), Toaster, Tooltip, Badge/Chip, Card, Skeleton, EmptyState/ErrorState, Stepper, Pagination, Breadcrumbs (+JSON-LD), DemoNotice; forms: FormField + `fieldA11y`, `useErrorText`
+- [x] Layout: Logo, Header (sticky, compact on scroll, mega-menus, counts), MobileNav sheet, LanguageSwitcher (keeps path + query), Footer (newsletter, sitemap, contact, hours, legal, language), RouteAware leaves (D14)
+- [x] WhatsApp: WhatsAppButton (+icon), FloatingWhatsApp (context-aware topics, page context store, hidden while typing on mobile)
+- [x] Stores: compare (max 4), favourites (persist, `skipHydration`), whatsappContext, toast
+- [x] `not-found.tsx`, `error.tsx` (`retry`), `loading.tsx`, `[...rest]` catch-all, `global-error.tsx`, `icon.svg`
+- [x] Temporary homepage (hero + HeroPoster + journey strip). Replaced in Phase 8
+- [x] Removed scaffold leftovers (`public/*.svg`, favicon, default page/layout)
+- [x] Tests: message catalogue parity (keys, ICU args, non-empty) + WhatsApp builder
+- [x] Verify: typecheck, lint, tests, build; both locales render; 375/768/1440 with no overflow or console errors; Accept-Language redirect; switcher keeps query
 
 ## Phase 2: Data layer
 - [ ] `types/`: LocalizedText, FuelType, Condition, VehicleCategory, Media, Vehicle, Brand, Showroom, ServicePackage, FinancePartner, Testimonial, CustomerProfile, records (TestDriveBooking, PurchaseInquiry, FinanceApplication, ServiceBooking, CorporateInquiry, ContactMessage), EmiSchedule, Notification, Referral, StatusEvent
@@ -68,8 +93,10 @@ None. The repo was empty apart from the brief and the reference demo. The only a
 - [ ] `lib/calc/runningCost.ts` (cost/km, monthly/annual, ownership total, savings vs most expensive, break-even, cumulative series) + tests
 - [ ] `lib/validation/`: BD phone (01XXXXXXXXX / +8801XXXXXXXXX → E.164), shared schemas with localised error keys + tests
 - [ ] `lib/api/`: vehicles (filters, facets, sort, search, pagination, similar), bookings (test drive + slots), inquiries (purchase, corporate, contact, newsletter), finance (apply, status), service (book, track, packages), showrooms, account (dashboard). Latency 300–700 ms; phone ending `0000` returns a field error; `DEMO-` references; one `// TODO(api):` per function
-- [ ] Stores: compare (max 4), favourites, demoRecords, demoSession, profile, financeDocs checklist
-- [ ] Tests for formatters and the WhatsApp builder
+- [ ] Stores: demoRecords, demoSession, profile, financeDocs checklist (compare/favourites done in Phase 1)
+- [ ] Footer: add showroom list via `getShowrooms()`
+- [ ] Keep server-side mock reads deterministic (D15)
+- [ ] Tests for formatters (WhatsApp builder done in Phase 1)
 - [ ] Verify: typecheck, lint, test, build; commit
 
 ## Phase 3: Marketplace, details, compare, favourites
@@ -112,7 +139,8 @@ None. The repo was empty apart from the brief and the reference demo. The only a
 - [ ] Install three, @react-three/fiber, @react-three/drei
 - [ ] HTML hero (headline, search shortcut, CTAs) + static poster; capability gate (≥768px, no reduced motion, WebGL, deviceMemory ≥ 4)
 - [ ] R3F port: procedural Eureka One, studio env + mirror floor, light-bar welcome, 4 scroll chapters (~400vh), paint change, exploded view, optional `hero-car.glb` (Draco/Meshopt), DPR cap, PerformanceMonitor, pause off-screen
-- [ ] Homepage sections 2–15 per section 10.A
+- [ ] Homepage sections 2–15 per section 10.A (replace the Phase 1 temporary homepage)
+- [ ] Header over the hero: decide transparent-on-dark vs solid during chapter 1
 - [ ] Verify Three.js isn't in non-home bundles; commit
 
 ## Phase 9: Polish
@@ -129,3 +157,4 @@ None. The repo was empty apart from the brief and the reference demo. The only a
 ## Log
 
 - **Phase 0 (2026-11-11):** Scaffolded Next 16.4.6 / React 19.3 / Tailwind 4.3 / TS 5. Plan and `CLAUDE.md` written.
+- **Phase 1 (2026-11-11):** The user switched fonts to Montserrat + Hind Siliguri (D11) and supplied 4 art-direction images (3D art direction section, D16). Contrast-adjusted tokens (D13). The Cache Components pathname issue on the catch-all was fixed with Suspense leaves (D14). Unmatched URLs return a real 404 in production (`next start`). Only the dev server streams them as 200 + `noindex`. Header links to routes built in later phases (`/vehicles`, `/account`, …) resolve to the branded 404 until those phases land.

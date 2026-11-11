@@ -6,7 +6,7 @@ Premium multi-brand car marketplace for Bangladesh. This phase is frontend only,
 - Next.js 16 differs from older versions. Read `AGENTS.md` and the guides in `node_modules/next/dist/docs/` before using an unfamiliar API.
 
 ## Stack
-Next.js 16 App Router (Turbopack, `cacheComponents`), React 19, TypeScript strict, Tailwind v4 (CSS-first `@theme` in `src/app/globals.css`), next-intl (`[locale]` = `en` | `bn`), Motion, lucide-react, Recharts, React Hook Form + Zod, Zustand (`persist`), Three.js/R3F/drei (homepage hero only, lazy), Vitest, Playwright.
+Next.js 16 App Router (Turbopack, `cacheComponents`), React 19, TypeScript strict, Tailwind v4 (CSS-first `@theme` in `src/app/globals.css`), fonts **Montserrat (en) + Hind Siliguri (bn) only**, next-intl (`[locale]` = `en` | `bn`), Motion, lucide-react, Recharts, React Hook Form + Zod, Zustand (`persist`), Three.js/R3F/drei (homepage hero only, lazy), Vitest, Playwright.
 
 ## Commands
 - `npm run dev`: dev server at http://localhost:3000
@@ -27,6 +27,10 @@ Next.js 16 App Router (Turbopack, `cacheComponents`), React 19, TypeScript stric
 - No hard-coded UI strings in components. Copy goes in `messages/en.json` and `messages/bn.json` by feature namespace.
 - Content data uses `LocalizedText { en, bn }`.
 - Bangla uses Bangla digits (via `lib/format`), no letter-spacing and no uppercase transforms. Write natural Bangla, not literal translation.
+
+## Cache Components gotchas
+- `usePathname()` must sit in a small `<Suspense>` leaf (see `components/layout/RouteAware.tsx`). `useSearchParams()` always needs `<Suspense>`.
+- No `new Date()` / `Math.random()` in server-rendered code: use `"use cache"` + `cacheLife`, or do it client-side.
 
 ## Honesty rules
 - Never imply a real booking, approval, payment or server save. Every confirmation shows `<DemoNotice>` with the reference.
