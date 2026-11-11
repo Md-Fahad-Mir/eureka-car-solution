@@ -72,6 +72,17 @@
   --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
+/* Homepage 3D hero: "immersive" = wide screen, motion allowed, and the
+   client capability check (WebGL, device memory) hasn't demoted it to the
+   poster. Decided in CSS first so the tall layout is server-rendered (no CLS). */
+@custom-variant immersive {
+  @media (width >= 48rem) and (prefers-reduced-motion: no-preference) {
+    :where([data-hero]:not([data-mode="poster"])) & {
+      @slot;
+    }
+  }
+}
+
 @theme {
   --breakpoint-xs: 26rem;
   --container-content: 90rem; /* ~1440px */
@@ -238,6 +249,24 @@
    --compare-tray-h is published by CompareTray (ResizeObserver). */
 body {
   padding-bottom: var(--compare-tray-h, 0px);
+}
+
+/* Hero scroll story length (set inline from config) and x-ray callout type. */
+@media (width >= 48rem) and (prefers-reduced-motion: no-preference) {
+  [data-hero]:not([data-mode="poster"]) {
+    height: var(--hero-scroll, 450vh);
+  }
+}
+.hero-callout-num {
+  font: 600 10px var(--font-body);
+  letter-spacing: 0.18em;
+  fill: var(--accent-ink);
+}
+.hero-callout-text {
+  font: 500 11px var(--font-body);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  fill: var(--ink);
 }
 
 /* ───────────────────────── Motion ───────────────────────── */

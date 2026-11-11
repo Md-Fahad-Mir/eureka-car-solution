@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import { ArrowRight } from "lucide-react";
 import { getLocale, getTranslations } from "next-intl/server";
-import { HeroPoster } from "@/components/home/HeroPoster";
-import { ButtonLink } from "@/components/ui/Button";
+import { Hero3D } from "@/components/home/Hero3D";
 import { Link } from "@/i18n/navigation";
 import { formatNumber } from "@/lib/format/number";
 import { pageMetadata } from "@/lib/seo";
@@ -28,39 +27,7 @@ export default async function HomePage() {
 
   return (
     <>
-      <section className="relative isolate overflow-hidden">
-        <div
-          aria-hidden
-          className="bg-studio-grid absolute inset-0 -z-10 opacity-70 [mask-image:radial-gradient(ellipse_70%_60%_at_60%_45%,black,transparent)]"
-        />
-        <div className="container-page grid items-center gap-10 pt-12 pb-16 lg:grid-cols-12 lg:pt-20 lg:pb-24">
-          <div className="lg:col-span-5">
-            <p className="eyebrow text-accent-ink">{t("eyebrow")}</p>
-            <h1 className="display-xl mt-5">
-              {t("title")} <em className="font-light text-accent-ink">{t("titleAccent")}</em>
-            </h1>
-            <p className="mt-6 max-w-lg text-lg leading-relaxed text-muted">{t("lead")}</p>
-            <div className="mt-8 flex flex-wrap gap-3">
-              <ButtonLink href="/vehicles" size="lg">
-                {t("ctaBrowse")}
-              </ButtonLink>
-              <ButtonLink href="/test-drive" size="lg" variant="outline">
-                {t("ctaTestDrive")}
-              </ButtonLink>
-            </div>
-          </div>
-          <div className="lg:col-span-7">
-            <HeroPoster
-              label={t("poster.alt")}
-              callouts={[
-                { n: formatNumber(1, locale, { minimumIntegerDigits: 2 }), label: t("poster.callout1") },
-                { n: formatNumber(2, locale, { minimumIntegerDigits: 2 }), label: t("poster.callout2") },
-                { n: formatNumber(3, locale, { minimumIntegerDigits: 2 }), label: t("poster.callout3") },
-              ]}
-            />
-          </div>
-        </div>
-      </section>
+      <Hero3D />
 
       <section className="on-dark bg-graphite text-on-dark">
         <div className="container-page py-16 lg:py-20">

@@ -33,6 +33,10 @@ Next.js 16 App Router (Turbopack, `cacheComponents`), React 19, TypeScript stric
 - `usePathname()` must sit in a small `<Suspense>` leaf (see `components/layout/RouteAware.tsx`). `useSearchParams()` always needs `<Suspense>`.
 - No `new Date()` / `Math.random()` in server-rendered code: use `"use cache"` + `cacheLife`, or do it client-side.
 
+## 3D hero
+- `src/components/three/*` (three.js / R3F) is homepage-only and loaded via `next/dynamic` from `components/home/Hero3D.tsx`. Never import it elsewhere.
+- Car model: `public/models/hero-car.glb` (CC BY 4.0, credit in `config/hero.ts`, shown under the hero). Rebuild with `npm run prepare:hero-car`.
+
 ## Honesty rules
 - Never imply a real booking, approval, payment or server save. Every confirmation shows `<DemoNotice>` with the reference.
 - WhatsApp CTAs say "Chat on WhatsApp" and open `wa.me` links in a new tab.

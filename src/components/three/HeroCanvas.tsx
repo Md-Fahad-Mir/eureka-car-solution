@@ -1,0 +1,138 @@
+"use client";
+
+import { Component, Suspense, useEffect, useLayoutEffect, useRef, useState, type ReactNode, type RefObject } from "react";
+import * as THREE from "three";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
+import { PerformanceMonitor, useGLTF } from "@react-three/drei";
+import { heroConfig } from "@/config/hero";
+import { createHeroWorld, type HeroWorld, type HeroWorldState } from "./heroWorld";
+
+export type HeroCanvasProps = {
+  /** Render loop runs only while the hero is on screen. */
+  active: boolean;
+  getProgress: () => number;
+  onState: (state: HeroWorldState) => void;
+  /** Called once the real car is in place (or the procedural fallback is final). */
+  onReady: () => void;
+  paint: number | null;
+  calloutSvgRef: RefObject<SVGSVGElement | null>;
+  calloutLabels: string[];
+};
+
+/**
+ * React Three Fiber host for the hero world. Loaded with next/dynamic
+ * (ssr: false) on the homepage only, so three.js never ships elsewhere.
+ */
+export default function HeroCanvas(props: HeroCanvasProps) {
+  const [dpr, setDpr] = useState<number>(heroConfig.maxDpr);
+  return (
+    <Canvas
+      aria-hidden
+      frameloop={props.active ? "always" : "never"}
+      dpr={[heroConfig.minDpr, dpr]}
+      shadows
+      gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
+      camera={{ fov: 30, near: 0.1, far: 200, position: [12.5, 3.4, 10.5] }}
+      style={{ position: "absolute", inset: 0 }}
+    >
+      <PerformanceMonitor
+        flipflops={3}
+        onDecline={() => setDpr(heroConfig.minDpr)}
+        onIncline={() => setDpr(heroConfig.maxDpr)}
+        onFallback={() => setDpr(heroConfig.minDpr)}
+      />
+      <World {...props} />
+    </Canvas>
+  );
+}
+
+function World({ getProgress, onState, onReady, paint, calloutSvgRef, calloutLabels }: HeroCanvasProps) {
+  const { gl, scene, camera, size, viewport } = useThree();
+  const world = useRef<HeroWorld | null>(null);
+  const [failed, setFailed] = useState(false);
+  const callbacks = useRef({ getProgress, onState });
+  useEffect(() => {
+    callbacks.current = { getProgress, onState };
+  });
+
+  useLayoutEffect(() => {
+    const bg = getComputedStyle(document.documentElement).getPropertyValue("--bg").trim() || "#e4e7df";
+    const w = createHeroWorld({
+      renderer: gl,
+      scene,
+      camera: camera as THREE.PerspectiveCamera,
+      calloutSvg: calloutSvgRef.current,
+      calloutLabels,
+      finishes: heroConfig.finishes.map((f) => f.hex),
+      clayHex: heroConfig.clayHex,
+      backgroundHex: bg,
+      getProgress: () => callbacks.current.getProgress(),
+      onState: (s) => callbacks.current.onState(s),
+    });
+    world.current = w;
+    return () => {
+      w.dispose();
+      world.current = null;
+    };
+    // Labels are fixed for the lifetime of a locale; the world is rebuilt only if the renderer changes.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [gl, scene, camera]);
+
+  useEffect(() => world.current?.resize(size.width, size.height, viewport.dpr), [size.width, size.height, viewport.dpr]);
+  useEffect(() => world.current?.setPaint(paint), [paint]);
+  useEffect(() => {
+    if (failed) onReady();
+  }, [failed, onReady]);
+
+  // Priority 1: this callback renders the frame itself (mirror pass + main pass).
+  useFrame((_, dt) => world.current?.frame(dt), 1);
+
+  if (failed) return null;
+  return (
+    <ModelErrorBoundary onError={() => setFailed(true)}>
+      <Suspense fallback={null}>
+        <RealCar
+          url={heroConfig.modelUrl}
+          onLoaded={(car) => {
+            const info = world.current?.setModel(car, heroConfig.paintMaterialPattern);
+            if (process.env.NODE_ENV !== "production" && info) console.info(`[hero] ${info}`);
+            onReady();
+          }}
+        />
+      </Suspense>
+    </ModelErrorBoundary>
+  );
+}
+
+function RealCar({ url, onLoaded }: { url: string; onLoaded: (root: THREE.Object3D) => void }) {
+  const gltf = useGLTF(url, heroConfig.dracoPath, true);
+  const loaded = useRef(onLoaded);
+  useEffect(() => {
+    loaded.current = onLoaded;
+  });
+  useEffect(() => {
+    // Work on a deep copy (meshes and materials) so the cached glTF stays pristine.
+    const car = gltf.scene.clone(true);
+    car.traverse((o) => {
+      const m = o as THREE.Mesh;
+      if (m.isMesh) m.material = Array.isArray(m.material) ? m.material.map((x) => x.clone()) : m.material.clone();
+    });
+    loaded.current(car);
+  }, [gltf]);
+  return null;
+}
+
+/** If the model can't load (missing file, unsupported compression), keep the procedural car. */
+class ModelErrorBoundary extends Component<{ onError: () => void; children: ReactNode }, { failed: boolean }> {
+  state = { failed: false };
+  static getDerivedStateFromError() {
+    return { failed: true };
+  }
+  componentDidCatch(error: unknown) {
+    console.warn("[hero] 3D model failed to load; showing the procedural car instead.", error);
+    this.props.onError();
+  }
+  render() {
+    return this.state.failed ? null : this.props.children;
+  }
+}
