@@ -219,6 +219,13 @@ export function Hero3D() {
             {/* Chapter captions (visual; the sr-only list below carries the same text) */}
             <div aria-hidden className="pointer-events-none absolute bottom-24 left-0 right-0">
               <div className="container-page relative h-56">
+                {/* Soft backing so the caption stays legible while the car moves behind it. */}
+                <div
+                  className={cn(
+                    "absolute -bottom-6 -left-12 h-[calc(100%+3rem)] w-[min(40rem,80vw)] rounded-[50%] bg-bg/70 blur-3xl transition-opacity duration-700",
+                    ready && state.cap >= 0 && state.cap < HERO_CHAPTERS.length ? "opacity-100" : "opacity-0",
+                  )}
+                />
                 {HERO_CHAPTERS.map((ch, i) => (
                   <div
                     key={ch}

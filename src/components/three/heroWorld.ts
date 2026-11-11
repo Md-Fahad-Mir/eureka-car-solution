@@ -272,6 +272,8 @@ type Keyframe = {
   grid: number;
   /** -1 intro overlay · 0..3 chapters · 4 hand-off. */
   cap: number;
+  /** Arrive by orbiting around the car's vertical axis instead of a straight line. */
+  orbit?: boolean;
 };
 const kf = (cam: V3, tgt: V3, o: Partial<Keyframe>): Keyframe => ({
   cam,
@@ -299,8 +301,10 @@ const K: Keyframe[] = [
   kf(V(9.6, 3.6, 8.6), V(0, 1.0, 0), { clay: 1, explode: 1, grid: 1, cap: 2 }),
   kf(V(-7.6, 4.2, 9.6), V(0, 0.95, 0), { clay: 1, explode: 1, grid: 1, cap: 2 }),
   kf(V(6.4, 1.25, 5.4), V(0, 0.65, 0), { cap: 3 }),
-  kf(V(-7.4, 1.75, 0), V(3, 0.85, 0), { tunnel: 1, cap: 3 }),
-  kf(V(-7.8, 1.6, 0), V(3, 0.85, 0), { tunnel: 1, cap: 4 }),
+  // Orbit round the side into the tunnel; the camera ends a little left of the lane
+  // so the car clears the bottom-left caption.
+  kf(V(-8.2, 1.8, -0.75), V(3, 0.85, -0.75), { tunnel: 1, cap: 3, orbit: true }),
+  kf(V(-8.8, 1.6, 0), V(3, 0.85, 0), { tunnel: 1, cap: 4 }),
 ];
 /** Keyframe index where each chapter starts (for the chapter index links). */
 export const CHAPTER_KEYFRAMES = [1, 2, 5, 9];
@@ -309,11 +313,20 @@ export const KEYFRAME_COUNT = K.length;
 const SWEEP_SEGMENT = 2;
 
 const hold = (f: number) => smooth(clamp01((f - 0.12) / 0.76));
+/** Interpolate radius, height and angle (shortest way round) about the y axis. */
+function orbitLerp(a: V3, b: V3, f: number) {
+  const ra = Math.hypot(a.x, a.z), rb = Math.hypot(b.x, b.z), ta = Math.atan2(a.z, a.x);
+  let d = Math.atan2(b.z, b.x) - ta;
+  if (d > Math.PI) d -= 2 * Math.PI;
+  if (d < -Math.PI) d += 2 * Math.PI;
+  const r = ra + (rb - ra) * f, t = ta + d * f;
+  return V(Math.cos(t) * r, a.y + (b.y - a.y) * f, Math.sin(t) * r);
+}
 function sample(t: number) {
   const i = Math.min(K.length - 2, Math.floor(t)), f = hold(t - i), a = K[i], b = K[i + 1];
   const mix = (k: "head" | "paint" | "clay" | "ghost" | "explode" | "tunnel" | "grid") => a[k] + (b[k] - a[k]) * f;
   return {
-    cam: a.cam.clone().lerp(b.cam, f),
+    cam: b.orbit ? orbitLerp(a.cam, b.cam, f) : a.cam.clone().lerp(b.cam, f),
     tgt: a.tgt.clone().lerp(b.tgt, f),
     head: mix("head"),
     paint: mix("paint"),
@@ -1262,7 +1275,9 @@ export function createHeroWorld(o: HeroWorldOptions): HeroWorld {
     tunnelMats.push(m);
     return m;
   };
-  const wallMat = tMat({ color: 0xeef1ea, roughness: 0.9, side: THREE.DoubleSide });
+  // Single-sided walls facing inward: while the camera is still outside the tunnel the
+  // near wall is culled instead of washing over the car.
+  const wallMat = tMat({ color: 0xeef1ea, roughness: 0.9 });
   const stripeMat = tMat({ color: 0x1a1a1a, roughness: 0.5 });
   const lampMat = tMat({ color: 0xffffff, emissive: 0xffffff, emissiveIntensity: 1.2 });
   const goldLineMat = tMat({ color: 0xb8925a, emissive: 0xc9a05e, emissiveIntensity: 1.1, metalness: 0.6, roughness: 0.3 });
@@ -1270,6 +1285,7 @@ export function createHeroWorld(o: HeroWorldOptions): HeroWorld {
   [-1, 1].forEach((s) => {
     const wall = new THREE.Mesh(new THREE.PlaneGeometry(LEN, 4.2), wallMat);
     wall.position.set(LEN / 2 - 20, 2.1, s * 4.2);
+    if (s > 0) wall.rotation.y = Math.PI; // plane normals face +z; turn the +z wall inward
     tunnel.add(wall);
   });
   const ceil = new THREE.Mesh(new THREE.PlaneGeometry(LEN, 8.4), wallMat);
@@ -1320,6 +1336,20 @@ export function createHeroWorld(o: HeroWorldOptions): HeroWorld {
     renderer.shadowMap.needsUpdate = true;
   };
   setRig(procRig);
+
+  /**
+   * Compile every chapter's shaders up front (x-ray shells, chassis, tunnel), for both
+   * the screen pass and the mirror pass, so later chapters don't stall on first view.
+   * compile() walks the whole scene, hidden objects included.
+   */
+  const warmShaders = () => {
+    const done = () => undefined;
+    renderer.compileAsync(scene, camera).then(done, done);
+    const prev = renderer.getRenderTarget();
+    renderer.setRenderTarget(reflRT);
+    renderer.compileAsync(scene, mirrorCam).then(done, done);
+    renderer.setRenderTarget(prev);
+  };
 
   /* ── X-ray callouts (SVG overlay with leader lines) ── */
   const CALLOUT_POINTS = [V(FXP, 0.42, 0), V(0.1, 0.37, -0.25), V(FXP, 0.78, 0.64), V(RXP, 0.52, 0.9), V(RXP, 0.42, 0), V(-0.18, 0.78, -0.36)];
@@ -1526,6 +1556,7 @@ export function createHeroWorld(o: HeroWorldOptions): HeroWorld {
       glbRig = makeGLBRig(src, paintPattern, { paint, ghostMat, patchMat, track });
       car.add(glbRig.root);
       setRig(glbRig);
+      warmShaders();
       return (glbRig as Rig & { info?: string }).info ?? "";
     },
     resize: (w, h, dpr) => {
