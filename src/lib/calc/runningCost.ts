@@ -158,3 +158,17 @@ export function compareRunningCosts(input: {
 
   return { annualKm, years, results, mostExpensiveId: mostExpensive.option.id, cheapestId: cheapest.option.id };
 }
+
+/**
+ * Tractors and other work machines are costed per working hour, not per km.
+ */
+export function tractorFuelCost(input: {
+  litresPerHour: number;
+  dieselPerLitre: number;
+  hoursPerDay: number;
+  daysPerMonth: number;
+}): { perHour: number; monthly: number; annual: number } {
+  const perHour = Math.max(0, input.litresPerHour) * Math.max(0, input.dieselPerLitre);
+  const monthly = perHour * Math.max(0, input.hoursPerDay) * Math.max(0, input.daysPerMonth);
+  return { perHour, monthly, annual: monthly * 12 };
+}

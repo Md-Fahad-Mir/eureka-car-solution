@@ -2,6 +2,7 @@
 
 import { Suspense } from "react";
 import { Toaster } from "@/components/ui/Toaster";
+import { CompareTray } from "@/components/vehicle/CompareTray";
 import { FloatingWhatsApp } from "@/components/whatsapp/FloatingWhatsApp";
 import { useRehydrateStores } from "@/stores/hydration";
 
@@ -10,9 +11,10 @@ export function ClientShell() {
   useRehydrateStores();
   return (
     <>
-      {/* Reads the pathname to order topics, so it streams in on routes with unknown params. */}
+      {/* Both read the pathname, so they stream in on routes with unknown params. */}
       <Suspense fallback={null}>
         <FloatingWhatsApp />
+        <CompareTray />
       </Suspense>
       <Toaster />
     </>

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { compareRunningCosts, energyCostPerKm, toAnnualKm, type CostOption, type EnergyPrices } from "./runningCost";
+import { compareRunningCosts, energyCostPerKm, toAnnualKm, tractorFuelCost, type CostOption, type EnergyPrices } from "./runningCost";
 
 const prices: EnergyPrices = { petrolPerLitre: 130, dieselPerLitre: 105, electricityPerKwh: 10 };
 
@@ -110,5 +110,18 @@ describe("compareRunningCosts", () => {
   it("zero distance leaves only maintenance", () => {
     const zero = compareRunningCosts({ options: [ev], prices, annualKm: 0, years: 2 });
     expect(zero.results[0].annualTotal).toBe(15_000);
+  });
+});
+
+describe("tractorFuelCost", () => {
+  it("costs per working hour, month and year", () => {
+    const c = tractorFuelCost({ litresPerHour: 2.6, dieselPerLitre: 105, hoursPerDay: 6, daysPerMonth: 20 });
+    expect(c.perHour).toBeCloseTo(273, 10);
+    expect(c.monthly).toBeCloseTo(273 * 120, 8);
+    expect(c.annual).toBeCloseTo(273 * 120 * 12, 6);
+  });
+
+  it("clamps negative inputs to zero", () => {
+    expect(tractorFuelCost({ litresPerHour: -1, dieselPerLitre: 105, hoursPerDay: 6, daysPerMonth: 20 }).annual).toBe(0);
   });
 });

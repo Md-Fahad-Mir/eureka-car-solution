@@ -104,8 +104,9 @@ export function FloatingWhatsApp() {
     <div
       ref={rootRef}
       className={cn(
-        "fixed right-4 bottom-4 z-[60] flex flex-col items-end gap-3 transition-[opacity,transform] duration-200 sm:right-6 sm:bottom-6",
-        "[body:has([data-compare-tray])_&]:bottom-24",
+        "fixed right-4 z-[60] flex flex-col items-end gap-3 transition-[opacity,transform,bottom] duration-200 sm:right-6",
+        // Sits above the compare tray when it's open (height published as --compare-tray-h).
+        "bottom-[calc(var(--compare-tray-h,0px)+1rem)] sm:bottom-[calc(var(--compare-tray-h,0px)+1.5rem)]",
         formFocused && "pointer-events-none translate-y-4 opacity-0",
       )}
     >

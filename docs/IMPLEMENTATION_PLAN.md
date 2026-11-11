@@ -33,6 +33,10 @@ Source brief: [`docs/EUREKA_FRONTEND_PROMPT.md`](./EUREKA_FRONTEND_PROMPT.md). T
 | D19 | Marketplace defaults: sold vehicles are hidden unless `availability=sold`, but stay reachable by URL. Facets are counted with every *other* filter applied, so models depend on the brand selection. | Standard faceting. |
 | D20 | Mock test hooks (documented for QA/README): a phone ending `0000` gets a server field error; search `mock:error` makes the listing fail; demo sign-in code `123456`. Slot availability is deterministic (FNV hash of showroom/date/time), with ~1 in 4 slots taken, 30-minute slots, the last slot an hour before closing, same-day slots needing an hour's notice, and a 30-day horizon. | Brief §6.3 error simulation; reproducible e2e tests. |
 | D21 | Maths: money is whole BDT in data; calculations stay unrounded (EMI, schedule, running cost). Rounding happens only in `lib/format` (`formatBDT` rounds, never shows −৳0). The amortisation schedule's last row absorbs float residue, so the closing balance is exactly 0. Break-even is measured against the most expensive option to run (0 = cheaper from day one, null = never). | User request: calculation accuracy. |
+| D22 | Vehicle detail pages await `params` inside `<Suspense>` (the Next 16 Partial Prefetching pattern): all 60 locale/slug pages are fully prerendered, and client navigation shows the shell instantly. Unknown slugs get the shell, then the vehicle not-found UI with `noindex` and a not-found title. The status is 200 by framework design, and `dynamicParams` isn't available with Cache Components. | Next 16 docs: ISR with Cache Components. |
+| D23 | Marketplace navigation: one `ListingStateProvider` pushes URL changes inside transitions with `useOptimistic`, so rapid clicks compose and results dim while pending. Sliders commit 450 ms after they settle; search commits on submit; any filter change resets the page to 1. | URL is the source of truth (brief §10.B). |
+| D24 | Compare: `?ids=` is authoritative and the store mirrors it (opening a shared link adopts it into this browser's list). "Highlight differences" hides identical rows and marks the best value with a visible "Best" label (not colour alone). EMI and running costs in the table use shared, editable assumptions. The compare tray publishes its height as `--compare-tray-h`, so page padding and the floating WhatsApp button always clear it. On phones it starts collapsed. | Brief §10.F, §9.5. |
+| D25 | Shared building blocks are built once, where first needed: `EmiCalculator` and `RunningCostCalculator` (embedded on detail pages now; Phase 4 extends them), `InquiryForm` (drawer now; the `/inquiry` page in Phase 5), `ShowroomCard` (Phase 5 adds open-now), `Segmented`, `SliderField`, `applyApiError`. Tractors get a per-working-hour cost calculator. | No duplicate components. |
 | D12 | Keep `AGENTS.md` (Next regenerates it) and reference it from `CLAUDE.md`. Replace the scaffold `README.md` in Phase 9. Remove the scaffold's unused `public/*.svg` and placeholder page in Phase 1. | Rule 8: no unused files. |
 
 ## 3D hero art direction (from `reference/car-image1–4.jpeg`, applied in Phase 8)
@@ -106,27 +110,29 @@ None. The repo was empty apart from the brief and the reference demo. The only a
 - [x] Verify: typecheck, lint (including the new import boundary), 123 tests, build (pages still static)
 
 ## Phase 3: Marketplace, details, compare, favourites
-- [ ] `lib/search/vehicleQuery.ts`: parse/serialise `VehicleFilters` ↔ URL search params (+ tests)
-- [ ] `/vehicles`: URL-driven filters (brand, dependent model, price slider + inputs, fuel, condition, year, transmission, body, category, mileage, availability, seats, EV range), sort, search, grid/list, pagination, facet counts, chips, mobile filter drawer, empty/loading/error states
-- [ ] VehicleCard + VehicleImage placeholder (SVG silhouette per body type, brand initial)
-- [ ] `/vehicles/[slug]`: gallery + lightbox (keyboard/swipe), header + CTAs, key specs, grouped collapsible spec table, features/safety, price breakdown (on-road estimate), embedded EMI + running-cost calculators, similar vehicles, showrooms holding it, inquiry drawer, `generateMetadata`, JSON-LD, `notFound()`
-- [ ] Compare tray (bottom sheet) + `/compare?ids=` (search-add, remove, shared EMI/running-cost assumptions, highlight differences, best-value marks, sticky headers, pinned first column on mobile, per-column CTAs)
-- [ ] Favourites toggles
-- [ ] Verify + commit
+- [x] `lib/search/vehicleQuery.ts`: parse/serialise `VehicleFilters` ↔ URL (enum validation, range swap, canonical seat order, defaults omitted) + tests
+- [x] `/vehicles`: URL-driven filters (brand, dependent model, price slider + inputs, fuel, EV range when EV is selected, condition, category, body, year range, transmission, mileage, seats, availability) with facet counts; search, sort, grid/list, pagination; removable chips + clear all; mobile filter drawer with applied count; skeleton, empty (clear filters) and error (retry / reset) states; EMI-from footnote
+- [x] `VehicleCard` (grid/list): image, brand/model/variant, year, condition and fuel badges, auction grade, key specs (mileage, gearbox, range / km/L / L/hr), price in lakh, EMI-from, favourite / compare / WhatsApp
+- [x] `VehicleImage`: next/image for real photos; original SVG silhouettes for 9 body types in the vehicle's paint, with front-¾ / side / rear-¾ / interior / detail compositions
+- [x] `/vehicles/[slug]`: gallery (thumbnails, ←/→, swipe, fullscreen lightbox), header + badges + price + EMI-from + CTAs (test drive, enquire drawer, WhatsApp, compare, save), section nav, numbered key specs, grouped collapsible specs, features/safety, on-road price estimate, embedded EMI + running-cost calculators (tractor per-hour mode), showroom cards with directions, similar vehicles, `generateMetadata` + hreflang + Car/Offer JSON-LD, vehicle not-found page, floating-WhatsApp page context
+- [x] `InquiryForm` (zod + RHF, server-error mapping with focus, unticked consent, partner preference for EMI/Islamic) in a drawer, with an honest demo confirmation
+- [x] Compare tray (bottom sheet, thumbnails, Compare now, clear; collapses on phones) + `/compare?ids=` (combobox add, remove, shared assumptions, highlight differences + Best marks, sticky headers on desktop, pinned label column + horizontal scroll on mobile, per-column CTAs, copy link)
+- [x] Favourites toggles on cards and detail pages (the dashboard list arrives in Phase 7)
+- [x] Verify: typecheck, lint, 132 tests, build (78 pages); click-through: EV + price filter, detail WhatsApp link, inquiry `0000` error → success `DEMO-PI-…`, add 3 → compare + Best marks, Bangla digits, mobile drawer, no overflow or console errors
 
 ## Phase 4: Savings calculator, EMI & financing
-- [ ] `/savings-calculator`: 4 columns (EV/petrol/diesel/hybrid) with sample vehicles + inventory picker; distance per day/month/year; prices; efficiency; maintenance; 1–10 years; outputs; stacked bar + cumulative line charts; reset; estimates note; WhatsApp with results
-- [ ] `/finance`: EMI calculator (vehicle picker, down payment amount/%, tenure 12–84, rate), donut chart, amortisation with yearly totals, Islamic toggle (terminology + Ijarah/HPSM explainer), partner cards, eligibility checklist, documents checklist (persisted)
+- [ ] `/savings-calculator` (`?vehicle=` prefill from detail pages): 4 columns (EV/petrol/diesel/hybrid) with sample vehicles + inventory picker; distance per day/month/year; prices; efficiency; maintenance; 1–10 years; outputs; stacked bar + cumulative line charts; reset; estimates note; WhatsApp with results
+- [ ] `/finance`: extend `EmiCalculator` (vehicle picker + `?vehicle=` prefill, down payment amount/%, tenure 12–84, rate), donut chart, amortisation with yearly totals, Islamic toggle (terminology + Ijarah/HPSM explainer), partner cards, eligibility checklist, documents checklist (persisted)
 - [ ] `/finance/apply`: stepper (vehicle → personal → employment/income → documents UI-only → review → submit), state kept on back, `DEMO-FA-xxxx`, demo notice
 - [ ] `/finance/status`: reference lookup + timeline
 - [ ] Verify + commit
 
 ## Phase 5: Test drive, inquiry, service, fleet, showrooms
 - [ ] `/test-drive` stepper + `/test-drive/confirmation` (.ics, map, directions, WhatsApp with reference, demo notice); `?vehicle=` deep link
-- [ ] `/inquiry` + confirmation
+- [ ] `/inquiry` (reuse `InquiryForm`, `?vehicle=` preselect) + `/inquiry/confirmation?ref=`
 - [ ] `/service` landing, `/service/book` stepper, `/service/track`
 - [ ] `/fleet` content + corporate inquiry form + confirmation
-- [ ] `/showrooms`: cards with open-now (Asia/Dhaka), map card, directions, contact form, JSON-LD
+- [ ] `/showrooms`: extend `ShowroomCard` with open-now (Asia/Dhaka), map card, directions, contact form, JSON-LD
 - [ ] `/privacy`, `/terms` (marked for legal review)
 - [ ] Verify + commit
 
@@ -166,3 +172,4 @@ None. The repo was empty apart from the brief and the reference demo. The only a
 - **Phase 0 (2026-11-11):** Scaffolded Next 16.4.6 / React 19.3 / Tailwind 4.3 / TS 5. Plan and `CLAUDE.md` written.
 - **Phase 1 (2026-11-11):** The user switched fonts to Montserrat + Hind Siliguri (D11) and supplied 4 art-direction images (3D art direction section, D16). Contrast-adjusted tokens (D13). The Cache Components pathname issue on the catch-all was fixed with Suspense leaves (D14). Unmatched URLs return a real 404 in production (`next start`). Only the dev server streams them as 200 + `noindex`. Header links to routes built in later phases (`/vehicles`, `/account`, …) resolve to the branded 404 until those phases land.
 - **Phase 2 (2026-11-11):** The user asked for a fully multi-brand design, calculation accuracy, BDT lakh/crore formatting, API readiness and strict data/UI separation (D17–D21). Data-integrity tests enforce the coverage. The tests caught three issues, all fixed: the BD phone international prefix (`+88` + `01…`), a missing mild-hybrid motor on the Ertiga, and an EMI paid-count expectation.
+- **Phase 3 (2026-11-11):** Marketplace, detail, compare and favourites are complete. Next 16 needed detail params read inside Suspense (D22). Visual QA found and fixed: unequal card widths, and the mobile compare tray covering content and colliding with the floating WhatsApp button (now collapsed by default, with a measured height variable).

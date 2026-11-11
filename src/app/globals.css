@@ -234,6 +234,12 @@
   font-variant-numeric: tabular-nums;
 }
 
+/* Keep page content (e.g. the footer) clear of the fixed compare tray.
+   --compare-tray-h is published by CompareTray (ResizeObserver). */
+body {
+  padding-bottom: var(--compare-tray-h, 0px);
+}
+
 /* ───────────────────────── Motion ───────────────────────── */
 @media (prefers-reduced-motion: reduce) {
   *,

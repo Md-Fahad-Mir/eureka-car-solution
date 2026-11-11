@@ -22,6 +22,16 @@ export const costConfig = {
   phevElectricShare: 0.6,
   distance: { defaultValue: 40, defaultUnit: "day" as const },
   ownershipYears: { min: 1, max: 10, default: 5 },
+  /**
+   * "Typical" vehicles used as a comparison line in the vehicle-page
+   * calculator, e.g. "vs a typical petrol car". Illustrative.
+   */
+  comparisonBaseline: {
+    petrol: { kmPerLitre: 12, annualMaintenance: 35_000 },
+    hybrid: { kmPerLitre: 22, annualMaintenance: 30_000 },
+  },
+  /** Tractor work-pattern defaults for the per-hour fuel calculator. */
+  tractorUsage: { hoursPerDay: 6, daysPerMonth: 20 },
   /** Representative vehicles pre-loaded into the savings calculator (by slug). */
   representativeVehicles: {
     ev: "byd-atto-3-extended-2024",
