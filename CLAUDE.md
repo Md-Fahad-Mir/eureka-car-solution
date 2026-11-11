@@ -17,9 +17,10 @@ Next.js 16 App Router (Turbopack, `cacheComponents`), React 19, TypeScript stric
 - `src/app/[locale]/…`: routes. Server Components by default. Add `'use client'` only for interactive islands.
 - `src/components/{ui,layout,vehicle,calculators,forms,whatsapp,home,three,account,media}`: one component per concept, no duplicates.
 - `src/config/`: brand, contact, WhatsApp number, finance and cost sample values. All tunables live here.
-- `src/data/mock/`: mock data. **Only `src/lib/api/*` may import it** (ESLint enforces this).
+- `src/data/mock/`: mock data. **Only `src/lib/api/*` may import it**, or `stores/demoRecords` (ESLint enforces this).
 - `src/lib/api/`: async service layer. Mock mode when `NEXT_PUBLIC_DATA_MODE=mock`. 300–700 ms latency, `DEMO-` references, a phone ending `0000` returns a field error. One `// TODO(api):` per function.
-- `src/lib/{calc,format,validation}`: pure logic with `*.test.ts` next to it.
+- `src/lib/{calc,format,validation}`: pure logic with `*.test.ts` next to it. Formatting in components goes through `useFormat()` / `getFormat()`.
+- Mock test hooks: a phone ending `0000` gets a server error, search `mock:error` fails the listing, demo OTP `123456`.
 - `src/stores/`: Zustand stores (compare, favourites, demo records/session) only.
 - `src/types/`: domain models.
 

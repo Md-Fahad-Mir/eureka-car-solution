@@ -1,6 +1,10 @@
+import { useDemoRecordsStore } from "@/stores/demoRecords";
+import { ensureHydrated } from "@/stores/persist";
+
 /**
- * Shared helpers for the mock service layer. Real API implementations replace
- * the bodies of functions in `src/lib/api/*`; UI code never changes.
+ * Shared helpers for the mock service layer. Each public function in
+ * `src/lib/api/*` has a typed signature that a real `fetch` implementation can
+ * replace; UI code never changes and never sees mock data directly.
  */
 
 export const DATA_MODE = process.env.NEXT_PUBLIC_DATA_MODE ?? "mock";
@@ -18,10 +22,23 @@ export class ApiFieldError extends Error {
   }
 }
 
+/** A request-level failure (network, server). The UI shows an error state with retry. */
+export class ApiError extends Error {
+  constructor(message = "Request failed") {
+    super(message);
+    this.name = "ApiError";
+  }
+}
+
 const sleep = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));
 
-/** Simulates 300–700 ms of network latency. */
+/**
+ * Simulates 300–700 ms of network latency in the browser. On the server it
+ * resolves immediately: server components prerender with Cache Components,
+ * where timers and Math.random() are not allowed (decision D15).
+ */
 export function simulateLatency(): Promise<void> {
+  if (typeof window === "undefined") return Promise.resolve();
   return sleep(300 + Math.round(Math.random() * 400));
 }
 
@@ -40,3 +57,17 @@ export function assertMockPhoneAccepted(phone: string | undefined, field = "phon
     throw new ApiFieldError(field, "phoneServer");
   }
 }
+
+/** The browser-local mock database (session-created records). Client-side only. */
+export function mockDb() {
+  ensureHydrated(useDemoRecordsStore);
+  return useDemoRecordsStore.getState();
+}
+
+/** Current time as an ISO 8601 string, for record timestamps. */
+export function nowIso(): string {
+  return new Date().toISOString();
+}
+
+/** Case-insensitive reference normaliser ("demo-td-1186 " → "DEMO-TD-1186"). */
+export const normalizeReference = (ref: string) => ref.trim().toUpperCase();

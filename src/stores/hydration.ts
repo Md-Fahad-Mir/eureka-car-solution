@@ -2,13 +2,16 @@
 
 import { useEffect, useSyncExternalStore } from "react";
 import { useCompareStore } from "./compare";
+import { useDemoSessionStore } from "./demoSession";
 import { useFavoritesStore } from "./favorites";
+import { ensureHydrated } from "./persist";
 
-/** Rehydrate persisted stores after mount so server and first client render match. */
+/** Rehydrate UI-facing persisted stores after mount. */
 export function useRehydrateStores() {
   useEffect(() => {
-    void useCompareStore.persist.rehydrate();
-    void useFavoritesStore.persist.rehydrate();
+    ensureHydrated(useCompareStore);
+    ensureHydrated(useFavoritesStore);
+    ensureHydrated(useDemoSessionStore);
   }, []);
 }
 

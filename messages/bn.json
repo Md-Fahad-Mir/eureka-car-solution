@@ -202,7 +202,12 @@
     "max": "সর্বোচ্চ {max} হতে পারে।",
     "date": "একটি তারিখ বেছে নিন।",
     "datePast": "আজ বা তার পরের কোনো তারিখ বেছে নিন।",
-    "select": "একটি অপশন বেছে নিন।"
+    "select": "একটি অপশন বেছে নিন।",
+    "name": "অনুগ্রহ করে আপনার পুরো নাম লিখুন (২–৮০ অক্ষর)।",
+    "messageLong": "অনুগ্রহ করে বার্তাটি ১,০০০ অক্ষরের মধ্যে রাখুন।",
+    "slotTaken": "এই সময়টি এইমাত্র বুক হয়ে গেছে। অনুগ্রহ করে অন্য একটি সময় বেছে নিন।",
+    "vehicleUnavailable": "এই গাড়িটি আর পাওয়া যাচ্ছে না। অনুগ্রহ করে অন্য একটি বেছে নিন।",
+    "otp": "কোডটি সঠিক নয়। ডেমো মোডে কোডটি স্ক্রিনেই দেখানো আছে।"
   },
   "toast": {
     "errorTitle": "কিছু একটা সমস্যা হয়েছে",
@@ -247,5 +252,154 @@
       "callout2": "ব্যাটারি ফ্লোর, যাচাই করা",
       "callout3": "প্রতিটি যন্ত্রাংশের হিসাব"
     }
+  },
+  "taxonomy": {
+    "fuel": {
+      "ev": "ইলেকট্রিক",
+      "petrol": "পেট্রোল",
+      "diesel": "ডিজেল",
+      "hybrid": "হাইব্রিড",
+      "phev": "প্লাগ-ইন হাইব্রিড"
+    },
+    "condition": {
+      "new": "নতুন",
+      "reconditioned": "রিকন্ডিশন্ড",
+      "used": "ব্যবহৃত"
+    },
+    "category": {
+      "car": "কার",
+      "suv": "SUV",
+      "mpv": "MPV",
+      "pickup": "পিকআপ",
+      "commercial": "বাণিজ্যিক",
+      "tractor": "ট্রাক্টর",
+      "utility": "ইউটিলিটি"
+    },
+    "body": {
+      "sedan": "সেডান",
+      "hatchback": "হ্যাচব্যাক",
+      "crossover": "ক্রসওভার",
+      "suv": "SUV",
+      "mpv": "MPV",
+      "pickup": "পিকআপ",
+      "van": "ভ্যান",
+      "truck": "ট্রাক",
+      "tractor": "ট্রাক্টর"
+    },
+    "transmission": {
+      "automatic": "অটোমেটিক",
+      "cvt": "CVT অটোমেটিক",
+      "dct": "ডুয়াল-ক্লাচ অটোমেটিক",
+      "manual": "ম্যানুয়াল",
+      "single-speed": "সিঙ্গেল-স্পিড"
+    },
+    "drivetrain": {
+      "fwd": "ফ্রন্ট-হুইল ড্রাইভ",
+      "rwd": "রিয়ার-হুইল ড্রাইভ",
+      "awd": "অল-হুইল ড্রাইভ",
+      "4wd": "ফোর-হুইল ড্রাইভ",
+      "2wd": "টু-হুইল ড্রাইভ"
+    },
+    "availability": {
+      "in_stock": "স্টকে আছে",
+      "incoming": "শিগগিরই আসছে",
+      "reserved": "বুকড",
+      "sold": "বিক্রি হয়েছে"
+    },
+    "showroomService": {
+      "sales": "বিক্রয়",
+      "testDrive": "টেস্ট ড্রাইভ",
+      "service": "সার্ভিস সেন্টার",
+      "evCharging": "EV চার্জিং",
+      "financeDesk": "ফাইন্যান্স ডেস্ক",
+      "bodyShop": "বডি ও পেইন্ট",
+      "commercial": "বাণিজ্যিক গাড়ি",
+      "tractorService": "ট্রাক্টর সার্ভিস"
+    },
+    "weekday": {
+      "sat": "শনিবার",
+      "sun": "রবিবার",
+      "mon": "সোমবার",
+      "tue": "মঙ্গলবার",
+      "wed": "বুধবার",
+      "thu": "বৃহস্পতিবার",
+      "fri": "শুক্রবার"
+    },
+    "financeType": {
+      "conventional": "প্রচলিত",
+      "islamic": "ইসলামি (শরিয়াহভিত্তিক)"
+    }
+  },
+  "specs": {
+    "groups": {
+      "powertrain": "ইঞ্জিন ও মোটর",
+      "performance": "পারফরম্যান্স ও জ্বালানি দক্ষতা",
+      "battery": "ব্যাটারি ও চার্জিং",
+      "dimensions": "মাপ ও ওজন",
+      "capacity": "ধারণক্ষমতা",
+      "chassis": "চেসিস ও চাকা",
+      "work": "কাজের সক্ষমতা"
+    },
+    "keys": {
+      "engineType": "ইঞ্জিন",
+      "displacement": "ইঞ্জিনের আয়তন",
+      "cylinders": "সিলিন্ডার",
+      "enginePower": "ইঞ্জিনের শক্তি",
+      "engineTorque": "ইঞ্জিনের টর্ক",
+      "motorPower": "মোটরের শক্তি",
+      "motorTorque": "মোটরের টর্ক",
+      "systemPower": "সম্মিলিত শক্তি",
+      "topSpeed": "সর্বোচ্চ গতি",
+      "acceleration": "০–১০০ কিমি/ঘণ্টা",
+      "fuelEconomy": "জ্বালানি সাশ্রয়",
+      "energyConsumption": "বিদ্যুৎ খরচ",
+      "fuelPerHour": "জ্বালানি খরচ (কাজের সময়)",
+      "batteryCapacity": "ব্যাটারির ক্ষমতা",
+      "range": "রেঞ্জ (দাবিকৃত)",
+      "electricRange": "শুধু বিদ্যুতে রেঞ্জ (দাবিকৃত)",
+      "acCharge": "AC চার্জিং",
+      "dcCharge": "DC ফাস্ট চার্জিং",
+      "dcChargeTime": "DC ১০–৮০% (আনুমানিক)",
+      "batteryWarranty": "ব্যাটারি ওয়ারেন্টি",
+      "length": "দৈর্ঘ্য",
+      "width": "প্রস্থ",
+      "height": "উচ্চতা",
+      "wheelbase": "হুইলবেস",
+      "groundClearance": "গ্রাউন্ড ক্লিয়ারেন্স",
+      "kerbWeight": "নিজস্ব ওজন",
+      "seats": "আসন",
+      "fuelTank": "জ্বালানি ট্যাংক",
+      "bootSpace": "বুট স্পেস",
+      "payload": "পেলোড",
+      "grossWeight": "মোট ওজন (GVW)",
+      "towing": "টোয়িং ক্ষমতা",
+      "tyres": "টায়ার",
+      "turningRadius": "টার্নিং রেডিয়াস",
+      "emissions": "নির্গমন মান",
+      "ptoPower": "PTO শক্তি",
+      "liftCapacity": "হাইড্রলিক লিফট ক্ষমতা",
+      "forwardGears": "গিয়ার (সামনে / পেছনে)"
+    }
+  },
+  "units": {
+    "mm": "{value} মিমি",
+    "m": "{value} মিটার",
+    "kg": "{value} কেজি",
+    "L": "{value} লিটার",
+    "cc": "{value} সিসি",
+    "hp": "{value} hp",
+    "kW": "{value} kW",
+    "Nm": "{value} Nm",
+    "kmh": "{value} কিমি/ঘণ্টা",
+    "s": "{value} সেকেন্ড",
+    "km": "{value} কিমি",
+    "kWh": "{value} kWh",
+    "kmPerL": "{value} কিমি/লিটার",
+    "kWhPer100km": "{value} kWh/১০০ কিমি",
+    "lPerHour": "{value} লিটার/ঘণ্টা",
+    "min": "{value} মিনিট",
+    "seats": "{value} আসন",
+    "months": "{value} মাস",
+    "years": "{value} বছর"
   }
 }

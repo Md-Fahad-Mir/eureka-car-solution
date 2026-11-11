@@ -202,7 +202,12 @@
     "max": "Must be at most {max}.",
     "date": "Choose a date.",
     "datePast": "Choose a date from today onwards.",
-    "select": "Please choose an option."
+    "select": "Please choose an option.",
+    "name": "Please enter your full name (2–80 characters).",
+    "messageLong": "Please keep your message under 1,000 characters.",
+    "slotTaken": "That time was just taken. Please choose another slot.",
+    "vehicleUnavailable": "This vehicle is no longer available. Please choose another.",
+    "otp": "That code isn't right. In demo mode the code is shown on screen."
   },
   "toast": {
     "errorTitle": "Something went wrong",
@@ -247,5 +252,154 @@
       "callout2": "Battery floor, inspected",
       "callout3": "Every part, accounted for"
     }
+  },
+  "taxonomy": {
+    "fuel": {
+      "ev": "Electric",
+      "petrol": "Petrol",
+      "diesel": "Diesel",
+      "hybrid": "Hybrid",
+      "phev": "Plug-in hybrid"
+    },
+    "condition": {
+      "new": "New",
+      "reconditioned": "Reconditioned",
+      "used": "Used"
+    },
+    "category": {
+      "car": "Car",
+      "suv": "SUV",
+      "mpv": "MPV",
+      "pickup": "Pickup",
+      "commercial": "Commercial",
+      "tractor": "Tractor",
+      "utility": "Utility"
+    },
+    "body": {
+      "sedan": "Sedan",
+      "hatchback": "Hatchback",
+      "crossover": "Crossover",
+      "suv": "SUV",
+      "mpv": "MPV",
+      "pickup": "Pickup",
+      "van": "Van",
+      "truck": "Truck",
+      "tractor": "Tractor"
+    },
+    "transmission": {
+      "automatic": "Automatic",
+      "cvt": "CVT automatic",
+      "dct": "Dual-clutch automatic",
+      "manual": "Manual",
+      "single-speed": "Single-speed"
+    },
+    "drivetrain": {
+      "fwd": "Front-wheel drive",
+      "rwd": "Rear-wheel drive",
+      "awd": "All-wheel drive",
+      "4wd": "Four-wheel drive",
+      "2wd": "Two-wheel drive"
+    },
+    "availability": {
+      "in_stock": "In stock",
+      "incoming": "Arriving soon",
+      "reserved": "Reserved",
+      "sold": "Sold"
+    },
+    "showroomService": {
+      "sales": "Sales",
+      "testDrive": "Test drives",
+      "service": "Service centre",
+      "evCharging": "EV charging",
+      "financeDesk": "Finance desk",
+      "bodyShop": "Body & paint",
+      "commercial": "Commercial vehicles",
+      "tractorService": "Tractor service"
+    },
+    "weekday": {
+      "sat": "Saturday",
+      "sun": "Sunday",
+      "mon": "Monday",
+      "tue": "Tuesday",
+      "wed": "Wednesday",
+      "thu": "Thursday",
+      "fri": "Friday"
+    },
+    "financeType": {
+      "conventional": "Conventional",
+      "islamic": "Islamic (Shariah-based)"
+    }
+  },
+  "specs": {
+    "groups": {
+      "powertrain": "Engine & motor",
+      "performance": "Performance & efficiency",
+      "battery": "Battery & charging",
+      "dimensions": "Dimensions & weight",
+      "capacity": "Capacity",
+      "chassis": "Chassis & wheels",
+      "work": "Work capability"
+    },
+    "keys": {
+      "engineType": "Engine",
+      "displacement": "Displacement",
+      "cylinders": "Cylinders",
+      "enginePower": "Engine power",
+      "engineTorque": "Engine torque",
+      "motorPower": "Motor power",
+      "motorTorque": "Motor torque",
+      "systemPower": "Combined power",
+      "topSpeed": "Top speed",
+      "acceleration": "0–100 km/h",
+      "fuelEconomy": "Fuel economy",
+      "energyConsumption": "Energy consumption",
+      "fuelPerHour": "Fuel use (working)",
+      "batteryCapacity": "Battery capacity",
+      "range": "Range (claimed)",
+      "electricRange": "Electric-only range (claimed)",
+      "acCharge": "AC charging",
+      "dcCharge": "DC fast charging",
+      "dcChargeTime": "DC 10–80% (approx.)",
+      "batteryWarranty": "Battery warranty",
+      "length": "Length",
+      "width": "Width",
+      "height": "Height",
+      "wheelbase": "Wheelbase",
+      "groundClearance": "Ground clearance",
+      "kerbWeight": "Kerb weight",
+      "seats": "Seats",
+      "fuelTank": "Fuel tank",
+      "bootSpace": "Boot space",
+      "payload": "Payload",
+      "grossWeight": "Gross vehicle weight",
+      "towing": "Towing capacity",
+      "tyres": "Tyres",
+      "turningRadius": "Turning radius",
+      "emissions": "Emissions standard",
+      "ptoPower": "PTO power",
+      "liftCapacity": "Hydraulic lift capacity",
+      "forwardGears": "Gears (forward / reverse)"
+    }
+  },
+  "units": {
+    "mm": "{value} mm",
+    "m": "{value} m",
+    "kg": "{value} kg",
+    "L": "{value} L",
+    "cc": "{value} cc",
+    "hp": "{value} hp",
+    "kW": "{value} kW",
+    "Nm": "{value} Nm",
+    "kmh": "{value} km/h",
+    "s": "{value} s",
+    "km": "{value} km",
+    "kWh": "{value} kWh",
+    "kmPerL": "{value} km/L",
+    "kWhPer100km": "{value} kWh/100 km",
+    "lPerHour": "{value} L/hr",
+    "min": "{value} min",
+    "seats": "{value} seats",
+    "months": "{value} months",
+    "years": "{value} years"
   }
 }

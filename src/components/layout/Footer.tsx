@@ -5,6 +5,7 @@ import { WhatsAppButton } from "@/components/whatsapp/WhatsAppButton";
 import { footerColumns } from "@/config/nav";
 import { siteConfig } from "@/config/site";
 import { Link } from "@/i18n/navigation";
+import { getShowrooms } from "@/lib/api/showrooms";
 import { formatNumber, localizeDigits } from "@/lib/format/number";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 import { Logo } from "./Logo";
@@ -17,12 +18,13 @@ async function currentYear() {
 }
 
 export async function Footer() {
-  const [t, tNav, tA11y, locale, year] = await Promise.all([
+  const [t, tNav, tA11y, locale, year, showrooms] = await Promise.all([
     getTranslations("footer"),
     getTranslations("nav"),
     getTranslations("a11y"),
     getLocale(),
     currentYear(),
+    getShowrooms(),
   ]);
   const tNewsletter = await getTranslations("newsletter");
 
@@ -102,7 +104,15 @@ export async function Footer() {
             </div>
             <div>
               <h3 className="eyebrow text-accent-2">{t("showrooms")}</h3>
-              <Link href="/showrooms" className="mt-4 inline-block underline-offset-4 hover:underline">
+              <ul className="mt-4 flex flex-col gap-1.5">
+                {showrooms.map((s) => (
+                  <li key={s.id} className="flex justify-between gap-3">
+                    <span>{s.name[locale]}</span>
+                    <span className="shrink-0 text-muted-on-dark">{s.city[locale]}</span>
+                  </li>
+                ))}
+              </ul>
+              <Link href="/showrooms" className="mt-3 inline-block text-accent-2 underline-offset-4 hover:underline">
                 {t("allShowrooms")}
               </Link>
             </div>
