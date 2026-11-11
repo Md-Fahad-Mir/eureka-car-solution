@@ -1,4 +1,4 @@
-import type { BodyType, VehicleCategory } from "@/types";
+import type { BodyType, EmploymentType, VehicleCategory } from "@/types";
 
 /**
  * Finance and on-road cost assumptions.
@@ -39,3 +39,26 @@ export const onRoadConfig = {
   /** Body types that commonly need a commercial route permit (informational). */
   commercialBodies: ["van", "truck"] satisfies BodyType[],
 } as const;
+
+/**
+ * Typical documents partners ask for, by applicant type (labels in messages
+ * `finance.documents.items.*`). Illustrative; each institution has its own list.
+ */
+export const financeDocuments = {
+  common: ["nid", "photos", "tin", "bankStatement", "utilityBill"],
+  salaried: ["salaryCertificate", "payslips"],
+  business: ["tradeLicence", "businessStatements", "taxReturn"],
+  professional: ["professionalCertificate", "incomeProof", "taxReturn"],
+} as const;
+
+export type FinanceDocumentKey =
+  | (typeof financeDocuments)["common"][number]
+  | (typeof financeDocuments)["salaried"][number]
+  | (typeof financeDocuments)["business"][number]
+  | (typeof financeDocuments)["professional"][number];
+
+/** Documents for an applicant type: common ones first. */
+export const documentsFor = (type: EmploymentType): FinanceDocumentKey[] => [
+  ...financeDocuments.common,
+  ...financeDocuments[type],
+];

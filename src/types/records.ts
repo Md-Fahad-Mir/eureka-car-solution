@@ -50,7 +50,8 @@ export type PurchaseInquiry = RecordBase & {
 
 export const FINANCE_STATUSES = ["submitted", "underReview", "documentsVerified", "decision"] as const;
 export type FinanceStatus = (typeof FINANCE_STATUSES)[number];
-export type EmploymentType = "salaried" | "business" | "professional";
+export const EMPLOYMENT_TYPES = ["salaried", "business", "professional"] as const;
+export type EmploymentType = (typeof EMPLOYMENT_TYPES)[number];
 
 export type FinanceApplication = RecordBase & {
   vehicleId?: string;

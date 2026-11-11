@@ -208,7 +208,13 @@
     "slotTaken": "That time was just taken. Please choose another slot.",
     "vehicleUnavailable": "This vehicle is no longer available. Please choose another.",
     "otp": "That code isn't right. In demo mode the code is shown on screen.",
-    "emailForChannel": "Add your email address so we can reply by email."
+    "emailForChannel": "Add your email address so we can reply by email.",
+    "priceMin": "Enter a vehicle price of at least ৳1,00,000.",
+    "downPaymentMin": "Down payment must be at least {min}.",
+    "downPaymentMax": "Down payment must be less than the vehicle price.",
+    "nidLast4": "Enter the last 4 digits of your NID.",
+    "address": "Enter your full address (house, road, area).",
+    "income": "Enter your monthly income."
   },
   "toast": {
     "errorTitle": "Something went wrong",
@@ -592,7 +598,32 @@
     "totalOfPayments": "Total of instalments",
     "totalCost": "Total incl. down payment",
     "disclaimer": "Illustrative estimate only. Actual rates, fees and approval are decided by the financing institution.",
-    "fullOptions": "See all finance options"
+    "fullOptions": "See all finance options",
+    "islamic": {
+      "rate": "Profit rate (per year)",
+      "rateDisplay": "{rate}% a year profit rate, illustrative",
+      "monthly": "Monthly rental / instalment",
+      "financed": "Financed amount",
+      "totalProfit": "Total profit",
+      "totalRentals": "Total of rentals",
+      "disclaimer": "Illustrative only. Islamic structures (HPSM, Ijarah, Murabaha) differ by institution, and the actual rental schedule is set in your agreement.",
+      "profit": "Profit",
+      "rentalsPaid": "Rentals paid"
+    },
+    "breakdownTitle": "Where your money goes",
+    "breakdownAria": "Principal {principal} and {interestLabel} {interest}",
+    "totalRepayable": "Total repayable",
+    "principal": "Principal",
+    "interest": "Interest",
+    "scheduleTitle": "Amortisation schedule",
+    "scheduleLead": "Year-by-year totals. Open a year to see each month.",
+    "year": "Year",
+    "yearN": "Year {n}",
+    "monthN": "Month {n}",
+    "showMonths": "(show months)",
+    "hideMonths": "(hide months)",
+    "paid": "Paid",
+    "balance": "Balance"
   },
   "runningCost": {
     "distance": "How far you drive",
@@ -770,6 +801,403 @@
       "lPerHour": "Fuel per working hour",
       "runningAnnual": "Running cost per year",
       "costPerKm": "Cost per km"
+    }
+  },
+  "finance": {
+    "metaTitle": "Car finance, EMI calculator & Islamic financing",
+    "metaDescription": "Work out your EMI, compare conventional and Islamic financing, check eligibility and documents, and apply online.",
+    "breadcrumb": "Finance & EMI",
+    "eyebrow": "Finance & EMI",
+    "title": "Own it,",
+    "titleAccent": "your way.",
+    "lead": "Conventional loans or Shariah-based financing, with the numbers laid out plainly before you apply.",
+    "sampleNotice": "Rates, partners and terms on this page are illustrative samples. Eureka doesn't approve loans; partner institutions do.",
+    "calculator": {
+      "title": "EMI calculator",
+      "vehicle": "Vehicle",
+      "customPrice": "Custom price (no specific vehicle)",
+      "type": "Financing type",
+      "conventional": "Conventional",
+      "islamic": "Islamic",
+      "apply": "Apply with these numbers"
+    },
+    "islamic": {
+      "eyebrow": "Islamic financing",
+      "title": "Shariah-based, explained simply",
+      "lead": "Islamic car financing avoids interest. Instead, the institution shares ownership of the vehicle or leases it to you, and earns a pre-agreed profit or rental.",
+      "terms": {
+        "rate": {
+          "term": "Profit rate, not interest rate",
+          "meaning": "The institution's return on its share of the vehicle, agreed up front."
+        },
+        "instalment": {
+          "term": "Rental or instalment",
+          "meaning": "Your monthly payment: rent for the share you use, plus buying more of it."
+        },
+        "ownership": {
+          "term": "Ownership at the end",
+          "meaning": "Once all payments are made, the vehicle is fully yours."
+        }
+      },
+      "hpsm": {
+        "title": "Hire Purchase under Shirkatul Melk (HPSM)",
+        "summary": "Joint ownership that shifts to you, month by month.",
+        "step1": "You and the institution buy the vehicle together, each owning an agreed share. Your down payment is your share.",
+        "step2": "Each month you pay rent for using the institution's share, and buy a little more of it.",
+        "step3": "With the final payment you own 100% of the vehicle."
+      },
+      "ijarah": {
+        "title": "Ijarah (lease to own)",
+        "summary": "A lease with a promise to transfer ownership.",
+        "step1": "The institution buys the vehicle and leases it to you for an agreed term.",
+        "step2": "You pay a fixed monthly rental; the institution remains the owner and bears ownership risks.",
+        "step3": "At the end of the lease, ownership is transferred to you as agreed."
+      },
+      "note": "This is a simplified explanation for illustration. Each institution's Shariah board approves its own structure, so terms, charges and the rental calculation differ. Ask the institution for the full terms."
+    },
+    "partners": {
+      "eyebrow": "Financing partners",
+      "title": "Sample partners and terms",
+      "lead": "These are fictional examples to show how offers compare. Real partner names and rates will appear here once agreements are in place.",
+      "sample": "Sample",
+      "interestRate": "Interest rate",
+      "profitRate": "Profit rate",
+      "rateRange": "{min}–{max}% a year",
+      "maxTenure": "Up to",
+      "maxFinance": "Finances up to",
+      "percentOfPrice": "{value}% of price",
+      "processingFee": "Processing fee",
+      "structures": "Structures",
+      "structure": {
+        "hpsm": "HPSM",
+        "ijarah": "Ijarah",
+        "murabaha": "Murabaha"
+      }
+    },
+    "eligibility": {
+      "eyebrow": "Eligibility",
+      "title": "Who can apply",
+      "lead": "Typical requirements across institutions. Each partner applies its own criteria.",
+      "salaried": {
+        "who": "Employees of companies, NGOs, government and multinationals.",
+        "item1": "Aged 22 to 60 at the end of the term",
+        "item2": "At least a year in your current job",
+        "item3": "Salary paid into a bank account",
+        "item4": "Total EMIs comfortably within your monthly income"
+      },
+      "business": {
+        "who": "Owners and partners of a running business.",
+        "item1": "Aged 25 to 65 at the end of the term",
+        "item2": "Business operating for at least two years",
+        "item3": "Valid trade licence and business bank account",
+        "item4": "Up-to-date tax returns"
+      },
+      "professional": {
+        "who": "Doctors, engineers, lawyers, accountants and consultants.",
+        "item1": "Aged 25 to 65 at the end of the term",
+        "item2": "Registered with your professional body",
+        "item3": "At least a year in practice",
+        "item4": "Regular income visible in bank statements"
+      },
+      "note": "Illustrative guidance only; not a commitment to lend. Final eligibility is decided by the financing institution."
+    },
+    "documents": {
+      "title": "Documents checklist",
+      "lead": "Tick off what you already have so the application goes quickly. Your ticks are kept in this browser.",
+      "applicantType": "Applicant type",
+      "types": {
+        "salaried": "Salaried",
+        "business": "Business owner",
+        "professional": "Professional"
+      },
+      "progress": "{done} of {total} ready",
+      "reset": "Clear ticks",
+      "items": {
+        "nid": {
+          "label": "National ID (NID)",
+          "hint": "Both sides, clear copy"
+        },
+        "photos": {
+          "label": "Passport-size photos",
+          "hint": "Two recent photos"
+        },
+        "tin": {
+          "label": "TIN certificate",
+          "hint": "e-TIN from NBR"
+        },
+        "bankStatement": {
+          "label": "Bank statement",
+          "hint": "Last 6 months"
+        },
+        "utilityBill": {
+          "label": "Utility bill",
+          "hint": "Proof of current address"
+        },
+        "salaryCertificate": {
+          "label": "Salary certificate",
+          "hint": "From your employer, on letterhead"
+        },
+        "payslips": {
+          "label": "Payslips",
+          "hint": "Last 3 months"
+        },
+        "tradeLicence": {
+          "label": "Trade licence",
+          "hint": "Valid and up to date"
+        },
+        "businessStatements": {
+          "label": "Business bank statements",
+          "hint": "Last 12 months"
+        },
+        "taxReturn": {
+          "label": "Tax return acknowledgement",
+          "hint": "Latest assessment year"
+        },
+        "professionalCertificate": {
+          "label": "Professional registration",
+          "hint": "e.g. BMDC, IEB or Bar Council"
+        },
+        "incomeProof": {
+          "label": "Proof of income",
+          "hint": "Chamber, consultancy or practice income"
+        }
+      }
+    },
+    "next": {
+      "title": "Ready when you are",
+      "lead": "Apply online in a few minutes, or check an application you've already made.",
+      "apply": "Apply for financing",
+      "status": "Check application status"
+    }
+  },
+  "timeline": {
+    "done": "completed",
+    "current": "current step",
+    "upcoming": "upcoming"
+  },
+  "financeApply": {
+    "metaTitle": "Apply for car financing",
+    "metaDescription": "Apply for conventional or Islamic car financing in five short steps.",
+    "breadcrumb": "Apply",
+    "eyebrow": "Financing application",
+    "title": "Apply in five steps",
+    "lead": "Takes about five minutes. You can go back and change anything before you submit.",
+    "demoNotice": "Demo mode: your application stays in this browser. Nothing is sent to Eureka or any bank, and no credit check happens.",
+    "steps": {
+      "vehicle": "Vehicle",
+      "personal": "Personal",
+      "employment": "Income",
+      "documents": "Documents",
+      "review": "Review"
+    },
+    "headings": {
+      "vehicle": "Vehicle and financing",
+      "personal": "About you",
+      "employment": "Employment and income",
+      "documents": "Supporting documents",
+      "review": "Review and submit"
+    },
+    "leads": {
+      "vehicle": "Choose a vehicle or enter a price, then set your down payment and tenure.",
+      "personal": "We use these details to contact you about this application.",
+      "employment": "Partners use this to judge what you can comfortably repay.",
+      "documents": "Attach what you have now; the rest can come later.",
+      "review": "Check everything, then submit."
+    },
+    "fields": {
+      "vehicle": "Vehicle",
+      "customVehicle": "Not decided yet / other vehicle",
+      "price": "Vehicle price",
+      "downPayment": "Down payment",
+      "tenure": "Tenure",
+      "partner": "Preferred partner",
+      "anyPartner": "Any partner (best offer)",
+      "financeType": "Financing type",
+      "name": "Full name (as on NID)",
+      "phone": "Mobile number",
+      "email": "Email",
+      "nidLast4": "Last 4 digits of NID",
+      "city": "City / district",
+      "address": "Present address",
+      "employment": "You are",
+      "employer": "Employer",
+      "businessName": "Business or practice name",
+      "yearsInRole": "Years in this role or business",
+      "monthlyIncome": "Net monthly income",
+      "existingEmi": "Existing monthly EMIs"
+    },
+    "hints": {
+      "vehicle": "Choosing a vehicle fills in its price.",
+      "downPercent": "{percent}% of the price",
+      "partner": "Sample partners, shown for illustration.",
+      "phone": "Bangladeshi mobile, e.g. 01712345678",
+      "nidLast4": "Only the last 4 digits. We never ask for your full NID online.",
+      "existingEmi": "Enter 0 if you have none."
+    },
+    "tenureOption": "{months} months ({years} yr)",
+    "financeTypes": {
+      "conventional": {
+        "label": "Conventional loan",
+        "hint": "Reducing-balance interest"
+      },
+      "islamic": {
+        "label": "Islamic financing",
+        "hint": "HPSM or Ijarah, profit-based"
+      }
+    },
+    "employment": {
+      "salaried": "Salaried",
+      "business": "Business owner",
+      "professional": "Professional"
+    },
+    "affordability": {
+      "ok": "Your EMIs would be about {percent}% of your income, a comfortable range for most partners (illustrative).",
+      "high": "Your EMIs would be about {percent}% of your income. Partners usually prefer under 50%: consider a larger down payment or longer tenure."
+    },
+    "filesNotice": "Files stay on this device. In this demo nothing is uploaded; only the file names are noted on your application.",
+    "documentLabels": {
+      "nid": "National ID (NID)",
+      "photos": "Passport-size photo",
+      "tin": "TIN certificate",
+      "bankStatement": "Bank statement (6 months)",
+      "utilityBill": "Utility bill",
+      "salaryCertificate": "Salary certificate",
+      "payslips": "Payslips (3 months)",
+      "tradeLicence": "Trade licence",
+      "businessStatements": "Business bank statements (12 months)",
+      "taxReturn": "Tax return acknowledgement",
+      "professionalCertificate": "Professional registration",
+      "incomeProof": "Proof of income"
+    },
+    "noFile": "No file chosen",
+    "chooseFile": "Choose file",
+    "replaceFile": "Replace",
+    "chooseFileFor": "Choose a file for {doc}",
+    "removeFile": "Remove file for {doc}",
+    "documentsLater": "Missing something? You can submit now and share the rest with your advisor later.",
+    "filesSelected": "Files noted",
+    "noneYet": "None yet",
+    "edit": "Edit",
+    "consent": "I confirm these details are correct and agree that Eureka and its finance partners may contact me about this application.",
+    "submit": "Submit application",
+    "submitting": "Submitting application",
+    "summary": {
+      "title": "Your estimate",
+      "emi": "Estimated EMI",
+      "rental": "Estimated monthly rental",
+      "financed": "Amount financed",
+      "rate": "Rate used",
+      "tenure": "Tenure",
+      "empty": "Enter a price to see your estimate.",
+      "note": "Estimate only, at the partner's mid rate or a sample default. The partner sets the final rate."
+    },
+    "status": {
+      "submitted": "Submitted",
+      "underReview": "Under review",
+      "documentsVerified": "Documents verified",
+      "decision": "Decision"
+    },
+    "done": {
+      "title": "Application recorded (demo)",
+      "body": "Keep your reference to check the status. In the live service, an advisor would call you within one working day.",
+      "reference": "Reference",
+      "track": "Track this application"
+    }
+  },
+  "financeStatus": {
+    "metaTitle": "Finance application status",
+    "metaDescription": "Check the progress of your financing application with its reference.",
+    "breadcrumb": "Application status",
+    "eyebrow": "Application status",
+    "title": "Where's my application?",
+    "lead": "Enter the reference from your confirmation to see each stage.",
+    "referenceLabel": "Application reference",
+    "hint": "Try the demo application <demo></demo>.",
+    "check": "Check status",
+    "idle": "Your application's progress will appear here.",
+    "notFoundTitle": "No application found",
+    "notFoundBody": "We couldn't find {reference}. Demo applications are saved only in the browser where they were made, so check the reference or try the same browser.",
+    "submittedOn": "Submitted {date}",
+    "vehicle": "Vehicle",
+    "financed": "Amount to finance",
+    "tenure": "Tenure",
+    "type": "Financing",
+    "decisionNote": "The partner institution makes the decision and will contact you directly.",
+    "demoNotice": "Demo data: this status is illustrative and isn't connected to any bank."
+  },
+  "savings": {
+    "metaTitle": "EV vs petrol vs diesel vs hybrid: savings calculator",
+    "metaDescription": "Compare running costs per km, per month and over years, with break-even on purchase price. Bangladesh fuel and electricity prices.",
+    "breadcrumb": "Savings calculator",
+    "eyebrow": "Savings calculator",
+    "title": "What will it",
+    "titleAccent": "really cost to run?",
+    "lead": "Put an EV, a petrol, a diesel and a hybrid side by side with your own driving and today's prices. Swap in any vehicle from our inventory.",
+    "browseEvs": "Browse EVs",
+    "estimatesNote": "Estimates only: update fuel and electricity prices to current rates. Sample values come from our settings and may be out of date.",
+    "reset": "Reset to sample values",
+    "inputsTitle": "Your driving and today's prices",
+    "distance": "How far you drive",
+    "distanceUnit": "Distance per",
+    "day": "Day",
+    "month": "Month",
+    "year": "Year",
+    "annualKm": "About {km} a year",
+    "years": "Ownership period",
+    "petrol": "Petrol / octane price",
+    "diesel": "Diesel price",
+    "electricity": "Electricity price per kWh",
+    "perLitre": "{value} per litre",
+    "perKwh": "{value} per kWh",
+    "electricShare": "PHEV: share driven on electricity",
+    "electricShareDisplay": "{percent}% of kilometres on battery power",
+    "includePurchase": "Include purchase prices",
+    "includePurchaseHint": "Shows total cost of ownership and when a dearer vehicle pays back through lower running costs.",
+    "vehiclesTitle": "Vehicles to compare",
+    "option": "Option {n}",
+    "vehicle": "Vehicle",
+    "custom": "Custom {fuel}",
+    "kmPerL": "Fuel economy (km/L)",
+    "kWhPer100km": "Energy use (kWh/100 km)",
+    "maintenance": "Maintenance per year (৳)",
+    "price": "Purchase price (৳)",
+    "resultsTitle": "Over {years} years",
+    "summary": "{cheapest} costs the least to run: about {amount} less than {priciest} over {years} years.",
+    "tableCaption": "Running cost comparison",
+    "measure": "Measure",
+    "cheapest": "Lowest running cost",
+    "priciest": "Highest running cost",
+    "baseline": "Baseline",
+    "rows": {
+      "costPerKm": "Cost per km",
+      "monthly": "Per month",
+      "annual": "Per year",
+      "period": "Running cost, {years} years",
+      "savings": "Saving vs highest",
+      "ownership": "Price + running, {years} years",
+      "breakEven": "Break-even vs highest"
+    },
+    "breakEven": {
+      "baseline": "—",
+      "never": "Doesn't pay back",
+      "immediate": "Cheaper from day one",
+      "after": "{years} yr {months} mo"
+    },
+    "missingEfficiency": "One option has no efficiency figure, so it's left out of the results. Enter its km/L or kWh/100 km.",
+    "ctaLead": "Want a second opinion on the numbers? Our team can talk it through.",
+    "whatsappSavings": "{cheapest} saves about {amount} over {years} years vs {priciest}",
+    "charts": {
+      "annualTitle": "Annual running cost",
+      "annualLead": "Energy and maintenance per year.",
+      "annualAria": "Stacked columns of yearly energy and maintenance cost for each option. The same figures are in the table above.",
+      "energy": "Fuel / electricity",
+      "maintenance": "Maintenance",
+      "cumulativeTitle": "Cumulative cost over time",
+      "cumulativeLead": "Running costs added up year by year.",
+      "cumulativeLeadPurchase": "Purchase price plus running costs, year by year.",
+      "cumulativeAria": "Lines of total cost by year for each option. The same figures are in the table above.",
+      "yearTick": "Yr {n}",
+      "afterYears": "After {n} years"
     }
   }
 }
