@@ -1677,5 +1677,181 @@
         }
       }
     }
+  },
+  "ev": {
+    "duration": {
+      "hm": "{h} hr {m} min",
+      "m": "{m} min"
+    },
+    "chargers": {
+      "socket": "Home socket",
+      "wallbox": "Wall box",
+      "ac11": "Three-phase AC",
+      "dc50": "DC fast",
+      "dc120": "DC rapid"
+    },
+    "readTime": "{minutes} min read",
+    "read": "Read the guide",
+    "diagrams": {
+      "spectrum": {
+        "cols": {
+          "petrol": "Petrol",
+          "hybrid": "Hybrid",
+          "phev": "Plug-in hybrid",
+          "ev": "EV"
+        },
+        "rows": {
+          "engine": "Petrol engine",
+          "battery": "Battery size",
+          "plug": "Plug in to charge",
+          "electricOnly": "Drives on electricity alone"
+        },
+        "yes": "Yes",
+        "no": "No",
+        "battery": {
+          "0": "No drive battery",
+          "1": "Small battery",
+          "2": "Medium battery",
+          "4": "Large battery"
+        },
+        "electricOnly": {
+          "no": "No",
+          "brief": "Briefly, at low speed",
+          "short": "For short trips",
+          "always": "Always"
+        }
+      },
+      "drivetrain": {
+        "charger": {
+          "name": "Charger",
+          "note": "AC at home, AC or DC in public"
+        },
+        "obc": {
+          "name": "On-board charger",
+          "note": "Turns AC into DC"
+        },
+        "battery": {
+          "name": "Battery",
+          "note": "Stores the energy"
+        },
+        "inverter": {
+          "name": "Inverter",
+          "note": "Turns DC into AC for the motor"
+        },
+        "motor": {
+          "name": "Motor",
+          "note": "Turns electricity into motion"
+        },
+        "wheels": {
+          "name": "Wheels",
+          "note": "Through a single-speed gear"
+        },
+        "dcPath": "DC fast charging skips the on-board charger and feeds the battery directly.",
+        "regenPath": "Regenerative braking: the motor works as a generator and sends energy back to the battery."
+      },
+      "pack": {
+        "cell": {
+          "name": "Cell",
+          "note": "The basic unit that stores energy"
+        },
+        "module": {
+          "name": "Module",
+          "note": "A group of cells, wired and protected together"
+        },
+        "pack": {
+          "name": "Battery pack",
+          "note": "Modules sealed into one protected unit"
+        },
+        "bms": "Battery management system: watches every cell",
+        "cooling": "Cooling: keeps the pack at a comfortable temperature",
+        "casing": "Sealed casing: protects against knocks, dust and water"
+      },
+      "levels": {
+        "caption": "Charging time by charger type",
+        "charger": "Charger",
+        "time": "Time",
+        "note": "Estimates for a {kwh} kWh battery from 20% to 80%, for a car with a {onboard} on-board charger. Real times vary."
+      },
+      "curve": {
+        "alt": "Charging power stays near its maximum until about 80% charge, then falls steadily towards 100%.",
+        "slows": "Slows above ~80%",
+        "xAxis": "Battery charge",
+        "yAxis": "Charging power",
+        "note": "Simplified. Every car has its own curve, and it changes with battery temperature."
+      }
+    },
+    "explainer": {
+      "battery": "Battery size",
+      "charger": "Charger",
+      "onboard": "Your car's on-board charger",
+      "onboardHint": "AC charging can't go faster than the car's on-board charger, whatever the wall box offers.",
+      "soc": "Charge from → to",
+      "from": "Starting charge",
+      "to": "Target charge",
+      "result": "Estimate",
+      "time": "Charging time",
+      "energy": "Energy added",
+      "range": "Range added",
+      "rangeValue": "about {km}",
+      "cost": "Cost at home",
+      "publicPrice": "Set by the operator",
+      "capped": "Limited to {kw} by the car's on-board charger.",
+      "taper": "DC charging slows above about 80%, so the last part takes longer.",
+      "note": "Estimates only. Real charging speed depends on the car, battery temperature and the charger. Cost uses a sample tariff of {price} per kWh; range assumes {consumption} kWh per 100 km."
+    },
+    "costPerKm": {
+      "caption": "Energy cost per kilometre",
+      "vehicle": "Vehicle",
+      "perKm": "Cost per km",
+      "types": {
+        "ev": "EV",
+        "hybrid": "Hybrid",
+        "diesel": "Diesel",
+        "petrol": "Petrol"
+      },
+      "basis": {
+        "ev": "{kwh} kWh per 100 km",
+        "fuel": "{kmpl} km per litre"
+      },
+      "value": "{amount} per km",
+      "note": "Sample prices: petrol {petrol}/L, diesel {diesel}/L, electricity {electricity}/kWh (home charging). Check current prices; real economy depends on the vehicle and how you drive."
+    },
+    "callout": {
+      "tip": "Tip",
+      "caution": "Take care",
+      "local": "Check locally"
+    },
+    "cta": {
+      "title": "Ready to see the numbers?",
+      "lead": "Compare running costs for your own driving, or browse the electric vehicles we have in stock.",
+      "savings": "Open the savings calculator",
+      "listings": "Browse electric vehicles",
+      "service": "Book a battery health check",
+      "testDrive": "Book a test drive"
+    },
+    "hub": {
+      "metaTitle": "EV Centre: electric vehicles explained",
+      "metaDescription": "Plain-language guides to electric vehicles: how they work, batteries, charging, maintenance, costs and owning an EV in Bangladesh.",
+      "breadcrumb": "EV Centre",
+      "eyebrow": "EV Centre",
+      "title": "Electric vehicles, explained honestly",
+      "lead": "Eight short guides, from the basics to charging at home in Bangladesh. No hype, no jargon: what an EV is good at, where it falls short, and how to decide.",
+      "start": "Start with the basics",
+      "savings": "Compare running costs",
+      "guidesTitle": "The guides",
+      "guidesMeta": "{count} guides · about {minutes} minutes in total",
+      "accuracy": "These guides are general information, reviewed for accuracy but not personal advice. Rules, prices and charging availability in Bangladesh change: check current local regulations and prices before you decide."
+    },
+    "article": {
+      "onThisPage": "On this page",
+      "guideOf": "Guide {n} of {total}",
+      "meta": "{minutes} min read · Reviewed {date}",
+      "faqTitle": "Frequently asked questions",
+      "disclaimer": "General information only, not professional advice. Vehicles differ, and rules, prices and charging availability change: check current local regulations and prices, and your vehicle's manual.",
+      "guideNav": "More guides",
+      "previous": "Previous guide",
+      "next": "Next guide",
+      "relatedTitle": "Keep reading"
+    }
   }
 }

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import type { Locale } from "next-intl";
 import { siteConfig } from "@/config/site";
 import { routing } from "@/i18n/routing";
-import { WEEKDAYS, type Showroom, type VehicleWithBrand, type Weekday } from "@/types";
+import { WEEKDAYS, type EvArticle, type Showroom, type VehicleWithBrand, type Weekday } from "@/types";
 
 const OG_LOCALE: Record<Locale, string> = { en: "en_US", bn: "bn_BD" };
 
@@ -129,4 +129,32 @@ export function vehicleJsonLd(v: VehicleWithBrand, locale: Locale) {
       seller: { "@type": "AutoDealer", name: siteConfig.name },
     },
   };
+}
+
+/** schema.org Article + FAQPage for an EV guide. */
+export function evArticleJsonLd(a: EvArticle, locale: Locale) {
+  const url = absoluteUrl(locale, `/ev/${a.slug}`);
+  return [
+    {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      headline: a.title[locale],
+      description: a.summary[locale],
+      inLanguage: locale === "bn" ? "bn-BD" : "en",
+      dateModified: a.updatedAt,
+      mainEntityOfPage: url,
+      url,
+      author: { "@type": "Organization", name: siteConfig.name },
+      publisher: { "@type": "Organization", name: siteConfig.name },
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      mainEntity: a.faqs.map((f) => ({
+        "@type": "Question",
+        name: f.q[locale],
+        acceptedAnswer: { "@type": "Answer", text: f.a[locale] },
+      })),
+    },
+  ];
 }
