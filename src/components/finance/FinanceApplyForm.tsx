@@ -348,7 +348,7 @@ export function FinanceApplyForm({
                     className={
                       burden > AFFORDABILITY_WARN
                         ? "rounded-2xl bg-warning/10 px-4 py-3 text-sm text-warning-ink"
-                        : "rounded-2xl bg-success/10 px-4 py-3 text-sm text-success"
+                        : "rounded-2xl bg-success/10 px-4 py-3 text-sm text-success-ink"
                     }
                   >
                     {t(burden > AFFORDABILITY_WARN ? "affordability.high" : "affordability.ok", {

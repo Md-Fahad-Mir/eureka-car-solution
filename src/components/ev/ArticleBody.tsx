@@ -6,6 +6,7 @@ import type { ArticleBlock, ArticleSection } from "@/types";
 import { ChargingExplainer } from "./ChargingExplainer";
 import { CostPerKm } from "./CostPerKm";
 import { Diagram } from "./Diagrams";
+import { ScrollArea } from "@/components/ui/ScrollArea";
 
 const CALLOUT = {
   tip: { Icon: Lightbulb, className: "border-ev/25 bg-ev-soft text-ink" },
@@ -71,7 +72,7 @@ function Block({ block: b, locale }: { block: ArticleBlock; locale: Locale }) {
       );
     case "table":
       return (
-        <div className="overflow-x-auto rounded-card border border-line">
+        <ScrollArea label={b.caption[locale]} className="rounded-card border border-line">
           <table className="w-full min-w-[44rem] text-left text-sm">
             <caption className="px-5 pt-4 text-left text-sm font-medium">{b.caption[locale]}</caption>
             <thead className="text-xs text-muted">
@@ -95,7 +96,7 @@ function Block({ block: b, locale }: { block: ArticleBlock; locale: Locale }) {
               ))}
             </tbody>
           </table>
-        </div>
+        </ScrollArea>
       );
     case "chargingExplainer":
       return <ChargingExplainer />;

@@ -48,7 +48,7 @@ export function WhatsAppButton({
       className={buttonVariants({
         variant: tone === "solid" ? "whatsapp" : "outline",
         size: iconOnly ? (size === "sm" ? "icon-sm" : "icon") : size,
-        className: cn(tone === "outline" && "text-whatsapp hover:border-whatsapp", className),
+        className: cn(tone === "outline" && "text-whatsapp-ink hover:border-whatsapp", className),
       })}
     >
       <WhatsAppIcon className={size === "lg" ? "size-5" : "size-4"} />

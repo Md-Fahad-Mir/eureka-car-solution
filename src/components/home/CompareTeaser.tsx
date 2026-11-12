@@ -5,6 +5,7 @@ import { getVehicleBySlug } from "@/lib/api/vehicles";
 import { getFormat } from "@/lib/format/getFormat";
 import { headlineEfficiency, powerHp, vehicleFullName } from "@/lib/vehicle";
 import { SectionHeading } from "./SectionHeading";
+import { ScrollArea } from "@/components/ui/ScrollArea";
 
 /** Compare teaser: an EV and a hybrid side by side, opening the full comparison. */
 export async function CompareTeaser() {
@@ -34,7 +35,7 @@ export async function CompareTeaser() {
   return (
     <section aria-labelledby="compare-teaser" className="container-page mt-24">
       <SectionHeading id="compare-teaser" eyebrow={t("eyebrow")} title={t("title")} lead={t("lead")} />
-      <div className="overflow-x-auto rounded-card border border-line bg-bg-alt">
+      <ScrollArea label={t("title")} className="rounded-card border border-line bg-bg-alt">
         <table className="w-full min-w-[34rem] text-sm">
           <caption className="sr-only">{t("title")}</caption>
           <thead>
@@ -59,7 +60,7 @@ export async function CompareTeaser() {
             ))}
           </tbody>
         </table>
-      </div>
+      </ScrollArea>
       <div className="mt-5 flex flex-wrap gap-3">
         <ButtonLink href={`/compare?ids=${pair.map((v) => v.id).join(",")}`}>{t("cta")}</ButtonLink>
         <ButtonLink href="/vehicles" variant="outline">{t("pick")}</ButtonLink>

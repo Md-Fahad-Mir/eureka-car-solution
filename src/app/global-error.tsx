@@ -1,12 +1,15 @@
 "use client";
 
-import en from "../../messages/en.json";
-import bn from "../../messages/bn.json";
+import copy from "../../messages/global-error.json";
+
+const { en, bn } = copy;
 
 /**
  * Last-resort boundary for errors in the root layout itself. The i18n
- * provider may be the thing that failed, so it reads both catalogues
- * directly and shows English and Bangla together.
+ * provider may be the thing that failed, so it shows English and Bangla
+ * together from a tiny copy of the `error` messages (importing the full
+ * catalogues here would ship both to every page). A unit test keeps the copy
+ * in step with messages/{en,bn}.json.
  */
 export default function GlobalError({ retry }: { error: unknown; retry: () => void }) {
   return (
@@ -23,12 +26,12 @@ export default function GlobalError({ retry }: { error: unknown; retry: () => vo
           padding: "24px",
         }}
       >
-        <title>{en.error.title}</title>
+        <title>{en.title}</title>
         <main style={{ maxWidth: 560 }}>
-          <h1 style={{ fontWeight: 300, fontSize: 40, margin: "0 0 12px" }}>{en.error.title}</h1>
-          <p style={{ color: "#5a6057", margin: "0 0 8px" }}>{en.error.body}</p>
+          <h1 style={{ fontWeight: 300, fontSize: 40, margin: "0 0 12px" }}>{en.title}</h1>
+          <p style={{ color: "#5a6057", margin: "0 0 8px" }}>{en.body}</p>
           <p lang="bn" style={{ color: "#5a6057", margin: "0 0 24px" }}>
-            {bn.error.body}
+            {bn.body}
           </p>
           <button
             type="button"
@@ -43,7 +46,7 @@ export default function GlobalError({ retry }: { error: unknown; retry: () => vo
               cursor: "pointer",
             }}
           >
-            {en.error.retry} / <span lang="bn">{bn.error.retry}</span>
+            {en.retry} / <span lang="bn">{bn.retry}</span>
           </button>
         </main>
       </body>

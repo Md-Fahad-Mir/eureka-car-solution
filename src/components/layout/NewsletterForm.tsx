@@ -8,7 +8,7 @@ import { useErrorText } from "@/components/forms/useErrorText";
 import { Button } from "@/components/ui/Button";
 import { DemoNotice } from "@/components/ui/DemoNotice";
 import { subscribeNewsletter } from "@/lib/api/inquiries";
-import { newsletterSchema, type NewsletterInput } from "@/lib/validation/common";
+import { newsletterSchema, type NewsletterInput } from "@/lib/validation/newsletter";
 import { toast } from "@/stores/toast";
 
 /** Footer newsletter sign-up against the mock service, with an honest demo confirmation. */

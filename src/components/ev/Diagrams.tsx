@@ -6,6 +6,7 @@ import { useFormat } from "@/lib/format/useFormat";
 import { formatDuration } from "./duration";
 import { cn } from "@/lib/utils";
 import type { EvDiagram } from "@/types";
+import { ScrollArea } from "@/components/ui/ScrollArea";
 
 /**
  * Article diagrams, built as HTML/SVG with localised labels so they stay
@@ -40,8 +41,7 @@ function PowertrainSpectrum() {
     on ? <Check aria-label={label} className="mx-auto size-5 text-success" /> : <Minus aria-label={label} className="mx-auto size-5 text-muted/60" />;
 
   return (
-    // `relative` keeps the visually hidden labels inside the scroll box (they're absolutely positioned).
-    <div className="relative overflow-x-auto">
+    <ScrollArea label={t("label")}>
       <table className="w-full min-w-[32rem] text-center text-sm">
         <thead>
           <tr>
@@ -85,7 +85,7 @@ function PowertrainSpectrum() {
           </tr>
         </tbody>
       </table>
-    </div>
+    </ScrollArea>
   );
 }
 

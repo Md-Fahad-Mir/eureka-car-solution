@@ -1,4 +1,3 @@
-import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 
@@ -8,11 +7,9 @@ import { cn } from "@/lib/utils";
  * stays in Latin script (lang="en") in both locales.
  */
 export function Logo({ tone = "ink", className }: { tone?: "ink" | "light"; className?: string }) {
-  const t = useTranslations("meta");
   return (
     <Link
       href="/"
-      aria-label={t("siteName")}
       className={cn("group flex items-center gap-3", tone === "light" ? "text-on-dark" : "text-ink", className)}
     >
       <svg viewBox="0 0 40 40" aria-hidden className="size-9 shrink-0">
@@ -23,7 +20,9 @@ export function Logo({ tone = "ink", className }: { tone?: "ink" | "light"; clas
         <rect x="12" y="11" width="2.6" height="18" rx="1.3" fill="currentColor" />
       </svg>
       <span lang="en" className="flex flex-col leading-none">
+        {/* The wordmark is the link's accessible name ("EUREKA CAR SOLUTION"). */}
         <span className="text-[0.95rem] font-semibold tracking-[0.32em]">EUREKA</span>
+        <span className="sr-only"> </span>
         <span
           className={cn(
             "mt-1 text-[0.55rem] font-medium tracking-[0.36em]",

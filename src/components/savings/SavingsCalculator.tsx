@@ -20,6 +20,7 @@ import { CHART_CATEGORICAL } from "@/lib/chartColors";
 import { useFormat } from "@/lib/format/useFormat";
 import { FUEL_TYPES, type FuelType } from "@/types";
 import type { ChartOption } from "./SavingsCharts";
+import { ScrollArea } from "@/components/ui/ScrollArea";
 
 const SavingsCharts = dynamic(() => import("./SavingsCharts"), {
   ssr: false,
@@ -292,7 +293,7 @@ export function SavingsCalculator({ vehicles }: { vehicles: SavingsVehicle[] }) 
           ) : null}
         </div>
 
-        <div className="-mx-4 overflow-x-auto px-4 sm:mx-0 sm:px-0">
+        <ScrollArea label={t("tableCaption")} className="-mx-4 px-4 sm:mx-0 sm:px-0">
           <table className="w-full min-w-[44rem] border-separate border-spacing-0 rounded-card border border-line bg-bg-alt text-sm">
             <caption className="sr-only">{t("tableCaption")}</caption>
             <thead>
@@ -335,7 +336,7 @@ export function SavingsCalculator({ vehicles }: { vehicles: SavingsVehicle[] }) 
               ) : null}
             </tbody>
           </table>
-        </div>
+        </ScrollArea>
         {comparison.results.length < columns.length ? <p className="text-sm text-warning-ink">{t("missingEfficiency")}</p> : null}
 
         <SavingsCharts options={chartOptions} includePurchase={inputs.includePurchase} />

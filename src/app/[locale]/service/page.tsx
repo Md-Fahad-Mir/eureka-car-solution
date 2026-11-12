@@ -9,6 +9,7 @@ import { WhatsAppButton } from "@/components/whatsapp/WhatsAppButton";
 import { getMaintenanceGuides, getServicePackages } from "@/lib/api/service";
 import { getFormat } from "@/lib/format/getFormat";
 import { pageMetadata } from "@/lib/seo";
+import { ScrollArea } from "@/components/ui/ScrollArea";
 
 export async function generateMetadata(): Promise<Metadata> {
   const [t, f] = await Promise.all([getTranslations("service"), getFormat()]);
@@ -111,7 +112,7 @@ export default async function ServicePage() {
           {t("guideTitle")}
         </h2>
         <p className="mt-3 max-w-2xl text-muted">{t("guideLead")}</p>
-        <div className="mt-8 overflow-x-auto rounded-card border border-line">
+        <ScrollArea label={t("guideTitle")} className="mt-8 rounded-card border border-line">
           <table className="w-full min-w-[40rem] text-left text-sm">
             <caption className="sr-only">{t("guideTitle")}</caption>
             <thead className="bg-bg-alt text-xs text-muted">
@@ -139,7 +140,7 @@ export default async function ServicePage() {
               ))}
             </tbody>
           </table>
-        </div>
+        </ScrollArea>
         <p className="mt-3 text-xs text-muted">{t("guideNote")}</p>
       </section>
 

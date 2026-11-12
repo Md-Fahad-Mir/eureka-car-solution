@@ -17,7 +17,7 @@ const tones: Record<BadgeTone, string> = {
   neutral: "bg-ink/[0.06] text-ink",
   accent: "bg-accent/15 text-accent-ink",
   ev: "bg-ev-soft text-ev",
-  success: "bg-success/12 text-success",
+  success: "bg-success/12 text-success-ink",
   warning: "bg-warning/15 text-warning-ink",
   danger: "bg-danger/10 text-danger",
   info: "bg-info/10 text-info",

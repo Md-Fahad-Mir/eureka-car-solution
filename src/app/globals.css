@@ -23,13 +23,15 @@
   --line-on-dark: rgba(243, 239, 231, 0.14);
   --xray: #8ad8cc; /* ghost-body hairlines on dark (ref. image 2) */
   --success: #2f6b4f;
+  --success-ink: #285e45; /* success text on tinted success backgrounds (AA) */
   --warning: #a8752a;
-  --warning-ink: #8a5f1f;
+  --warning-ink: #704d18; /* AA on warning-tinted backgrounds */
   --danger: #9b2c2c;
   --info: #2f5672;
   --ev: #176660; /* EV-only tag colour (teal) */
   --ev-soft: #d5ebe7;
   --whatsapp: #1f7a4d; /* deeper than brand green so white text passes AA */
+  --whatsapp-ink: #1a6b43; /* WhatsApp-green text on light backgrounds (AA) */
 
   --font-body: var(--font-montserrat), ui-sans-serif, system-ui, sans-serif;
 
@@ -55,6 +57,7 @@
   --color-line-on-dark: var(--line-on-dark);
   --color-xray: var(--xray);
   --color-success: var(--success);
+  --color-success-ink: var(--success-ink);
   --color-warning: var(--warning);
   --color-warning-ink: var(--warning-ink);
   --color-danger: var(--danger);
@@ -62,6 +65,7 @@
   --color-ev: var(--ev);
   --color-ev-soft: var(--ev-soft);
   --color-whatsapp: var(--whatsapp);
+  --color-whatsapp-ink: var(--whatsapp-ink);
 
   --font-sans: var(--font-body);
   --font-display: var(--font-body);

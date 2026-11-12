@@ -1,0 +1,12 @@
+{
+  "en": {
+    "title": "Something stalled",
+    "body": "This part of the page couldn't load. You can try again, or head back home.",
+    "retry": "Try again"
+  },
+  "bn": {
+    "title": "কোথাও আটকে গেছে",
+    "body": "পেজের এই অংশটি লোড হয়নি। আবার চেষ্টা করুন, অথবা হোমে ফিরে যান।",
+    "retry": "আবার চেষ্টা করুন"
+  }
+}

@@ -20,7 +20,6 @@
     "@react-three/fiber": "^9.8.2",
     "clsx": "^2.1.1",
     "lucide-react": "^1.72.0",
-    "motion": "^14.12.0",
     "next": "16.4.6",
     "next-intl": "^4.15.0",
     "react": "19.3.0",
@@ -33,6 +32,7 @@
     "zustand": "^5.1.0"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.14.0",
     "@gltf-transform/core": "^4.5.1",
     "@gltf-transform/extensions": "^4.5.1",
     "@gltf-transform/functions": "^4.5.1",

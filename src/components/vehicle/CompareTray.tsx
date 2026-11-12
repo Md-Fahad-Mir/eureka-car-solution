@@ -6,7 +6,6 @@ import { useLocale, useTranslations } from "next-intl";
 import { VehicleImage } from "@/components/media/VehicleImage";
 import { buttonVariants } from "@/components/ui/Button";
 import { Link, usePathname } from "@/i18n/navigation";
-import { getVehiclesByIds } from "@/lib/api/vehicles";
 import { useFormat } from "@/lib/format/useFormat";
 import { cn } from "@/lib/utils";
 import { brandInitial, vehicleName } from "@/lib/vehicle";
@@ -54,9 +53,13 @@ export function CompareTray() {
   useEffect(() => {
     if (!missingKey) return;
     let cancelled = false;
-    getVehiclesByIds(missingKey.split(",")).then((list) => {
-      if (!cancelled) setCache((c) => ({ ...c, ...Object.fromEntries(list.map((v) => [v.id, v])) }));
-    });
+    // Loaded on demand: the tray is on every page, but the vehicles API (and, in mock
+    // mode, the catalogue) is only needed once something is in the compare list.
+    import("@/lib/api/vehicles")
+      .then(({ getVehiclesByIds }) => getVehiclesByIds(missingKey.split(",")))
+      .then((list) => {
+        if (!cancelled) setCache((c) => ({ ...c, ...Object.fromEntries(list.map((v) => [v.id, v])) }));
+      });
     return () => {
       cancelled = true;
     };

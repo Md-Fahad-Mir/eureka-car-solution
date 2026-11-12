@@ -11,6 +11,7 @@ import { useFormat } from "@/lib/format/useFormat";
 import { vehicleFullName } from "@/lib/vehicle";
 import { useAccount } from "./AccountData";
 import { Field, RecordCard, SectionHeader, StatusBadge, TONES } from "./parts";
+import { ScrollArea } from "@/components/ui/ScrollArea";
 
 /* ── Test drives ── */
 export function TestDrives() {
@@ -206,7 +207,7 @@ export function EmiSchedule() {
                     <ChevronDown aria-hidden className="size-4 transition-transform group-open:rotate-180" />
                   </span>
                 </summary>
-                <div className="overflow-x-auto px-5 pb-4">
+                <ScrollArea label={`${t("schedule")} ${f.number(Number(y), { useGrouping: false })}`} className="px-5 pb-4">
                   <table className="w-full text-sm">
                     <thead className="text-left text-xs text-muted">
                       <tr>
@@ -229,7 +230,7 @@ export function EmiSchedule() {
                       ))}
                     </tbody>
                   </table>
-                </div>
+                </ScrollArea>
               </details>
             );
           })}
@@ -287,7 +288,7 @@ export function ServiceRecords() {
           {t("historyTitle")}
         </h2>
         <p className="mt-1 text-sm text-muted">{t("historyLead")}</p>
-        <div className="mt-4 overflow-x-auto rounded-card border border-line">
+        <ScrollArea label={t("historyTitle")} className="mt-4 rounded-card border border-line">
           <table className="w-full min-w-[40rem] text-left text-sm">
             <thead className="bg-bg-alt text-xs text-muted">
               <tr>
@@ -313,7 +314,7 @@ export function ServiceRecords() {
               ))}
             </tbody>
           </table>
-        </div>
+        </ScrollArea>
       </section>
     </div>
   );

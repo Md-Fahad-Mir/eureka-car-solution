@@ -20,5 +20,3 @@ export const consentSchema = z.boolean().refine((v) => v === true, { error: "con
 
 export const optionalMessageSchema = z.string().trim().max(1000, { error: "messageLong" }).optional();
 
-export const newsletterSchema = z.object({ email: emailSchema });
-export type NewsletterInput = z.infer<typeof newsletterSchema>;

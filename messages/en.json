@@ -1837,7 +1837,8 @@
           "brief": "Briefly, at low speed",
           "short": "For short trips",
           "always": "Always"
-        }
+        },
+        "label": "Which powertrain has what"
       },
       "drivetrain": {
         "charger": {

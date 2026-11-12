@@ -9,6 +9,7 @@ import { CHART_PAIR, CHART_SURFACE } from "@/lib/chartColors";
 import { useFormat } from "@/lib/format/useFormat";
 import { cn } from "@/lib/utils";
 import type { FinanceType } from "@/types";
+import { ScrollArea } from "@/components/ui/ScrollArea";
 
 /**
  * Principal vs interest/profit donut and the full amortisation schedule
@@ -108,7 +109,7 @@ export default function LoanBreakdown({
       <div className="min-w-0">
         <h3 className="text-sm font-medium">{t("scheduleTitle")}</h3>
         <p className="mt-1 text-xs text-muted">{t("scheduleLead")}</p>
-        <div className="mt-4 overflow-x-auto rounded-card border border-line bg-bg-alt">
+        <ScrollArea label={t("scheduleTitle")} className="mt-4 rounded-card border border-line bg-bg-alt">
           <table className="w-full min-w-[34rem] text-sm">
             <thead className="text-xs text-muted">
               <tr className="border-b border-line">
@@ -157,7 +158,7 @@ export default function LoanBreakdown({
               );
             })}
           </table>
-        </div>
+        </ScrollArea>
       </div>
     </div>
   );

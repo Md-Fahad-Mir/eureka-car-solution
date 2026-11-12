@@ -6,7 +6,7 @@ Premium multi-brand car marketplace for Bangladesh. This phase is frontend only,
 - Next.js 16 differs from older versions. Read `AGENTS.md` and the guides in `node_modules/next/dist/docs/` before using an unfamiliar API.
 
 ## Stack
-Next.js 16 App Router (Turbopack, `cacheComponents`), React 19, TypeScript strict, Tailwind v4 (CSS-first `@theme` in `src/app/globals.css`), fonts **Montserrat (en) + Hind Siliguri (bn) only**, next-intl (`[locale]` = `en` | `bn`), Motion, lucide-react, Recharts, React Hook Form + Zod, Zustand (`persist`), Three.js/R3F/drei (homepage hero only, lazy), Vitest, Playwright.
+Next.js 16 App Router (Turbopack, `cacheComponents`), React 19, TypeScript strict, Tailwind v4 (CSS-first `@theme` in `src/app/globals.css`), fonts **Montserrat (en) + Hind Siliguri (bn) only**, next-intl (`[locale]` = `en` | `bn`), lucide-react, Recharts, React Hook Form + Zod, Zustand (`persist`), Three.js/R3F/drei (homepage hero only, lazy), Vitest, Playwright.
 
 ## Commands
 - `npm run dev`: dev server at http://localhost:3000

@@ -26,6 +26,7 @@ import { MAX_COMPARE, useCompareStore } from "@/stores/compare";
 import { useHydrated } from "@/stores/hydration";
 import { toast } from "@/stores/toast";
 import type { VehicleWithBrand } from "@/types";
+import { ScrollArea } from "@/components/ui/ScrollArea";
 
 type Cell = { text: string; num?: number } | null;
 type Row = { id: string; label: string; cells: Cell[]; best?: "min" | "max" };
@@ -199,7 +200,7 @@ export function CompareView() {
         </p>
       </fieldset>
 
-      <div className="-mx-4 overflow-x-auto px-4 sm:mx-0 sm:px-0 lg:overflow-visible">
+      <ScrollArea label={t("caption")} className="-mx-4 px-4 sm:mx-0 sm:px-0 lg:overflow-visible">
         <table className="w-full min-w-[640px] border-separate border-spacing-0 text-sm">
           <caption className="sr-only">{t("caption")}</caption>
           <thead>
@@ -306,7 +307,7 @@ export function CompareView() {
             </tr>
           </tfoot>
         </table>
-      </div>
+      </ScrollArea>
       <p className="text-xs text-muted">{t("footnote")}</p>
     </div>
   );

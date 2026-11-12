@@ -53,6 +53,8 @@ Source brief: [`docs/EUREKA_FRONTEND_PROMPT.md`](./EUREKA_FRONTEND_PROMPT.md). T
 | D39 | EV guides are content, not UI copy: typed `EvArticle` blocks (`p`, `list`, `callout`, `diagram`, `table`, `chargingExplainer`, `costPerKm`) in `data/mock/ev/*` with `{ en, bn }` text, served by `lib/api/ev` (reading time derived from the text; would be a CMS). Diagrams are HTML/SVG components with localised labels; the charger-time diagram and cost-per-km block are computed from `lib/calc/chargingTime` + `config/{ev,costs}`, so articles can't drift from the calculators. Accuracy rules: no legal, tax, duty or subsidy claims; "check current local regulations/prices" wherever conditions vary; reconditioned-import battery warranties flagged. Each article emits Article + FAQPage JSON-LD; unknown topics 404. | Brief §10.D. |
 | D40 | The account is a client island under `/account/*`: `AccountShell` waits for the demo session to be read from storage (`useDemoSession`: persist `onFinishHydration`), then either redirects to `/sign-in?next=` (only `/account…` paths are accepted, no open redirect) or loads the dashboard + showrooms/packages/partners once into `AccountDataProvider`. Each section is its own route (header already linked `/account/saved`), all `noindex`. Signing in merges the demo customer's saved vehicles into the favourites store; records created in this browser are merged by the API. Referral sharing uses `wa.me/?text=` with no recipient (to a friend, not to Eureka). EMI payments are never taken on the site. | Brief §10.L. |
 | D41 | Homepage below the hero: quick search is a plain GET form to `/vehicles` (works without JS; empty fields are ignored by the URL parser); browse by fuel and category with live counts and body silhouettes; featured grid + scroll-snap new arrivals (`scroll-padding` = container gutter); popular brands as text tiles; EV facts with cost per km from config; mini savings slider and the shared `EmiCalculator` (`financeConfig.samplePrice`, also used by `/finance`); compare teaser from the representative EV and hybrid; test-drive band; after-sales; sample testimonials labelled "Sample"; showroom strip with open-now. The header stays solid and sticky over the light studio hero (a transparent header would hurt contrast on the light backdrop). | Brief §10.A + §11. |
+| D42 | Accessibility fixes from the axe audit: the language switcher and logo now take their accessible names from their visible text (WCAG 2.5.3); new `success-ink`, `whatsapp-ink` and a darker `warning-ink` give AA contrast on tinted backgrounds; every horizontally scrolling table sits in `ui/ScrollArea` (labelled, focusable region, `relative` so `sr-only` text can't widen the page, which fixed the compare page overflowing at 375 px). `e2e/a11y.spec.ts` keeps it that way. | WCAG 2.2 AA (brief §13). |
+| D43 | Bundle: `global-error.tsx` imported both full message catalogues (54 KB gz on every page); it now uses `messages/global-error.json` (6 strings, parity-tested against the catalogues). The compare tray imports the vehicles API on demand. The footer newsletter uses `zod/mini` (−7 KB). `motion` was never imported and was removed from dependencies. Critical JS is ~225–240 KB gz per page (React DOM + Next runtime dominate); the rest is idle link prefetching. three.js and the model load only on the desktop homepage. | Brief §13 performance. |
 | D12 | Keep `AGENTS.md` (Next regenerates it) and reference it from `CLAUDE.md`. Replace the scaffold `README.md` in Phase 9. Remove the scaffold's unused `public/*.svg` and placeholder page in Phase 1. | Rule 8: no unused files. |
 
 ## 3D hero art direction (from `reference/car-image1–4.jpeg`, applied in Phase 8)
@@ -175,13 +177,13 @@ None. The repo was empty apart from the brief and the reference demo. The only a
 - [x] Header over the hero: solid sticky header (D41)
 
 ## Phase 9: Polish
-- [ ] Responsive pass at 375 / 768 / 1440
-- [ ] A11y audit (contrast, keyboard, focus traps, skip link, aria-live, labels)
-- [ ] SEO: metadata on every page, OG, canonical, hreflang, `sitemap.ts`, `robots.ts`, JSON-LD
-- [ ] Performance: bundle check, image/font settings, CLS
-- [ ] Playwright smoke tests (5 flows)
-- [ ] README (setup, scripts, env, folders, photos, `.glb`, real API, "Replace before launch")
-- [ ] Definition of done checklist; final commit
+- [x] Responsive pass at 375 / 768 / 1440 (every route, en + bn: no horizontal overflow)
+- [x] A11y audit (axe WCAG 2.2 A/AA: 0 serious/critical on 24 page checks; contrast, keyboard-scrollable regions, label-in-name)
+- [x] SEO: metadata on every page, OG, canonical, hreflang, `sitemap.ts`, `robots.ts`, JSON-LD
+- [x] Performance: bundle check, image/font settings, CLS (0 on every page measured)
+- [x] Playwright smoke tests (5 flows) + axe checks (29 tests)
+- [x] README (setup, scripts, env, folders, photos, `.glb`, real API, "Replace before launch")
+- [x] Definition of done checklist; final commit
 
 ---
 
@@ -198,3 +200,17 @@ None. The repo was empty apart from the brief and the reference demo. The only a
 - **Phase 6 (2026-11-12):** EV Centre hub + 8 guides in en + bn (about 23 minutes of reading), sticky scroll-spy TOC (collapsible on mobile), five diagrams, the charging-time explainer (AC capped by the on-board charger; DC tapers above 80%), cost per km from the calculator's sample prices, FAQs, CTAs to the savings calculator / EV listings (+ battery check or test drive), prev/next and related guides. Tests: charging model + content integrity (topics, both languages, Bangla digits, related links, FAQs), 159 total. Verified in Chromium: all pages 200 with Article/FAQPage/BreadcrumbList JSON-LD, explainer maths (DC 20→100% of 60 kWh = 1 h 31 min), unknown topic → 404, no overflow at 375 px in either language, no console errors. QA fix: `sr-only` labels inside a horizontally scrolling table escaped the scroll box (absolute positioning) and widened the page on phones; the scroll wrapper is now `relative`.
 - **Phase 7 (2026-11-12):** Demo sign-in (one click, or email + on-screen code 123456) and the account with 11 sections in en + bn: overview (next booking, active applications, EMI due with progress, unread notifications), profile (RHF + Zod, saved locally), my vehicles (service due badges), test drives, inquiries, finance applications, EMI schedule (by year, current year open), service bookings + history, saved vehicles, referrals (copy, native share, WhatsApp share), notifications (mark one/all read). Tests: account schemas, sign-in/out + favourites merge, wrong code, share link (165 total). Verified in Chromium: guard redirect and return to the requested section, an inquiry sent before sign-in listed with seeded ones, profile persisted across reload, read state persisted, saved-vehicle removal updates the header count, wrong code rejected with focus, sign-out re-arms the guard, no overflow at 375 px, no console errors.
 - **Phase 8 (2026-11-12):** Homepage sections in en + bn. Verified in Chromium: quick search (hybrid, up to ৳30 lakh) → filtered listing; all 51 internal links on the homepage return 200; savings slider updates live; LCP is still `H1#hero-title`; no overflow at 375 px in either language; no console errors. QA fixes: new-arrivals snap hid the first card's gutter; the savings slider suffix overlapped the number.
+- **Phase 9 (2026-11-12):** `sitemap.xml` (104 URLs with hreflang) and `robots.txt`; Playwright config + 5 smoke flows + axe checks (29 tests, stable over 3 repeats; `npm run test:e2e` builds and serves on port 3100); responsive sweep of every route in both languages at 375 / 768 / 1440 (no overflow, no console errors); CLS 0 and text LCP on every page measured (homepage LCP = `H1#hero-title` on desktop); README rewritten with the "Replace before launch" checklist. Fixes: D42 and D43. Note for tests: before hydration the language switcher links to the other locale's home (documented in D14); tests wait for the hydrated link.
+
+## Definition of done (brief §16)
+
+- [x] Every route in section 10 exists, works and is responsive at 375 / 768 / 1440 px. *Exception: `/fleet` was removed at the user's request (D38).*
+- [x] English and Bangla are complete. No hard-coded UI strings. Bangla typography and digits are correct (parity + Bangla-digit tests).
+- [x] No dead buttons or links. Every form validates, submits to the mock layer, and shows honest success/error states.
+- [x] WhatsApp CTAs everywhere specified, with context-aware localised messages and one configurable number.
+- [x] The mock data layer is isolated: only `src/lib/api/*` touches `src/data/mock` and `stores/demoRecords` (ESLint-enforced).
+- [x] Calculators are unit-tested; estimates are labelled; sample values live in `config/`.
+- [x] Typecheck, lint, unit tests (168), Playwright smoke + a11y tests (29) and the production build all pass.
+- [x] README covers setup, scripts, env vars, folders, real photos, the hero `.glb`, connecting a real API, and "Replace before launch".
+
+**Open item:** the Toyota Land Cruiser 300 GR Sport hero (branch `feat/hero-land-cruiser`) waits for the model file; `main` keeps the CarConcept model with its credit.

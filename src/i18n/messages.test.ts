@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import bn from "../../messages/bn.json";
 import en from "../../messages/en.json";
+import globalError from "../../messages/global-error.json";
 
 type Tree = { [key: string]: string | Tree };
 
@@ -38,6 +39,13 @@ describe("message catalogues", () => {
     for (const key of enKeys) {
       expect(get(en as Tree, key).trim(), `en:${key}`).not.toBe("");
       expect(get(bn as Tree, key).trim(), `bn:${key}`).not.toBe("");
+    }
+  });
+
+  it("keeps the global error page's copy in step with the catalogues", () => {
+    for (const [locale, catalogue] of [["en", en], ["bn", bn]] as const) {
+      const { title, body, retry } = catalogue.error;
+      expect(globalError[locale]).toEqual({ title, body, retry });
     }
   });
 });

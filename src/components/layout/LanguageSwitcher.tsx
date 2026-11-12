@@ -40,9 +40,7 @@ function SwitcherLink({ display = "short", tone = "ink", className, pathname }: 
     <Link
       href={pathname}
       locale={target}
-      lang={target}
       hrefLang={target === "bn" ? "bn-BD" : "en"}
-      aria-label={t("switchToLong")}
       onClick={(e) => {
         // Keep the query string (filters, references) when switching language.
         const search = window.location.search;
@@ -58,7 +56,9 @@ function SwitcherLink({ display = "short", tone = "ink", className, pathname }: 
       )}
     >
       <Languages aria-hidden className="size-4" />
-      <span>{display === "long" ? t(target) : t("switchTo")}</span>
+      {/* The accessible name starts with the visible label (WCAG 2.5.3), in its own language. */}
+      <span lang={target}>{display === "long" ? t(target) : t("switchTo")}</span>
+      <span className="sr-only"> ({t("switchToLong")})</span>
     </Link>
   );
 }
