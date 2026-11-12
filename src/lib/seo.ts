@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import type { Locale } from "next-intl";
 import { siteConfig } from "@/config/site";
 import { routing } from "@/i18n/routing";
-import type { VehicleWithBrand } from "@/types";
+import { WEEKDAYS, type Showroom, type VehicleWithBrand, type Weekday } from "@/types";
 
 const OG_LOCALE: Record<Locale, string> = { en: "en_US", bn: "bn_BD" };
 
@@ -48,6 +48,40 @@ export function pageMetadata({
       ...(description ? { description } : {}),
     },
     ...(noIndex ? { robots: { index: false, follow: true } } : {}),
+  };
+}
+
+/** Serialises JSON-LD for a <script> tag, escaping "<" so content can never close the tag. */
+export const toJsonLd = (data: unknown) => JSON.stringify(data).replace(/</g, "\\u003c");
+
+const SCHEMA_DAY: Record<Weekday, string> = {
+  sat: "Saturday",
+  sun: "Sunday",
+  mon: "Monday",
+  tue: "Tuesday",
+  wed: "Wednesday",
+  thu: "Thursday",
+  fri: "Friday",
+};
+
+/** schema.org AutoDealer for one showroom (brief §10.N). */
+export function showroomJsonLd(s: Showroom, locale: Locale) {
+  const url = absoluteUrl(locale, "/showrooms");
+  return {
+    "@context": "https://schema.org",
+    "@type": "AutoDealer",
+    "@id": `${url}#${s.slug}`,
+    name: s.name[locale],
+    url,
+    telephone: s.phone.href.replace(/^tel:/, ""),
+    email: s.email,
+    address: { "@type": "PostalAddress", streetAddress: s.address[locale], addressLocality: s.city[locale], addressCountry: "BD" },
+    geo: { "@type": "GeoCoordinates", latitude: s.geo.lat, longitude: s.geo.lng },
+    openingHoursSpecification: WEEKDAYS.flatMap((d) => {
+      const h = s.hours[d];
+      return h ? [{ "@type": "OpeningHoursSpecification", dayOfWeek: `https://schema.org/${SCHEMA_DAY[d]}`, opens: h.open, closes: h.close }] : [];
+    }),
+    parentOrganization: { "@type": "Organization", name: siteConfig.name, url: absoluteUrl(locale, "/") },
   };
 }
 

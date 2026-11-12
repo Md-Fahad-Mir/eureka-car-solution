@@ -46,8 +46,10 @@ export function Stepper({
               >
                 {done ? <Check aria-hidden className="size-3.5" strokeWidth={3} /> : i + 1}
               </span>
+              {/* Inactive labels shrink with an ellipsis so long flows (7 steps) never overlap. */}
               <span
-                className={cn("text-sm whitespace-nowrap", isCurrent ? "font-medium text-ink" : "text-muted")}
+                title={isCurrent ? undefined : label}
+                className={cn("text-sm whitespace-nowrap", isCurrent ? "shrink-0 font-medium text-ink" : "min-w-0 truncate text-muted")}
               >
                 {label}
                 {done ? <span className="sr-only"> ({t("completed")})</span> : null}
@@ -55,17 +57,17 @@ export function Stepper({
             </>
           );
           return (
-            <li key={label} className="flex min-w-0 flex-1 items-center gap-2 last:flex-none">
+            <li key={label} className={cn("flex flex-1 items-center gap-2 last:flex-none", isCurrent ? "min-w-fit" : "min-w-0")}>
               {clickable ? (
                 <button
                   type="button"
                   onClick={() => onStepClick(i)}
-                  className="flex items-center gap-2 rounded-full pr-1 hover:opacity-80"
+                  className="flex min-w-0 items-center gap-2 rounded-full pr-1 hover:opacity-80"
                 >
                   {content}
                 </button>
               ) : (
-                <span className="flex items-center gap-2" aria-current={isCurrent ? "step" : undefined}>
+                <span className={cn("flex items-center gap-2", !isCurrent && "min-w-0")} aria-current={isCurrent ? "step" : undefined}>
                   {content}
                 </span>
               )}

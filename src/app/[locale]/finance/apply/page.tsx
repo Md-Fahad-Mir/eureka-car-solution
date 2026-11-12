@@ -7,7 +7,7 @@ import { DemoNotice } from "@/components/ui/DemoNotice";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { getFinancePartners } from "@/lib/api/finance";
 import { getAllVehicles } from "@/lib/api/vehicles";
-import { toFinanceOptions } from "@/lib/financeOptions";
+import { toVehicleOptions } from "@/lib/vehicleOptions";
 import { getFormat } from "@/lib/format/getFormat";
 import { pageMetadata } from "@/lib/seo";
 
@@ -25,7 +25,7 @@ export default async function FinanceApplyPage() {
     getFinancePartners(),
     getAllVehicles(),
   ]);
-  const options = toFinanceOptions(vehicles, f.locale, f, (c) => tTax(`condition.${c}`));
+  const options = toVehicleOptions(vehicles, f.locale, f, (c) => tTax(`condition.${c}`));
 
   return (
     <div className="container-page pt-8 pb-20">

@@ -1,8 +1,9 @@
-import { ArrowUpRight, MapPin, Phone } from "lucide-react";
+import { ArrowUpRight, Mail, MapPin, Phone } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { Badge } from "@/components/ui/Badge";
 import { useFormat } from "@/lib/format/useFormat";
 import { WEEKDAYS, type OpeningHours, type Showroom, type Weekday } from "@/types";
+import { OpenNow } from "./OpenNow";
 
 /** Google Maps search link: works without an API key. */
 export const directionsUrl = (s: Showroom) =>
@@ -20,7 +21,7 @@ export function groupHours(hours: Record<Weekday, OpeningHours>) {
   return groups;
 }
 
-/** Showroom summary card: address, phone, weekly hours, services and directions. */
+/** Showroom summary card: open-now status, address, phone, weekly hours, services and directions. */
 export function ShowroomCard({ showroom: s, headingLevel = 3 }: { showroom: Showroom; headingLevel?: 2 | 3 }) {
   const t = useTranslations("showroomCard");
   const tTax = useTranslations("taxonomy");
@@ -34,6 +35,9 @@ export function ShowroomCard({ showroom: s, headingLevel = 3 }: { showroom: Show
       <div>
         <p className="eyebrow text-muted">{s.city[locale]}</p>
         <Heading className="mt-1.5 text-lg font-medium">{s.name[locale]}</Heading>
+        <div className="mt-2">
+          <OpenNow hours={s.hours} />
+        </div>
       </div>
       <p className="flex items-start gap-2.5 text-sm">
         <MapPin aria-hidden className="mt-0.5 size-4 shrink-0 text-muted" />
@@ -42,6 +46,10 @@ export function ShowroomCard({ showroom: s, headingLevel = 3 }: { showroom: Show
       <a href={s.phone.href} className="flex items-center gap-2.5 text-sm hover:text-accent-ink">
         <Phone aria-hidden className="size-4 text-muted" />
         <span className="tabular">{f.digits(s.phone.display)}</span>
+      </a>
+      <a href={`mailto:${s.email}`} className="flex items-center gap-2.5 text-sm break-all hover:text-accent-ink">
+        <Mail aria-hidden className="size-4 shrink-0 text-muted" />
+        {s.email}
       </a>
       <dl className="text-sm">
         {groupHours(s.hours).map((g) => (

@@ -1,7 +1,7 @@
 import { ChevronRight } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
-import { absoluteUrl } from "@/lib/seo";
+import { absoluteUrl, toJsonLd } from "@/lib/seo";
 import { cn } from "@/lib/utils";
 
 export type Crumb = { label: string; href?: string };
@@ -44,7 +44,7 @@ export function Breadcrumbs({ items, className }: { items: Crumb[]; className?: 
           );
         })}
       </ol>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: toJsonLd(jsonLd) }} />
     </nav>
   );
 }

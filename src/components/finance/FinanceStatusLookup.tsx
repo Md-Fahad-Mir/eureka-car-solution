@@ -1,12 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Search } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
-import { Button } from "@/components/ui/Button";
+import { ReferenceSearch } from "@/components/forms/ReferenceSearch";
 import { DemoNotice } from "@/components/ui/DemoNotice";
-import { Input } from "@/components/ui/Input";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { Timeline } from "@/components/ui/Timeline";
 import { WhatsAppButton } from "@/components/whatsapp/WhatsAppButton";
@@ -34,13 +32,11 @@ export function FinanceStatusLookup() {
   const router = useRouter();
   const params = useSearchParams();
   const ref = params.get("ref") ?? "";
-  const [input, setInput] = useState(ref);
   const [result, setResult] = useState<Result>({ state: ref ? "loading" : "idle" });
 
   const [lastRef, setLastRef] = useState(ref);
   if (lastRef !== ref) {
     setLastRef(ref);
-    setInput(ref);
     setResult({ state: ref ? "loading" : "idle" });
   }
 
@@ -70,40 +66,23 @@ export function FinanceStatusLookup() {
 
   return (
     <div className="grid gap-10 lg:grid-cols-12">
-      <form
-        role="search"
-        className="flex flex-col gap-3 lg:col-span-4"
-        onSubmit={(e) => {
-          e.preventDefault();
-          const value = input.trim().toUpperCase();
-          if (value) router.replace(`/finance/status?ref=${encodeURIComponent(value)}`, { scroll: false });
-        }}
-      >
-        <label htmlFor="status-ref" className="text-sm font-medium">
-          {t("referenceLabel")}
-        </label>
-        <Input
+      <div className="lg:col-span-4">
+        <ReferenceSearch
           id="status-ref"
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
+          label={t("referenceLabel")}
           placeholder="DEMO-FA-0000"
-          autoComplete="off"
-          aria-describedby="status-ref-hint"
-          className="uppercase"
-        />
-        <p id="status-ref-hint" className="text-xs text-muted">
-          {t.rich("hint", {
+          submitLabel={t("check")}
+          value={ref}
+          onSearch={(value) => router.replace(`/finance/status?ref=${encodeURIComponent(value)}`, { scroll: false })}
+          hint={t.rich("hint", {
             demo: () => (
               <button type="button" className="font-medium text-accent-ink underline" onClick={() => router.replace(`/finance/status?ref=${DEMO_REFERENCE}`)}>
                 {DEMO_REFERENCE}
               </button>
             ),
           })}
-        </p>
-        <Button type="submit" icon={<Search aria-hidden className="size-4" />}>
-          {t("check")}
-        </Button>
-      </form>
+        />
+      </div>
 
       <div className="lg:col-span-8" aria-live="polite">
         {result.state === "idle" ? (

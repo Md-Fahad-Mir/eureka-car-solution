@@ -27,7 +27,7 @@ import { getShowroomsByIds } from "@/lib/api/showrooms";
 import { getSimilarVehicles, getVehicleBySlug, getVehicleSlugs } from "@/lib/api/vehicles";
 import { emiFrom } from "@/lib/calc/emi";
 import { getFormat } from "@/lib/format/getFormat";
-import { absoluteUrl, pageMetadata, vehicleJsonLd } from "@/lib/seo";
+import { absoluteUrl, pageMetadata, toJsonLd, vehicleJsonLd } from "@/lib/seo";
 import { brandInitial, vehicleFullName, vehiclePath } from "@/lib/vehicle";
 import type { WhatsAppVehicle } from "@/lib/whatsapp";
 
@@ -92,7 +92,7 @@ async function VehicleDetail({ params }: { params: PageProps<"/[locale]/vehicles
 
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(vehicleJsonLd(v, locale)) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: toJsonLd(vehicleJsonLd(v, locale)) }} />
       <RegisterWhatsAppContext label={t("whatsappAbout", { name: v.model })} context={{ kind: "vehicleInquiry", vehicle: whatsappVehicle }} />
 
       <div className="container-page pt-8">

@@ -214,7 +214,15 @@
     "downPaymentMax": "Down payment must be less than the vehicle price.",
     "nidLast4": "Enter the last 4 digits of your NID.",
     "address": "Enter your full address (house, road, area).",
-    "income": "Enter your monthly income."
+    "income": "Enter your monthly income.",
+    "slot": "Choose a time.",
+    "licence": "Please confirm you hold a valid driving licence.",
+    "year": "Enter the model year, for example 2018.",
+    "registration": "Enter the registration number, for example Dhaka Metro-GA 11-2345.",
+    "selectPackage": "Choose at least one service package.",
+    "company": "Enter your company's name.",
+    "selectOne": "Choose at least one option.",
+    "messageShort": "Please write a little more (at least 10 characters)."
   },
   "toast": {
     "errorTitle": "Something went wrong",
@@ -714,7 +722,14 @@
   "showroomCard": {
     "dayRange": "{from} – {to}",
     "closed": "Closed",
-    "directions": "Get directions"
+    "directions": "Get directions",
+    "openNow": "Open now · closes {time}",
+    "closedNow": {
+      "today": "Closed · opens {time}",
+      "tomorrow": "Closed · opens {time} tomorrow",
+      "later": "Closed · opens {day} {time}"
+    },
+    "openMap": "Open in Google Maps"
   },
   "compareTray": {
     "label": "Compare tray",
@@ -1255,5 +1270,564 @@
       "c6": "Cabin"
     },
     "credit": "3D model: <model>{title}</model> by {author}, © {year} {holder}, <licence>{licenceName}</licence>. Modified: logos removed, compressed."
+  },
+  "forms": {
+    "name": "Full name",
+    "phone": "Mobile number",
+    "phoneHint": "Bangladeshi mobile, e.g. 01712345678",
+    "email": "Email"
+  },
+  "confirmation": {
+    "reference": "Reference",
+    "notFoundTitle": "We couldn't find that reference",
+    "notFoundBody": "In demo mode, bookings and inquiries are kept in the browser they were made in. Check the reference, or start again."
+  },
+  "booking": {
+    "dateLegend": "Choose a day",
+    "timeLegend": "Free times on {date}",
+    "today": "Today",
+    "closed": "Closed",
+    "closedDay": "This showroom is closed that day. Please pick another day.",
+    "noSlots": "Every time on this day is taken. Please try another day.",
+    "loadingSlots": "Loading free times",
+    "slotsError": "We couldn't load the free times.",
+    "unavailable": "(taken)"
+  },
+  "testDrive": {
+    "metaTitle": "Book a test drive",
+    "metaDescription": "Choose a vehicle, a showroom and a time that suits you, and drive it before you decide.",
+    "breadcrumb": "Test drive",
+    "eyebrow": "Test drive",
+    "title": "Drive it before you decide",
+    "lead": "Pick the vehicle, the showroom and a time. A product specialist rides with you, answers questions and never rushes you.",
+    "demoNotice": "Demo mode: bookings are kept in this browser and are not sent to Eureka.",
+    "steps": {
+      "vehicle": "Vehicle",
+      "showroom": "Showroom",
+      "date": "Date",
+      "time": "Time",
+      "details": "Your details",
+      "review": "Review"
+    },
+    "headings": {
+      "vehicle": "Which vehicle would you like to drive?",
+      "showroom": "Where would you like to drive it?",
+      "date": "Which day suits you?",
+      "time": "What time?",
+      "details": "Your details",
+      "review": "Check and confirm"
+    },
+    "leads": {
+      "vehicle": "Search by brand or model. Sold vehicles and arrivals that aren't in a showroom yet aren't listed.",
+      "showroom": "Only showrooms that have this vehicle are shown.",
+      "date": "The next two weeks. Days the showroom is closed can't be chosen.",
+      "time": "Each drive is booked for about 45 minutes. Crossed-out times are already taken.",
+      "details": "We'll use these to confirm your slot.",
+      "review": "Nothing is booked until you confirm."
+    },
+    "fields": {
+      "vehicle": "Vehicle",
+      "vehiclePlaceholder": "Search vehicles",
+      "showroom": "Showroom",
+      "notes": "Anything we should know?",
+      "notesPlaceholder": "e.g. I'd like to try it on the highway, or I'm bringing family",
+      "licence": "I hold a valid driving licence and will bring it with me."
+    },
+    "hints": {
+      "vehicle": "You can change it later."
+    },
+    "summary": {
+      "title": "Your test drive",
+      "where": "Where and when",
+      "when": "Date and time",
+      "notChosen": "Not chosen yet",
+      "note": "Free of charge. Please arrive 10 minutes early with your driving licence."
+    },
+    "consent": "I agree that Eureka may contact me about this booking by phone, WhatsApp or email.",
+    "edit": "Edit",
+    "submit": "Confirm booking",
+    "submitting": "Confirming your booking",
+    "bookAnother": "Book a test drive",
+    "calendar": {
+      "title": "Test drive: {vehicle} (Eureka, demo)",
+      "description": "Demo booking {reference}. This booking was made in demo mode and was not sent to Eureka. Vehicle: {url}"
+    },
+    "done": {
+      "metaTitle": "Test drive booked",
+      "breadcrumb": "Confirmation",
+      "title": "Your test drive is requested (demo)",
+      "body": "Here's your booking. In a live system a product specialist would call to confirm it. Bring your driving licence.",
+      "calendar": "Add to calendar",
+      "status": "Status",
+      "statusRequested": "Requested: waiting for confirmation",
+      "next": "Need to change the time? Chat with us on WhatsApp and quote your reference."
+    }
+  },
+  "inquiryPage": {
+    "metaTitle": "Purchase inquiry",
+    "metaDescription": "Tell us which vehicle you want and how you'd like to pay. Our team will get back to you. No payment is taken.",
+    "breadcrumb": "Purchase inquiry",
+    "eyebrow": "Purchase inquiry",
+    "title": "Ready to talk about buying?",
+    "lead": "Tell us which vehicle and how you'd like to pay. We'll come back with availability, the final price and the next steps.",
+    "demoNotice": "Demo mode: inquiries are kept in this browser and are not sent to Eureka.",
+    "steps": {
+      "one": {
+        "title": "Tell us what you want",
+        "body": "The vehicle, how you'd like to pay and how we should contact you."
+      },
+      "two": {
+        "title": "We check and call you back",
+        "body": "Availability, the on-road price and any finance options, in one conversation."
+      },
+      "three": {
+        "title": "Visit, drive and decide",
+        "body": "Book a test drive, see the vehicle in person, then decide in your own time."
+      }
+    },
+    "startNew": "Send an inquiry",
+    "bookTestDrive": "Book a test drive",
+    "status": "Status",
+    "statusReceived": "Received: our team would contact you",
+    "confirmTitle": "Inquiry received",
+    "confirmBreadcrumb": "Confirmation"
+  },
+  "service": {
+    "metaTitle": "Service and maintenance",
+    "metaDescription": "Service packages for petrol, diesel, hybrid and electric vehicles, maintenance guidance, and pickup and drop-off.",
+    "breadcrumb": "Service",
+    "eyebrow": "After-sales care",
+    "title": "Servicing that fits around your week",
+    "lead": "Clear packages for every powertrain, from an oil change to an EV battery health check, with pickup and drop-off when you can't come in.",
+    "book": "Book a service",
+    "track": "Track a service",
+    "packagesTitle": "Service packages",
+    "pricesNote": "Prices are illustrative \"from\" prices. Your final quote depends on the vehicle and any parts it needs.",
+    "commercial": "Commercial",
+    "from": "From",
+    "time": "Takes",
+    "duration": "About {hours} hr",
+    "interval": "Suggested every",
+    "intervalValue": "{km} or {months}, whichever comes first",
+    "bookPackage": "Book this package",
+    "guideTitle": "How often should I service?",
+    "guideLead": "A general guide by fuel type. Your owner's manual always comes first, and dusty roads, heavy traffic and short trips mean servicing a little sooner.",
+    "guideFuel": "Fuel type",
+    "guideEvery": "Service every",
+    "guideFocus": "What we focus on",
+    "guideNote": "Illustrative guidance, not a substitute for your manufacturer's schedule.",
+    "pickupTitle": "We'll collect it",
+    "pickupLead": "Can't spare the morning? We'll pick your vehicle up from home or work and bring it back when it's done.",
+    "pickupFee": "Free within 10 km of a service centre; a small fee further out (illustrative).",
+    "pickupSteps": {
+      "book": {
+        "title": "Book online",
+        "body": "Choose the package and a slot, and add your pickup address."
+      },
+      "collect": {
+        "title": "We collect",
+        "body": "A trained driver picks up the vehicle and notes its condition with you."
+      },
+      "service": {
+        "title": "We service",
+        "body": "We call before any extra work. Nothing is done without your approval."
+      },
+      "return": {
+        "title": "We return it",
+        "body": "Cleaned, with a report of what was done and when it's next due."
+      }
+    },
+    "demoNotice": "Demo mode: prices, packages and centres are illustrative, and bookings are kept in this browser."
+  },
+  "serviceBook": {
+    "metaTitle": "Book a service",
+    "metaDescription": "Book a service in a few steps: your vehicle, packages, service centre, time and pickup.",
+    "breadcrumb": "Book",
+    "eyebrow": "Book a service",
+    "title": "Book your next service",
+    "lead": "Tell us about the vehicle, choose what it needs and pick a time. Add pickup and drop-off if you'd like us to collect it.",
+    "demoNotice": "Demo mode: bookings are kept in this browser and are not sent to Eureka.",
+    "steps": {
+      "vehicle": "Vehicle",
+      "packages": "Packages",
+      "centre": "Centre",
+      "when": "Date & time",
+      "pickup": "Pickup",
+      "details": "Your details",
+      "review": "Review"
+    },
+    "headings": {
+      "vehicle": "Which vehicle is it?",
+      "packages": "What does it need?",
+      "centre": "Which service centre?",
+      "when": "When suits you?",
+      "pickup": "Bring it in, or shall we collect it?",
+      "details": "Your details",
+      "review": "Check and confirm"
+    },
+    "leads": {
+      "vehicle": "We use this to prepare the right parts and fluids.",
+      "packages": "Choose one or more. Not sure? Pick Comprehensive Service and we'll advise.",
+      "centre": "Centres with a service workshop.",
+      "when": "Choose a day, then a free time.",
+      "pickup": "Pickup and drop-off is available in Dhaka and Chattogram (illustrative).",
+      "details": "We'll use these to confirm your booking.",
+      "review": "Nothing is booked until you confirm."
+    },
+    "fields": {
+      "myVehicles": "My vehicles",
+      "anotherVehicle": "Another vehicle",
+      "anotherVehicleHint": "Enter its details",
+      "brand": "Brand",
+      "model": "Model",
+      "year": "Model year",
+      "registration": "Registration number",
+      "dropOff": "I'll bring it in",
+      "dropOffHint": "Drop it at the centre at your chosen time.",
+      "pickup": "Pick up and drop off",
+      "pickupAddress": "Pickup address",
+      "notes": "Anything we should know?",
+      "notesPlaceholder": "e.g. a noise when braking, or the AC isn't cold enough"
+    },
+    "hints": {
+      "registration": "As shown on the number plate.",
+      "pickupAddress": "House, road, area and city."
+    },
+    "summary": {
+      "title": "Your service",
+      "estimate": "Estimated from",
+      "where": "Where and when",
+      "when": "Date and time",
+      "note": "Illustrative estimate. We confirm the final price after inspection, and never do extra work without asking."
+    },
+    "consent": "I agree that Eureka may contact me about this booking by phone, WhatsApp or email.",
+    "edit": "Edit",
+    "submit": "Confirm booking",
+    "submitting": "Confirming your booking",
+    "done": {
+      "title": "Service booked (demo)",
+      "body": "Keep your reference: you can use it to track the service from booking to delivery.",
+      "track": "Track this service"
+    }
+  },
+  "serviceTrack": {
+    "metaTitle": "Track a service",
+    "metaDescription": "Follow your vehicle's service from booking to delivery with your reference.",
+    "breadcrumb": "Track",
+    "eyebrow": "Service tracking",
+    "title": "Where is my vehicle?",
+    "lead": "Enter your service reference to see each stage, from booking to delivery.",
+    "referenceLabel": "Service reference",
+    "check": "Track",
+    "hint": "Try the sample booking <demo></demo>, or a reference from this browser.",
+    "idle": "Enter a reference to see the service timeline.",
+    "notFoundTitle": "No service found",
+    "notFoundBody": "We couldn't find {reference}. In demo mode, bookings are kept in the browser they were made in.",
+    "bookedFor": "Booked for {date}, {time}",
+    "vehicle": "Vehicle",
+    "centre": "Service centre",
+    "packages": "Packages",
+    "pickup": "Pickup",
+    "pickupYes": "Pickup and drop-off",
+    "pickupNo": "Customer drop-off",
+    "status": {
+      "booked": "Booked",
+      "received": "Vehicle received",
+      "inService": "In service",
+      "qualityCheck": "Quality check",
+      "ready": "Ready for collection",
+      "delivered": "Delivered"
+    },
+    "demoNotice": "Demo mode: this timeline is illustrative and updates are not live."
+  },
+  "fleet": {
+    "metaTitle": "Corporate and fleet",
+    "metaDescription": "Vehicles, financing and maintenance for businesses: from a few company cars to a full commercial fleet.",
+    "breadcrumb": "Fleet",
+    "eyebrow": "Corporate and fleet",
+    "title": "Vehicles that keep your business moving",
+    "lead": "From three company cars to a hundred delivery vans: one team for buying, financing, servicing and replacing your fleet.",
+    "cta": "Talk to our fleet team",
+    "values": {
+      "pricing": {
+        "title": "Volume pricing",
+        "body": "Better pricing as your order grows, quoted openly per vehicle."
+      },
+      "contact": {
+        "title": "One point of contact",
+        "body": "A named account manager for quotes, deliveries and service."
+      },
+      "finance": {
+        "title": "Business finance",
+        "body": "Conventional and Islamic fleet finance through partner institutions."
+      },
+      "uptime": {
+        "title": "Uptime first",
+        "body": "Priority service slots and planned maintenance to keep vehicles earning."
+      }
+    },
+    "managementTitle": "Fleet management, handled",
+    "managementLead": "Hand us the routine work and keep your attention on the business. Everything below is illustrative and tailored per contract.",
+    "management": {
+      "maintenance": {
+        "title": "Planned maintenance",
+        "body": "Services scheduled by mileage and date, across every vehicle."
+      },
+      "pickup": {
+        "title": "Pickup and drop-off",
+        "body": "We collect vehicles for service so drivers stay on the road."
+      },
+      "replacement": {
+        "title": "Replacement vehicles",
+        "body": "A stand-in while yours is in the workshop, on eligible contracts."
+      },
+      "invoicing": {
+        "title": "One monthly invoice",
+        "body": "Consolidated billing for purchases, service and parts."
+      },
+      "handover": {
+        "title": "Driver handover",
+        "body": "A walk-through for your drivers on every new vehicle, EVs included."
+      },
+      "reports": {
+        "title": "Fleet reports",
+        "body": "Service history, running costs and upcoming due dates in one place."
+      }
+    },
+    "rangesTitle": "Vehicles for work",
+    "ranges": {
+      "commercial": {
+        "title": "Commercial vehicles",
+        "body": "Vans, light trucks and people carriers."
+      },
+      "pickup": {
+        "title": "Pickups",
+        "body": "Single and double cab, for sites and supply runs."
+      },
+      "tractor": {
+        "title": "Tractors",
+        "body": "For farms, cooperatives and agri-businesses."
+      },
+      "ev": {
+        "title": "Electric vehicles",
+        "body": "Lower running costs for city routes and staff transport."
+      }
+    },
+    "browse": "Browse",
+    "financeTitle": "Finance a fleet without tying up capital",
+    "financeLead": "Spread the cost with conventional or Shariah-based finance from partner institutions. Use the EMI calculator to estimate monthly payments for any vehicle.",
+    "financeCta": "Open the EMI calculator",
+    "processTitle": "How a bulk purchase works",
+    "processLead": "An illustrative outline. Timelines depend on the vehicles, stock and financing.",
+    "process": {
+      "brief": {
+        "title": "Your brief",
+        "body": "Routes, loads, budget and timing."
+      },
+      "proposal": {
+        "title": "Proposal",
+        "body": "Recommended vehicles with an itemised quote."
+      },
+      "trial": {
+        "title": "Trial",
+        "body": "Test drives, or a short trial for your drivers."
+      },
+      "paperwork": {
+        "title": "Finance and paperwork",
+        "body": "Financing, registration and insurance arranged."
+      },
+      "delivery": {
+        "title": "Delivery",
+        "body": "Staggered delivery, driver handover and a service plan."
+      }
+    },
+    "formTitle": "Tell us about your fleet",
+    "formLead": "A few details help us come back with a useful proposal rather than a generic brochure.",
+    "demoNotice": "Demo mode: inquiries are kept in this browser and are not sent to Eureka.",
+    "form": {
+      "company": "Company name",
+      "industry": "Industry",
+      "choose": "Choose…",
+      "industries": {
+        "logistics": "Logistics and delivery",
+        "manufacturing": "Manufacturing",
+        "rideHailing": "Ride-hailing and rental",
+        "construction": "Construction",
+        "agriculture": "Agriculture",
+        "retail": "Retail and distribution",
+        "ngo": "NGO or development",
+        "government": "Government",
+        "other": "Other"
+      },
+      "timeline": "When do you need them?",
+      "timelines": {
+        "now": "Within a month",
+        "quarter": "In the next 3 months",
+        "halfYear": "In the next 6 months",
+        "exploring": "Just exploring"
+      },
+      "fleetSize": "How many vehicles?",
+      "sizes": {
+        "upTo5": "1–5",
+        "upTo20": "6–20",
+        "upTo50": "21–50",
+        "over50": "More than 50"
+      },
+      "vehicleTypes": "Which types?",
+      "financing": "We're interested in financing",
+      "financingHint": "We'll include sample finance options in the proposal.",
+      "contact": "Who should we contact?",
+      "designation": "Designation",
+      "message": "Anything else?",
+      "messagePlaceholder": "Routes, payloads, charging access, branding…",
+      "consent": "I agree that Eureka may contact me about this inquiry by phone, WhatsApp or email.",
+      "submit": "Send fleet inquiry",
+      "sending": "Sending your inquiry",
+      "done": {
+        "title": "Fleet inquiry received (demo)",
+        "body": "Thank you. In a live system our fleet team would contact you about {company}'s requirements."
+      }
+    }
+  },
+  "showrooms": {
+    "metaTitle": "Showrooms and contact",
+    "metaDescription": "Find a Eureka showroom near you: addresses, opening hours, services and directions, or send us a message.",
+    "breadcrumb": "Showrooms",
+    "eyebrow": "Visit us",
+    "title": "Showrooms and service centres",
+    "lead": "Five locations across Bangladesh. Come for a coffee and a test drive, or drop your vehicle in for service.",
+    "timezone": "Opening hours are shown in Bangladesh time.",
+    "placeholderNote": "Addresses, phone numbers and emails are placeholders until launch. Map pins mark the neighbourhood only.",
+    "contactTitle": "Send us a message",
+    "contactLead": "Questions about a vehicle, finance or a booking? Write to us, call, or chat on WhatsApp.",
+    "demoNotice": "Demo mode: messages are kept in this browser and are not sent to Eureka.",
+    "form": {
+      "topic": "Topic",
+      "topics": {
+        "sales": "Buying a vehicle",
+        "testDrive": "Test drives",
+        "finance": "Finance and EMI",
+        "service": "Service",
+        "feedback": "Feedback",
+        "other": "Something else"
+      },
+      "showroom": "Showroom",
+      "anyShowroom": "Any showroom",
+      "message": "Your message",
+      "consent": "I agree that Eureka may contact me about this message by phone, WhatsApp or email.",
+      "submit": "Send message",
+      "sending": "Sending your message",
+      "done": {
+        "title": "Message received (demo)",
+        "body": "Thank you. In a live system the team would reply within one working day."
+      }
+    }
+  },
+  "legal": {
+    "status": "Draft · November 2026",
+    "reviewNotice": "Placeholder text for legal review. This draft has not been approved by a lawyer and must be reviewed before launch.",
+    "number": "{n}.",
+    "privacy": {
+      "title": "Privacy notice",
+      "metaDescription": "How Eureka Car Solution collects, uses and protects your personal information.",
+      "intro": "Your privacy matters to us. Here is, in plain language, what we collect and why.",
+      "sections": {
+        "who": {
+          "title": "Who we are",
+          "body": "Eureka Car Solution (\"Eureka\", \"we\") sells, finances and services vehicles in Bangladesh. This notice explains what personal information we collect through this website and how we use it."
+        },
+        "collect": {
+          "title": "What we collect",
+          "body": "When you book a test drive or service, send an inquiry, apply for financing or contact us, we collect the details you give us: your name, mobile number, email, and information about the vehicle, your preferences and, for finance applications, your employment and income. We also collect basic technical data, such as your browser type and the pages you visit."
+        },
+        "use": {
+          "title": "How we use it",
+          "body": "To respond to you, manage bookings and inquiries, prepare quotations, pass finance applications to the partner institution you choose (with your consent), send service reminders, and improve the website. We do not sell your personal information."
+        },
+        "whatsapp": {
+          "title": "WhatsApp and phone contact",
+          "body": "We contact you by phone, WhatsApp or email only when you have asked us to or agreed to it. WhatsApp links on this site open a chat with a pre-filled message; nothing is sent until you press send in WhatsApp, and WhatsApp's own privacy policy applies to that conversation."
+        },
+        "storage": {
+          "title": "Storage and security",
+          "body": "We keep personal information only as long as we need it for the purpose it was collected for, or as required by law, and protect it with appropriate technical and organisational measures. In this demo version, the records you create are stored only in your own browser."
+        },
+        "sharing": {
+          "title": "Sharing",
+          "body": "We share information only with those who need it to serve you: finance partners you choose, insurers, registration authorities and service providers working on our behalf under confidentiality obligations, or where the law requires it."
+        },
+        "rights": {
+          "title": "Your choices and rights",
+          "body": "You can ask to see, correct or delete the personal information we hold about you, and withdraw consent to marketing at any time. Contact us using the details below."
+        },
+        "cookies": {
+          "title": "Cookies and local storage",
+          "body": "We use essential browser storage to remember your language, compare list, saved vehicles and demo records. If analytics are added later, this notice will explain them and ask for your consent where required."
+        },
+        "children": {
+          "title": "Children",
+          "body": "This website is not intended for children under 18, and we do not knowingly collect their personal information."
+        },
+        "changes": {
+          "title": "Changes to this notice",
+          "body": "We may update this notice from time to time. The latest version will always be on this page."
+        },
+        "contact": {
+          "title": "Contact",
+          "body": "Questions about privacy? Email hello@eureka-cars.example or visit any Eureka showroom. (Placeholder contact details until launch.)"
+        }
+      }
+    },
+    "terms": {
+      "title": "Terms of use",
+      "metaDescription": "The terms that apply when you use the Eureka Car Solution website.",
+      "intro": "The short version: information here is illustrative, nothing is a binding offer, and financing decisions are made by partner institutions.",
+      "sections": {
+        "about": {
+          "title": "About these terms",
+          "body": "These terms apply to your use of the Eureka Car Solution website. By using the site you agree to them. If you do not agree, please do not use the site."
+        },
+        "illustrative": {
+          "title": "Prices and information",
+          "body": "Prices, specifications, availability, finance rates and running-cost estimates on this site are illustrative and may change without notice. Calculators give estimates only. Please confirm every detail with our team before you make a decision."
+        },
+        "noOffer": {
+          "title": "No binding offer",
+          "body": "Nothing on this website is a binding offer to sell or finance a vehicle. A sale is agreed only when both parties sign a written agreement and payment terms are confirmed."
+        },
+        "bookings": {
+          "title": "Bookings and inquiries",
+          "body": "Test drive and service bookings are requests until we confirm them. In this demo version, no booking, inquiry or application is sent to Eureka."
+        },
+        "finance": {
+          "title": "Financing",
+          "body": "Eureka does not approve loans or Islamic financing. Approval, rates and terms are decided by the partner institution under its own policies and Bangladesh Bank regulations."
+        },
+        "whatsapp": {
+          "title": "WhatsApp",
+          "body": "WhatsApp links open a chat with a suggested message. Nothing is sent automatically. Your use of WhatsApp is governed by WhatsApp's own terms."
+        },
+        "conduct": {
+          "title": "Acceptable use",
+          "body": "Please don't misuse the website: no false information, attempts to disrupt the service, or automated scraping."
+        },
+        "content": {
+          "title": "Content and trademarks",
+          "body": "The website's design and text belong to Eureka or its licensors. Vehicle brands and model names belong to their respective owners and are used only to describe the vehicles we offer. Third-party content, such as 3D models, is used under its stated licence."
+        },
+        "liability": {
+          "title": "Liability",
+          "body": "We take care to keep the site accurate and available but cannot guarantee it is always error-free or uninterrupted. To the extent the law allows, we are not liable for losses arising from reliance on illustrative information."
+        },
+        "law": {
+          "title": "Governing law",
+          "body": "These terms are governed by the laws of Bangladesh, and the courts of Dhaka have jurisdiction."
+        },
+        "contact": {
+          "title": "Contact",
+          "body": "Questions about these terms? Email hello@eureka-cars.example or visit any Eureka showroom. (Placeholder contact details until launch.)"
+        }
+      }
+    }
   }
 }

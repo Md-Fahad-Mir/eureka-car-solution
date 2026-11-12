@@ -12,7 +12,7 @@ import { Segmented } from "@/components/ui/Segmented";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { Link } from "@/i18n/navigation";
 import type { FinanceType } from "@/types";
-import type { FinanceVehicleOption } from "./types";
+import type { VehicleOption } from "@/lib/vehicleOptions";
 
 const LoanBreakdown = dynamic(() => import("@/components/calculators/LoanBreakdown"), {
   ssr: false,
@@ -22,7 +22,7 @@ const LoanBreakdown = dynamic(() => import("@/components/calculators/LoanBreakdo
 const CUSTOM = "__custom";
 
 /** Full EMI calculator for /finance: vehicle picker, conventional/Islamic, breakdown and schedule. */
-export function FinanceCalculator({ vehicles, defaultPrice }: { vehicles: FinanceVehicleOption[]; defaultPrice: number }) {
+export function FinanceCalculator({ vehicles, defaultPrice }: { vehicles: VehicleOption[]; defaultPrice: number }) {
   const t = useTranslations("finance");
   const params = useSearchParams();
   const initialVehicle = vehicles.find((v) => v.slug === params.get("vehicle")) ?? null;

@@ -78,13 +78,19 @@ export const timeKeyToMinutes = (time: TimeKey) => {
   return h * 60 + m;
 };
 
-export type DateStyle = "short" | "medium" | "long" | "weekday";
+export type DateStyle = "short" | "medium" | "long" | "weekday" | "weekdayShort" | "day" | "monthShort";
 
 const DATE_OPTIONS: Record<DateStyle, Intl.DateTimeFormatOptions> = {
   short: { day: "numeric", month: "short" },
   medium: { day: "numeric", month: "short", year: "numeric" },
   long: { day: "numeric", month: "long", year: "numeric" },
   weekday: { weekday: "long", day: "numeric", month: "long", year: "numeric" },
+  /** "Sat" / "শনি" (date chips) */
+  weekdayShort: { weekday: "short" },
+  /** "15" / "১৫" */
+  day: { day: "numeric" },
+  /** "Nov" / "নভে" */
+  monthShort: { month: "short" },
 };
 
 /** Localised date in Dhaka time, e.g. "11 Nov 2026" / "১১ নভে, ২০২৬". Accepts dates, ISO strings or date keys. */

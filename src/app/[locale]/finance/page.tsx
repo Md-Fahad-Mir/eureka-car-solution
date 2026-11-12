@@ -13,7 +13,7 @@ import { WhatsAppButton } from "@/components/whatsapp/WhatsAppButton";
 import { EMPLOYMENT_TYPES } from "@/types";
 import { getFinancePartners } from "@/lib/api/finance";
 import { getAllVehicles } from "@/lib/api/vehicles";
-import { toFinanceOptions } from "@/lib/financeOptions";
+import { toVehicleOptions } from "@/lib/vehicleOptions";
 import { getFormat } from "@/lib/format/getFormat";
 import { pageMetadata } from "@/lib/seo";
 
@@ -33,7 +33,7 @@ export default async function FinancePage() {
     getFinancePartners(),
     getAllVehicles(),
   ]);
-  const options = toFinanceOptions(
+  const options = toVehicleOptions(
     vehicles.filter((v) => v.availability !== "sold"),
     f.locale,
     f,

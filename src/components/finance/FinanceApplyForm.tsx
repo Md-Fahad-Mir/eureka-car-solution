@@ -2,11 +2,13 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useRef, useState } from "react";
+import { flushSync } from "react-dom";
 import { useForm, useWatch, type Path } from "react-hook-form";
-import { ArrowLeft, ArrowRight, FileCheck2, Paperclip, Pencil, X } from "lucide-react";
+import { ArrowLeft, ArrowRight, FileCheck2, Paperclip, X } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { applyApiError } from "@/components/forms/applyApiError";
+import { ReviewRow, ReviewSection } from "@/components/forms/Review";
 import { fieldA11y, FormField } from "@/components/forms/FormField";
 import { useErrorText } from "@/components/forms/useErrorText";
 import { Button, buttonVariants } from "@/components/ui/Button";
@@ -32,7 +34,7 @@ import {
 } from "@/lib/validation/finance";
 import { toast } from "@/stores/toast";
 import { EMPLOYMENT_TYPES, type FinanceApplication, type FinancePartner } from "@/types";
-import type { FinanceVehicleOption } from "./types";
+import type { VehicleOption } from "@/lib/vehicleOptions";
 
 const CUSTOM = "";
 const TENURES = Array.from(
@@ -46,7 +48,7 @@ export function FinanceApplyForm({
   vehicles,
   partners,
 }: {
-  vehicles: FinanceVehicleOption[];
+  vehicles: VehicleOption[];
   partners: Pick<FinancePartner, "id" | "name" | "type" | "rateRange">[];
 }) {
   const t = useTranslations("financeApply");
@@ -156,7 +158,9 @@ export function FinanceApplyForm({
       setSubmitted(application);
     } catch (error) {
       if (applyApiError(error, setError, { phone: "phone" })) {
-        setStep(APPLY_STEPS.indexOf("personal"));
+        // Show the step first (its effect focuses the heading), then move focus to the field.
+        flushSync(() => setStep(APPLY_STEPS.indexOf("personal")));
+        form.setFocus("phone");
       } else {
         toast({ tone: "error", title: tToast("errorTitle"), body: tToast("errorBody") });
       }
@@ -496,31 +500,6 @@ export function FinanceApplyForm({
         </div>
       </aside>
     </form>
-  );
-}
-
-function ReviewSection({ title, onEdit, editLabel, children }: { title: string; onEdit: () => void; editLabel: string; children: React.ReactNode }) {
-  return (
-    <section className="rounded-2xl border border-line bg-bg p-4">
-      <div className="mb-2 flex items-center justify-between">
-        <h3 className="text-sm font-semibold">{title}</h3>
-        <button type="button" onClick={onEdit} className="inline-flex items-center gap-1 text-xs font-medium text-accent-ink hover:underline">
-          <Pencil aria-hidden className="size-3" />
-          {editLabel}
-          <span className="sr-only"> {title}</span>
-        </button>
-      </div>
-      <dl className="grid gap-1.5 text-sm">{children}</dl>
-    </section>
-  );
-}
-
-function ReviewRow({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="flex justify-between gap-4">
-      <dt className="text-muted">{label}</dt>
-      <dd className="text-right font-medium break-words">{value}</dd>
-    </div>
   );
 }
 
