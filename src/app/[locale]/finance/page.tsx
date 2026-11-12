@@ -15,6 +15,7 @@ import { getFinancePartners } from "@/lib/api/finance";
 import { getAllVehicles } from "@/lib/api/vehicles";
 import { toVehicleOptions } from "@/lib/vehicleOptions";
 import { getFormat } from "@/lib/format/getFormat";
+import { financeConfig } from "@/config/finance";
 import { pageMetadata } from "@/lib/seo";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -63,7 +64,7 @@ export default async function FinancePage() {
           {t("calculator.title")}
         </h2>
         <Suspense fallback={<Skeleton className="h-[34rem] rounded-card" />}>
-          <FinanceCalculator vehicles={options} defaultPrice={4_000_000} />
+          <FinanceCalculator vehicles={options} defaultPrice={financeConfig.samplePrice} />
         </Suspense>
       </section>
 

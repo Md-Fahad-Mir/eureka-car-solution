@@ -241,22 +241,140 @@
     "home": "Back to home"
   },
   "home": {
-    "journeyTitle": "One journey, start to finish",
-    "journey": {
-      "discover": "Discover",
-      "learn": "Learn",
-      "calculate": "Calculate",
-      "compare": "Compare",
-      "testDrive": "Test drive",
-      "finance": "Finance",
-      "purchase": "Purchase",
-      "service": "Service"
-    },
     "poster": {
       "alt": "Illustration: a clay-white studio car with its door, seat, mirror and spare wheel lifted away and its battery floor lowered, as if laid out for inspection.",
       "callout1": "Light-bar signature",
       "callout2": "Battery floor, inspected",
       "callout3": "Every part, accounted for"
+    },
+    "quickSearch": {
+      "title": "Find your next vehicle",
+      "condition": "Condition",
+      "fuel": "Fuel type",
+      "brand": "Brand",
+      "budget": "Budget",
+      "any": "Any",
+      "anyBrand": "Any brand",
+      "anyBudget": "Any budget",
+      "upTo": "Up to {amount}",
+      "submit": "Show vehicles"
+    },
+    "browse": {
+      "eyebrow": "Browse",
+      "title": "Start with what you need",
+      "all": "All vehicles",
+      "byFuel": "By fuel type",
+      "byCategory": "By category",
+      "count": "{count, plural, =0 {None right now} one {# vehicle} other {# vehicles}}"
+    },
+    "shelves": {
+      "featuredEyebrow": "Featured",
+      "featuredTitle": "Hand-picked this week",
+      "arrivalsEyebrow": "New arrivals",
+      "arrivalsTitle": "Just in",
+      "viewAll": "View all"
+    },
+    "brands": {
+      "eyebrow": "Brands",
+      "title": "Popular brands",
+      "lead": "Brand-new, Japanese reconditioned and inspected used vehicles from the makes Bangladesh drives most.",
+      "count": "{count, plural, one {# vehicle} other {# vehicles}}"
+    },
+    "ev": {
+      "eyebrow": "EV Centre",
+      "title": "Thinking about electric?",
+      "lead": "Plain-language guides on charging, batteries, costs and owning an EV in Bangladesh. No hype, just what you need to decide.",
+      "cta": "Visit the EV Centre",
+      "listings": "Browse electric vehicles",
+      "facts": {
+        "cost": {
+          "value": "{ev} vs {petrol} per km",
+          "body": "Energy cost of a typical EV vs a petrol car, at our sample prices."
+        },
+        "service": {
+          "value": "No oil changes",
+          "body": "No engine oil, spark plugs or exhaust to service."
+        },
+        "charge": {
+          "value": "Charge overnight",
+          "body": "A home wall box fills most batteries while you sleep."
+        }
+      }
+    },
+    "savings": {
+      "eyebrow": "Savings calculator",
+      "title": "What would you save on fuel?",
+      "lead": "Move the slider to your daily distance. The full calculator adds maintenance, purchase price and break-even.",
+      "distance": "Daily distance",
+      "unit": "km",
+      "assumptions": "Estimate: typical petrol car at {kmpl} km/L and {petrol}/L, typical EV at {kwh} kWh/100 km and {electricity}/kWh (home charging). Sample prices.",
+      "saving": "Estimated energy saving with an EV",
+      "perYear": "per month · about {amount} a year",
+      "petrolMonth": "Petrol, per month",
+      "evMonth": "EV, per month",
+      "cta": "Open the full calculator"
+    },
+    "compare": {
+      "eyebrow": "Compare",
+      "title": "Electric or hybrid? See them side by side",
+      "lead": "Compare up to four vehicles on price, efficiency, power and running costs.",
+      "price": "Price",
+      "fuel": "Fuel",
+      "efficiency": "Efficiency",
+      "range": "{km} range",
+      "power": "Power",
+      "seats": "Seats",
+      "cta": "Compare these two",
+      "pick": "Pick your own"
+    },
+    "emi": {
+      "eyebrow": "EMI and financing",
+      "title": "Know your monthly payment",
+      "lead": "Conventional and Islamic financing through partner institutions. Adjust the numbers to see your estimate.",
+      "all": "All financing options"
+    },
+    "testDrive": {
+      "eyebrow": "Test drive",
+      "title": "Feel it before you decide",
+      "lead": "Pick a vehicle, a showroom and a time. A product specialist rides with you and never rushes you.",
+      "cta": "Book a test drive"
+    },
+    "afterSales": {
+      "eyebrow": "After-sales care",
+      "title": "Looked after long after you drive away",
+      "lead": "Servicing for every powertrain, with pickup and drop-off when you can't come in.",
+      "all": "Service and maintenance",
+      "items": {
+        "packages": {
+          "title": "{count} service packages",
+          "body": "From {from}, for petrol, diesel, hybrid and electric (illustrative prices)."
+        },
+        "pickup": {
+          "title": "Pickup and drop-off",
+          "body": "We collect your vehicle and bring it back when it's done."
+        },
+        "battery": {
+          "title": "EV battery health check",
+          "body": "A clear report on your battery's condition and cooling."
+        },
+        "tracking": {
+          "title": "Track your service",
+          "body": "Follow each stage from booking to delivery with your reference."
+        }
+      }
+    },
+    "testimonials": {
+      "eyebrow": "Customers",
+      "title": "What customers say",
+      "lead": "How buying with us feels.",
+      "sample": "Sample",
+      "rating": "Rated {rating} out of 5",
+      "note": "Sample testimonials with fictional names, shown for illustration until real, consented reviews are added."
+    },
+    "showrooms": {
+      "eyebrow": "Showrooms",
+      "title": "Visit us across Bangladesh",
+      "all": "All showrooms and directions"
     }
   },
   "taxonomy": {

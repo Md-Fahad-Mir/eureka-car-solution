@@ -12,6 +12,8 @@ export const financeConfig = {
   islamic: { defaultProfitRate: 12.5, minRate: 0, maxRate: 25 },
   tenure: { min: 12, max: 84, step: 6, default: 60 },
   downPayment: { minPercent: 10, maxPercent: 90, defaultPercent: 30 },
+  /** Example vehicle price for calculators that start without a vehicle (BDT). */
+  samplePrice: 4_000_000,
 
   /** Assumptions behind the "EMI from" estimate on vehicle cards. */
   emiFrom: { downPaymentPercent: 30, tenureMonths: 60, annualRate: 13 },

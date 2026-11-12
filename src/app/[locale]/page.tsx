@@ -1,9 +1,17 @@
 import type { Metadata } from "next";
-import { ArrowRight } from "lucide-react";
 import { getLocale, getTranslations } from "next-intl/server";
+import { EmiCalculator } from "@/components/calculators/EmiCalculator";
+import { BrowseBy } from "@/components/home/BrowseBy";
+import { CompareTeaser } from "@/components/home/CompareTeaser";
+import { EvTeaser } from "@/components/home/EvTeaser";
 import { Hero3D } from "@/components/home/Hero3D";
-import { Link } from "@/i18n/navigation";
-import { formatNumber } from "@/lib/format/number";
+import { AfterSales, ShowroomStrip, Testimonials, TestDriveBand } from "@/components/home/HomeBands";
+import { PopularBrands } from "@/components/home/PopularBrands";
+import { QuickSearch } from "@/components/home/QuickSearch";
+import { SavingsTeaser } from "@/components/home/SavingsTeaser";
+import { SectionHeading } from "@/components/home/SectionHeading";
+import { VehicleShelves } from "@/components/home/VehicleShelves";
+import { financeConfig } from "@/config/finance";
 import { pageMetadata } from "@/lib/seo";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -11,47 +19,31 @@ export async function generateMetadata(): Promise<Metadata> {
   return pageMetadata({ locale, path: "/", title: t("homeTitle"), description: t("defaultDescription") });
 }
 
-const JOURNEY = [
-  { key: "discover", href: "/vehicles" },
-  { key: "learn", href: "/ev" },
-  { key: "calculate", href: "/savings-calculator" },
-  { key: "compare", href: "/compare" },
-  { key: "testDrive", href: "/test-drive" },
-  { key: "finance", href: "/finance" },
-  { key: "purchase", href: "/inquiry" },
-  { key: "service", href: "/service" },
-] as const;
-
+/**
+ * Homepage (brief §10.A): 3D hero, then quick search, browse, vehicles,
+ * brands, EV, savings, compare, EMI, test drive, after-sales, testimonials and
+ * showrooms. The newsletter sits in the footer. (No fleet band: D38.)
+ */
 export default async function HomePage() {
-  const [t, locale] = await Promise.all([getTranslations("home"), getLocale()]);
-
+  const t = await getTranslations("home.emi");
   return (
     <>
       <Hero3D />
-
-      <section className="on-dark bg-graphite text-on-dark">
-        <div className="container-page py-16 lg:py-20">
-          <h2 className="display-md max-w-xl">{t("journeyTitle")}</h2>
-          <ol className="mt-10 grid grid-cols-2 border-t border-line-on-dark sm:grid-cols-4 lg:grid-cols-8">
-            {JOURNEY.map((step, i) => (
-              <li key={step.key} className="border-b border-line-on-dark sm:border-r sm:last:border-r-0">
-                <Link
-                  href={step.href}
-                  className="group flex h-full flex-col gap-6 px-1 py-6 transition-colors hover:bg-white/[0.03] sm:px-4"
-                >
-                  <span className="text-xs text-accent-2 tabular">
-                    {formatNumber(i + 1, locale, { minimumIntegerDigits: 2 })}
-                  </span>
-                  <span className="flex items-center justify-between gap-2 text-[0.9375rem] font-medium">
-                    {t(`journey.${step.key}`)}
-                    <ArrowRight aria-hidden className="size-4 opacity-0 transition-opacity group-hover:opacity-100" />
-                  </span>
-                </Link>
-              </li>
-            ))}
-          </ol>
-        </div>
+      <QuickSearch />
+      <BrowseBy />
+      <VehicleShelves />
+      <PopularBrands />
+      <EvTeaser />
+      <SavingsTeaser />
+      <CompareTeaser />
+      <section aria-labelledby="emi-highlight" className="container-page mt-24">
+        <SectionHeading id="emi-highlight" eyebrow={t("eyebrow")} title={t("title")} lead={t("lead")} link={{ href: "/finance", label: t("all") }} />
+        <EmiCalculator initialPrice={financeConfig.samplePrice} />
       </section>
+      <TestDriveBand />
+      <AfterSales />
+      <Testimonials />
+      <ShowroomStrip />
     </>
   );
 }
