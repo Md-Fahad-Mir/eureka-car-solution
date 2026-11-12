@@ -99,18 +99,6 @@ export type ServiceBooking = RecordBase & {
   timeline: StatusEvent<ServiceStatus>[];
 };
 
-export type CorporateInquiry = RecordBase & {
-  company: string;
-  industry: string;
-  fleetSize: string;
-  vehicleTypes: string[];
-  timeline: string;
-  financingInterest: boolean;
-  customer: ContactDetails & { designation?: string };
-  message?: string;
-  consent: boolean;
-};
-
 export type ContactMessage = RecordBase & {
   showroomId?: string;
   topic: string;

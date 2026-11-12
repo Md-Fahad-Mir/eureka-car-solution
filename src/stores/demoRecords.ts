@@ -2,7 +2,6 @@ import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import type {
   ContactMessage,
-  CorporateInquiry,
   CustomerProfile,
   FinanceApplication,
   PurchaseInquiry,
@@ -20,7 +19,6 @@ export type DemoRecordCollections = {
   inquiries: PurchaseInquiry[];
   financeApplications: FinanceApplication[];
   serviceBookings: ServiceBooking[];
-  corporateInquiries: CorporateInquiry[];
   contactMessages: ContactMessage[];
 };
 
@@ -37,7 +35,6 @@ const empty: DemoRecordCollections = {
   inquiries: [],
   financeApplications: [],
   serviceBookings: [],
-  corporateInquiries: [],
   contactMessages: [],
 };
 

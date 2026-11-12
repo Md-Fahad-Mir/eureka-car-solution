@@ -1,4 +1,4 @@
-import type { ContactMessage, CorporateInquiry, PurchaseInquiry } from "@/types";
+import type { ContactMessage, PurchaseInquiry } from "@/types";
 import { assertMockPhoneAccepted, demoReference, mockDb, normalizeReference, nowIso, simulateLatency } from "./client";
 
 export type NewsletterResult = { reference: string; demo: true };
@@ -27,17 +27,6 @@ export async function getPurchaseInquiry(reference: string): Promise<PurchaseInq
   await simulateLatency();
   const ref = normalizeReference(reference);
   return mockDb().inquiries.find((i) => i.reference === ref) ?? null;
-}
-
-export type CorporateInquiryInput = Omit<CorporateInquiry, "reference" | "createdAt" | "isDemo">;
-
-export async function submitCorporateInquiry(input: CorporateInquiryInput): Promise<CorporateInquiry> {
-  // TODO(api): POST /corporate-inquiries → CorporateInquiry
-  await simulateLatency();
-  assertMockPhoneAccepted(input.customer.phone);
-  const inquiry: CorporateInquiry = { ...input, reference: demoReference("CF"), createdAt: nowIso(), isDemo: true };
-  mockDb().add("corporateInquiries", inquiry);
-  return inquiry;
 }
 
 export type ContactMessageInput = Omit<ContactMessage, "reference" | "createdAt" | "isDemo">;

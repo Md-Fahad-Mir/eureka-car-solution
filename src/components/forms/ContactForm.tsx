@@ -9,7 +9,7 @@ import { Checkbox } from "@/components/ui/Choice";
 import { Select, Textarea } from "@/components/ui/Input";
 import { WhatsAppButton } from "@/components/whatsapp/WhatsAppButton";
 import { submitContactMessage } from "@/lib/api/inquiries";
-import { CONTACT_TOPICS, contactSchema, type ContactFormInput, type ContactFormOutput } from "@/lib/validation/enquiries";
+import { CONTACT_TOPICS, contactSchema, type ContactFormInput, type ContactFormOutput } from "@/lib/validation/contact";
 import { toast } from "@/stores/toast";
 import type { ContactMessage, Showroom } from "@/types";
 import { applyApiError } from "./applyApiError";

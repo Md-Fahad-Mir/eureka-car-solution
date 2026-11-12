@@ -22,13 +22,11 @@ const GENERIC: Record<GenericKind, WhatsAppContext> = {
 function topicOrder(pathname: string): GenericKind[] {
   const first: GenericKind | null = pathname.startsWith("/service")
     ? "service"
-    : pathname.startsWith("/fleet")
-      ? "corporate"
-      : pathname.startsWith("/finance") || pathname.startsWith("/savings")
-        ? "emiInquiry"
-        : pathname.startsWith("/test-drive")
-          ? "testDrive"
-          : null;
+    : pathname.startsWith("/finance") || pathname.startsWith("/savings")
+      ? "emiInquiry"
+      : pathname.startsWith("/test-drive")
+        ? "testDrive"
+        : null;
   const base: GenericKind[] = ["testDrive", "emiInquiry", "service", "corporate", "general"];
   return first ? [first, ...base.filter((k) => k !== first)] : base;
 }

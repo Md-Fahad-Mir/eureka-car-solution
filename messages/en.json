@@ -84,7 +84,6 @@
       "allVehicles": "All vehicles",
       "ev": "EV Centre",
       "finance": "Finance",
-      "fleet": "Fleet",
       "showrooms": "Showrooms",
       "testDrive": "Book a test drive",
       "inquiry": "Purchase inquiry",
@@ -220,8 +219,6 @@
     "year": "Enter the model year, for example 2018.",
     "registration": "Enter the registration number, for example Dhaka Metro-GA 11-2345.",
     "selectPackage": "Choose at least one service package.",
-    "company": "Enter your company's name.",
-    "selectOne": "Choose at least one option.",
     "messageShort": "Please write a little more (at least 10 characters)."
   },
   "toast": {
@@ -1539,155 +1536,6 @@
       "delivered": "Delivered"
     },
     "demoNotice": "Demo mode: this timeline is illustrative and updates are not live."
-  },
-  "fleet": {
-    "metaTitle": "Corporate and fleet",
-    "metaDescription": "Vehicles, financing and maintenance for businesses: from a few company cars to a full commercial fleet.",
-    "breadcrumb": "Fleet",
-    "eyebrow": "Corporate and fleet",
-    "title": "Vehicles that keep your business moving",
-    "lead": "From three company cars to a hundred delivery vans: one team for buying, financing, servicing and replacing your fleet.",
-    "cta": "Talk to our fleet team",
-    "values": {
-      "pricing": {
-        "title": "Volume pricing",
-        "body": "Better pricing as your order grows, quoted openly per vehicle."
-      },
-      "contact": {
-        "title": "One point of contact",
-        "body": "A named account manager for quotes, deliveries and service."
-      },
-      "finance": {
-        "title": "Business finance",
-        "body": "Conventional and Islamic fleet finance through partner institutions."
-      },
-      "uptime": {
-        "title": "Uptime first",
-        "body": "Priority service slots and planned maintenance to keep vehicles earning."
-      }
-    },
-    "managementTitle": "Fleet management, handled",
-    "managementLead": "Hand us the routine work and keep your attention on the business. Everything below is illustrative and tailored per contract.",
-    "management": {
-      "maintenance": {
-        "title": "Planned maintenance",
-        "body": "Services scheduled by mileage and date, across every vehicle."
-      },
-      "pickup": {
-        "title": "Pickup and drop-off",
-        "body": "We collect vehicles for service so drivers stay on the road."
-      },
-      "replacement": {
-        "title": "Replacement vehicles",
-        "body": "A stand-in while yours is in the workshop, on eligible contracts."
-      },
-      "invoicing": {
-        "title": "One monthly invoice",
-        "body": "Consolidated billing for purchases, service and parts."
-      },
-      "handover": {
-        "title": "Driver handover",
-        "body": "A walk-through for your drivers on every new vehicle, EVs included."
-      },
-      "reports": {
-        "title": "Fleet reports",
-        "body": "Service history, running costs and upcoming due dates in one place."
-      }
-    },
-    "rangesTitle": "Vehicles for work",
-    "ranges": {
-      "commercial": {
-        "title": "Commercial vehicles",
-        "body": "Vans, light trucks and people carriers."
-      },
-      "pickup": {
-        "title": "Pickups",
-        "body": "Single and double cab, for sites and supply runs."
-      },
-      "tractor": {
-        "title": "Tractors",
-        "body": "For farms, cooperatives and agri-businesses."
-      },
-      "ev": {
-        "title": "Electric vehicles",
-        "body": "Lower running costs for city routes and staff transport."
-      }
-    },
-    "browse": "Browse",
-    "financeTitle": "Finance a fleet without tying up capital",
-    "financeLead": "Spread the cost with conventional or Shariah-based finance from partner institutions. Use the EMI calculator to estimate monthly payments for any vehicle.",
-    "financeCta": "Open the EMI calculator",
-    "processTitle": "How a bulk purchase works",
-    "processLead": "An illustrative outline. Timelines depend on the vehicles, stock and financing.",
-    "process": {
-      "brief": {
-        "title": "Your brief",
-        "body": "Routes, loads, budget and timing."
-      },
-      "proposal": {
-        "title": "Proposal",
-        "body": "Recommended vehicles with an itemised quote."
-      },
-      "trial": {
-        "title": "Trial",
-        "body": "Test drives, or a short trial for your drivers."
-      },
-      "paperwork": {
-        "title": "Finance and paperwork",
-        "body": "Financing, registration and insurance arranged."
-      },
-      "delivery": {
-        "title": "Delivery",
-        "body": "Staggered delivery, driver handover and a service plan."
-      }
-    },
-    "formTitle": "Tell us about your fleet",
-    "formLead": "A few details help us come back with a useful proposal rather than a generic brochure.",
-    "demoNotice": "Demo mode: inquiries are kept in this browser and are not sent to Eureka.",
-    "form": {
-      "company": "Company name",
-      "industry": "Industry",
-      "choose": "Choose…",
-      "industries": {
-        "logistics": "Logistics and delivery",
-        "manufacturing": "Manufacturing",
-        "rideHailing": "Ride-hailing and rental",
-        "construction": "Construction",
-        "agriculture": "Agriculture",
-        "retail": "Retail and distribution",
-        "ngo": "NGO or development",
-        "government": "Government",
-        "other": "Other"
-      },
-      "timeline": "When do you need them?",
-      "timelines": {
-        "now": "Within a month",
-        "quarter": "In the next 3 months",
-        "halfYear": "In the next 6 months",
-        "exploring": "Just exploring"
-      },
-      "fleetSize": "How many vehicles?",
-      "sizes": {
-        "upTo5": "1–5",
-        "upTo20": "6–20",
-        "upTo50": "21–50",
-        "over50": "More than 50"
-      },
-      "vehicleTypes": "Which types?",
-      "financing": "We're interested in financing",
-      "financingHint": "We'll include sample finance options in the proposal.",
-      "contact": "Who should we contact?",
-      "designation": "Designation",
-      "message": "Anything else?",
-      "messagePlaceholder": "Routes, payloads, charging access, branding…",
-      "consent": "I agree that Eureka may contact me about this inquiry by phone, WhatsApp or email.",
-      "submit": "Send fleet inquiry",
-      "sending": "Sending your inquiry",
-      "done": {
-        "title": "Fleet inquiry received (demo)",
-        "body": "Thank you. In a live system our fleet team would contact you about {company}'s requirements."
-      }
-    }
   },
   "showrooms": {
     "metaTitle": "Showrooms and contact",

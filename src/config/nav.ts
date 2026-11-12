@@ -75,7 +75,6 @@ export const servicesMenu: NavGroup[] = [
 export const primaryLinks: NavLink[] = [
   { key: "links.ev", href: "/ev" },
   { key: "links.finance", href: "/finance" },
-  { key: "links.fleet", href: "/fleet" },
   { key: "links.showrooms", href: "/showrooms" },
 ];
 
@@ -107,7 +106,6 @@ export const footerColumns: NavGroup[] = [
       { key: "links.ev", href: "/ev" },
       { key: "links.compare", href: "/compare" },
       { key: "links.inquiry", href: "/inquiry" },
-      { key: "links.fleet", href: "/fleet" },
     ],
   },
   {

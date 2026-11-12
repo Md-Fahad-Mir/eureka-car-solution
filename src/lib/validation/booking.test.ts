@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { serviceBookingSchema, testDriveSchema } from "./booking";
-import { contactSchema, corporateInquirySchema } from "./enquiries";
+import { contactSchema } from "./contact";
 
 const contact = { name: "Rahim Uddin", phone: "01712 345678", email: "", consent: true };
 const errorsOf = (r: { success: boolean; error?: { issues: { path: PropertyKey[]; message: string }[] } }) =>
@@ -42,12 +42,7 @@ describe("serviceBookingSchema", () => {
   });
 });
 
-describe("corporate and contact schemas", () => {
-  it("requires company details, a vehicle type and an email for corporate inquiries", () => {
-    const r = corporateInquirySchema.safeParse({ company: "A", industry: "logistics", fleetSize: "upTo20", vehicleTypes: [], timeline: "quarter", financingInterest: false, ...contact });
-    expect(errorsOf(r)).toMatchObject({ company: "company", vehicleTypes: "selectOne", email: "email" });
-  });
-
+describe("contactSchema", () => {
   it("needs a real message on the contact form", () => {
     const r = contactSchema.safeParse({ topic: "sales", message: "hi", ...contact });
     expect(errorsOf(r)).toMatchObject({ message: "messageShort" });
