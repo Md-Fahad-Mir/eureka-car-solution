@@ -118,3 +118,19 @@ export const footerColumns: NavGroup[] = [
     ],
   },
 ];
+
+/** Demo account sections (labels: messages `account.nav.*`). */
+export const accountNav = [
+  { key: "overview", href: "/account", exact: true },
+  { key: "profile", href: "/account/profile" },
+  { key: "vehicles", href: "/account/vehicles" },
+  { key: "testDrives", href: "/account/test-drives" },
+  { key: "inquiries", href: "/account/inquiries" },
+  { key: "finance", href: "/account/finance" },
+  { key: "emi", href: "/account/emi" },
+  { key: "service", href: "/account/service" },
+  { key: "saved", href: "/account/saved" },
+  { key: "referrals", href: "/account/referrals" },
+  { key: "notifications", href: "/account/notifications" },
+] as const;
+export type AccountSectionKey = (typeof accountNav)[number]["key"];

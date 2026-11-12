@@ -1853,5 +1853,241 @@
       "next": "Next guide",
       "relatedTitle": "Keep reading"
     }
+  },
+  "account": {
+    "metaTitle": "{section} · My account (demo)",
+    "eyebrow": "My account",
+    "demoBadge": "Demo account",
+    "demoNotice": "Demo account: sample data for a fictional customer, plus anything you've booked or sent in this browser. Nothing here is real or stored by Eureka.",
+    "navLabel": "Account sections",
+    "unread": "unread",
+    "signOut": "Sign out",
+    "loadError": "We couldn't load your account.",
+    "nav": {
+      "overview": "Overview",
+      "profile": "Profile",
+      "vehicles": "My vehicles",
+      "testDrives": "Test drives",
+      "inquiries": "Inquiries",
+      "finance": "Finance applications",
+      "emi": "EMI schedule",
+      "service": "Service",
+      "saved": "Saved vehicles",
+      "referrals": "Referrals",
+      "notifications": "Notifications"
+    },
+    "status": {
+      "testDrive": {
+        "requested": "Requested",
+        "confirmed": "Confirmed",
+        "completed": "Completed",
+        "cancelled": "Cancelled"
+      },
+      "inquiry": {
+        "received": "Received",
+        "contacted": "Contacted",
+        "closed": "Closed"
+      }
+    },
+    "overview": {
+      "greeting": "Hello, {name}",
+      "memberSince": "Member since {date}",
+      "nextBooking": "Next booking",
+      "testDrive": "Test drive",
+      "service": "Service",
+      "viewBookings": "View bookings",
+      "bookTestDrive": "Book a test drive",
+      "noBooking": "Nothing booked yet.",
+      "applications": "Active applications",
+      "viewApplications": "View applications",
+      "noApplications": "No applications in progress.",
+      "emiDue": "Next EMI",
+      "dueOn": "Due on {date}",
+      "emiProgress": "{paid} of {total} instalments paid",
+      "viewSchedule": "View EMI schedule",
+      "noEmi": "No instalment due.",
+      "notifications": "{count, plural, =0 {Your notifications} one {# unread notification} other {# unread notifications}}",
+      "viewNotifications": "View notifications",
+      "allRead": "You're all caught up.",
+      "quickActions": "Quick actions",
+      "bookService": "Book a service",
+      "browse": "Browse vehicles"
+    },
+    "profile": {
+      "title": "Profile",
+      "lead": "Your contact details and preferences. Member since {date}.",
+      "city": "City",
+      "language": "Preferred language",
+      "address": "Address",
+      "contact": "Preferred contact",
+      "localNote": "Demo: changes are saved in this browser only.",
+      "save": "Save changes",
+      "saving": "Saving your changes",
+      "saved": "Profile saved (demo)",
+      "savedBody": "Saved in this browser only."
+    },
+    "vehicles": {
+      "title": "My vehicles",
+      "lead": "Vehicles you own, with service due dates.",
+      "serviceOverdue": "Service overdue",
+      "serviceSoon": "Service due soon",
+      "bookService": "Book a service",
+      "viewEmi": "View EMI",
+      "fuel": "Fuel",
+      "odometer": "Odometer",
+      "nextService": "Next service due",
+      "purchased": "Purchased",
+      "year": "Model year"
+    },
+    "testDrives": {
+      "title": "Test drives",
+      "lead": "Upcoming and past test drives.",
+      "book": "Book a test drive",
+      "details": "View booking",
+      "enquire": "Enquire to buy",
+      "when": "Date and time",
+      "where": "Showroom",
+      "booked": "Booked on",
+      "empty": "No test drives yet."
+    },
+    "inquiries": {
+      "title": "Purchase inquiries",
+      "lead": "Vehicles you've asked us about.",
+      "new": "New inquiry",
+      "sent": "Sent on",
+      "empty": "No inquiries yet."
+    },
+    "finance": {
+      "title": "Finance applications",
+      "lead": "Your EMI and Islamic finance applications and where they stand.",
+      "apply": "Apply for financing",
+      "track": "Track status",
+      "financed": "Amount financed",
+      "tenure": "Tenure",
+      "type": "Type",
+      "empty": "No applications yet.",
+      "note": "Partner institutions make every credit decision. Eureka doesn't approve loans."
+    },
+    "emi": {
+      "title": "EMI schedule",
+      "lead": "Your instalments: what's paid, what's next and how far along you are.",
+      "nextDue": "Next instalment",
+      "dueOn": "Instalment {n}, due {date}",
+      "allPaid": "Every instalment is paid.",
+      "progress": "{paid} of {total} instalments paid",
+      "monthly": "Monthly instalment",
+      "principal": "Amount financed",
+      "rate": "Annual rate",
+      "tenure": "Tenure",
+      "paidSoFar": "Paid so far",
+      "remaining": "Remaining",
+      "partner": "Finance",
+      "schedule": "Full schedule",
+      "yearSummary": "{paid} of {total} paid",
+      "instalment": "No.",
+      "dueDate": "Due date",
+      "amount": "Amount",
+      "statusCol": "Status",
+      "status": {
+        "paid": "Paid",
+        "due": "Due",
+        "overdue": "Overdue",
+        "upcoming": "Upcoming"
+      },
+      "note": "Demo schedule. Payments are made to the finance partner, never on this website."
+    },
+    "service": {
+      "title": "Service",
+      "lead": "Service bookings and the work done on your vehicles.",
+      "book": "Book a service",
+      "track": "Track",
+      "when": "Date and time",
+      "centre": "Service centre",
+      "packages": "Packages",
+      "empty": "No service bookings yet.",
+      "historyTitle": "Service history",
+      "historyLead": "Completed services on your vehicles.",
+      "date": "Date",
+      "vehicle": "Vehicle",
+      "work": "Work done",
+      "odometer": "Odometer",
+      "amount": "Amount"
+    },
+    "saved": {
+      "title": "Saved vehicles",
+      "lead": "Vehicles you've saved. Tap the heart on a card to remove one.",
+      "empty": "No saved vehicles",
+      "emptyBody": "Tap the heart on any vehicle to keep it here.",
+      "browse": "Browse vehicles"
+    },
+    "referrals": {
+      "title": "Referrals",
+      "lead": "Know someone looking for a vehicle? Share your code.",
+      "yourCode": "Your referral code",
+      "copy": "Copy code",
+      "copied": "Code copied",
+      "copyFailed": "Couldn't copy. Please select the code and copy it.",
+      "shareWhatsApp": "Share on WhatsApp",
+      "newTab": "(opens in a new tab)",
+      "share": "Share",
+      "shareMessage": "I'm a Eureka Car Solution customer. Use my referral code {code} when you enquire or book a test drive: {url}",
+      "steps": {
+        "share": {
+          "title": "Share your code",
+          "body": "Send it to friends and family on WhatsApp or anywhere else."
+        },
+        "drive": {
+          "title": "They visit or test-drive",
+          "body": "They quote your code when they enquire or book."
+        },
+        "reward": {
+          "title": "You both benefit",
+          "body": "When they buy, you receive a thank-you reward (sample programme)."
+        }
+      },
+      "listTitle": "People you've referred",
+      "earned": "Rewards earned: {amount}",
+      "invited": "Invited {date}",
+      "status": {
+        "invited": "Invited",
+        "testDriven": "Test-drove",
+        "purchased": "Purchased"
+      },
+      "note": "Sample referral programme. Rewards and terms are illustrative and would be confirmed by Eureka."
+    },
+    "notifications": {
+      "title": "Notifications",
+      "lead": "{count, plural, =0 {You're all caught up.} one {You have # unread notification.} other {You have # unread notifications.}}",
+      "markAll": "Mark all as read",
+      "new": "New",
+      "view": "View",
+      "markRead": "Mark as read"
+    }
+  },
+  "signIn": {
+    "metaTitle": "Sign in (demo)",
+    "breadcrumb": "Sign in",
+    "eyebrow": "My account",
+    "title": "Sign in to your account",
+    "lead": "Follow your bookings, applications, EMI schedule and service in one place.",
+    "demoNotice": "Demo sign-in: there's no real account or password. It only remembers in this browser that you're viewing the demo customer.",
+    "signedInTitle": "You're signed in (demo)",
+    "signedInAs": "Signed in as {email} in this browser.",
+    "signedInDemo": "You're viewing the demo customer in this browser.",
+    "goToAccount": "Go to my account",
+    "signOut": "Sign out",
+    "demoTitle": "Continue as demo customer",
+    "demoBody": "Explore a sample account with bookings, a finance application, an EMI schedule and service history, plus anything you've done in this browser.",
+    "demoButton": "Continue as demo customer",
+    "signingIn": "Signing you in",
+    "emailTitle": "Sign in with email",
+    "emailBody": "We'll show you a one-time code. In demo mode no email is sent.",
+    "email": "Email",
+    "sendCode": "Get a code",
+    "sending": "Getting your code",
+    "codeNotice": "Demo: no email was sent to {email}. Your code is {code}.",
+    "code": "One-time code",
+    "verify": "Sign in",
+    "changeEmail": "Use a different email"
   }
 }

@@ -32,3 +32,27 @@ describe("reference lookups", () => {
     expect(await trackServiceBooking("DEMO-SB-0000")).toBeNull();
   });
 });
+
+describe("demo sign-in", () => {
+  it("starts a demo session and merges the demo customer's saved vehicles", async () => {
+    const { useFavoritesStore } = await import("@/stores/favorites");
+    const { useDemoSessionStore } = await import("@/stores/demoSession");
+    const { signInDemo, signOut } = await import("./account");
+    useFavoritesStore.setState({ ids: ["already-saved"] });
+    const session = await signInDemo();
+    expect(session.method).toBe("demo");
+    expect(useDemoSessionStore.getState().session?.customerId).toBe("demo-customer");
+    const ids = useFavoritesStore.getState().ids;
+    expect(ids[0]).toBe("already-saved");
+    expect(ids).toHaveLength(4);
+    await signInDemo();
+    expect(useFavoritesStore.getState().ids).toHaveLength(4);
+    await signOut();
+    expect(useDemoSessionStore.getState().session).toBeNull();
+  });
+
+  it("rejects a wrong one-time code", async () => {
+    const { verifySignInCode } = await import("./account");
+    await expect(verifySignInCode("a@example.com", "000000")).rejects.toMatchObject({ field: "code", messageKey: "otp" });
+  });
+});

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { buildWhatsAppLink, whatsAppMessage, type WhatsAppTranslator } from "./whatsapp";
+import { buildWhatsAppLink, buildWhatsAppShareLink, whatsAppMessage, type WhatsAppTranslator } from "./whatsapp";
 import en from "../../messages/en.json";
 
 /** Minimal ICU-free translator over the real English catalogue (only {name} substitution is used). */
@@ -73,5 +73,11 @@ describe("whatsAppMessage", () => {
     expect(msg).toContain("Vehicle: Honda Vezel 2019");
     expect(msg).toContain("Registration: Dhaka Metro Ga 12-3456");
     expect(msg).toContain("Reference: DEMO-SB-1234");
+  });
+});
+
+describe("buildWhatsAppShareLink", () => {
+  it("has no recipient, so WhatsApp lets the customer choose a contact", () => {
+    expect(buildWhatsAppShareLink("Code: AYESHA-EU24 & more")).toBe("https://wa.me/?text=Code%3A%20AYESHA-EU24%20%26%20more");
   });
 });

@@ -74,6 +74,14 @@ export function buildWhatsAppLink(
   return `https://wa.me/${digits}?text=${encodeURIComponent(message)}`;
 }
 
+/**
+ * Share link with no recipient: WhatsApp asks the customer whom to send it to
+ * (used to share a referral code with a friend, not to message Eureka).
+ */
+export function buildWhatsAppShareLink(message: string): string {
+  return `https://wa.me/?text=${encodeURIComponent(message)}`;
+}
+
 /** Composes the localised message text for a WhatsApp context. */
 export function whatsAppMessage(t: WhatsAppTranslator, ctx: WhatsAppContext): string {
   const lines: string[] = [];

@@ -34,11 +34,13 @@ type NavItemLinkProps = ComponentProps<typeof Link> & {
   href: string;
   /** Classes added when the link matches the current section. */
   activeClassName?: string;
+  /** Match only this exact path, not its sub-pages (e.g. an overview page). */
+  exact?: boolean;
 };
 
-function ActiveLink({ href, activeClassName, className, ...props }: NavItemLinkProps) {
+function ActiveLink({ href, activeClassName, exact, className, ...props }: NavItemLinkProps) {
   const pathname = usePathname();
-  const active = pathname === href || pathname.startsWith(`${href}/`);
+  const active = pathname === href || (!exact && pathname.startsWith(`${href}/`));
   return (
     <Link
       href={href}
@@ -50,10 +52,10 @@ function ActiveLink({ href, activeClassName, className, ...props }: NavItemLinkP
 }
 
 /** Link that marks itself `aria-current="page"` within its section. */
-export function NavItemLink({ activeClassName, ...props }: NavItemLinkProps) {
+export function NavItemLink({ activeClassName, exact, ...props }: NavItemLinkProps) {
   return (
     <Suspense fallback={<Link {...props} />}>
-      <ActiveLink activeClassName={activeClassName} {...props} />
+      <ActiveLink activeClassName={activeClassName} exact={exact} {...props} />
     </Suspense>
   );
 }

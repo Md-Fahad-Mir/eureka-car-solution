@@ -4,6 +4,7 @@ import { vehicles } from "@/data/mock/vehicles";
 import { calculateEmi } from "@/lib/calc/emi";
 import { addMonthsToKey, toDhakaDateKey } from "@/lib/format/date";
 import { useDemoSessionStore, type DemoSession } from "@/stores/demoSession";
+import { useFavoritesStore } from "@/stores/favorites";
 import { ensureHydrated } from "@/stores/persist";
 import type { CustomerDashboard, CustomerProfile, DateKey, EmiSchedule, VehicleWithBrand } from "@/types";
 import { ApiFieldError, mockDb, nowIso, simulateLatency } from "./client";
@@ -99,6 +100,11 @@ function startSession(session: Omit<DemoSession, "customerId" | "signedInAt">): 
   ensureHydrated(useDemoSessionStore);
   const full: DemoSession = { customerId: DEMO_CUSTOMER_ID, signedInAt: nowIso(), ...session };
   useDemoSessionStore.getState().setSession(full);
+  // The demo customer's saved vehicles join any the visitor saved before signing in.
+  ensureHydrated(useFavoritesStore);
+  const favourites = useFavoritesStore.getState();
+  const seeded = buildDemoCustomer(toDhakaDateKey(new Date())).favouriteIds;
+  useFavoritesStore.setState({ ids: [...new Set([...favourites.ids, ...seeded])] });
   return full;
 }
 
