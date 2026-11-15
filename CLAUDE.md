@@ -24,6 +24,10 @@ Next.js 16 App Router (Turbopack, `cacheComponents`), React 19, TypeScript stric
 - `src/stores/`: Zustand stores (compare, favourites, demo records/session) only.
 - `src/types/`: domain models.
 
+## Motion
+- Reveal on scroll with `data-reveal` (`rise` default, `fade`, `scale`, `mask`, `wipe`, `draw`) and `style={stagger(i, delayMs)}` from `lib/motion`. Put it on wrappers, not on elements with their own hover transitions. Tokens: `--ease-cinema`, `--dur-*`, `--shadow-soft/lift`, `--gold`, `section-gap`.
+- No animation libraries. Numbers that roll or count up use `ui/AnimatedNumber`. Everything must stay visible without JS and with reduced motion.
+
 ## i18n rule
 - No hard-coded UI strings in components. Copy goes in `messages/en.json` and `messages/bn.json` by feature namespace.
 - Content data uses `LocalizedText { en, bn }`.

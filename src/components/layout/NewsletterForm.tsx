@@ -52,7 +52,7 @@ export function NewsletterForm() {
           placeholder={t("emailPlaceholder")}
           aria-invalid={error ? true : undefined}
           aria-describedby={error ? "newsletter-email-error" : undefined}
-          className="h-12 flex-1 rounded-full border border-line-on-dark bg-white/[0.04] px-5 text-[0.9375rem] text-on-dark placeholder:text-muted-on-dark focus:border-on-dark focus:outline-none focus:ring-2 focus:ring-accent/40 aria-[invalid=true]:border-[#e58a8a]"
+          className="h-12 w-full rounded-full sm:flex-1 border border-line-on-dark bg-white/[0.04] px-5 text-[0.9375rem] text-on-dark placeholder:text-muted-on-dark focus:border-on-dark focus:outline-none focus:ring-2 focus:ring-accent/40 aria-[invalid=true]:border-[#e58a8a]"
           {...register("email")}
         />
         <Button type="submit" variant="light" size="lg" loading={isSubmitting}>

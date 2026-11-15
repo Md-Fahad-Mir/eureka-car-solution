@@ -21,6 +21,8 @@ const smooth = (t: number) => t * t * (3 - 2 * t);
 const sstep = (a: number, b: number, x: number) => smooth(clamp01((x - a) / (b - a)));
 /** Legacy (r128) light intensities → physical units (r155+). */
 const LIGHT = Math.PI;
+/** Studio exposure once the lights are fully up (the reference's value). */
+const EXPOSURE = 1.02;
 
 export type HeroWorldState = { cap: number; swatch: number; progress: number };
 
@@ -242,9 +244,12 @@ type Rig = {
   casters: THREE.Mesh[];
   paintMats: THREE.MeshStandardMaterial[];
   wake?: (w: number) => void;
-  update: (e: number, theta: number) => void;
+  /** `body`: suspension motion of the body only (wheels stay planted): heave (m) and pitch (rad) about the rear axle. */
+  update: (e: number, theta: number, body: BodyMotion) => void;
   dispose?: () => void;
 };
+
+type BodyMotion = { heave: number; pitch: number };
 
 /* ───────────────────────── Scroll choreography ───────────────────────── */
 
@@ -341,7 +346,7 @@ export function createHeroWorld(o: HeroWorldOptions): HeroWorld {
   };
 
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.02;
+  renderer.toneMappingExposure = EXPOSURE;
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFShadowMap; // PCFSoftShadowMap was removed in r18x
   renderer.shadowMap.autoUpdate = false;
@@ -703,6 +708,9 @@ export function createHeroWorld(o: HeroWorldOptions): HeroWorld {
 
   const procRoot = new THREE.Group();
   car.add(procRoot);
+  /** Body, cabin and trim (everything but the wheels), moved by the suspension. */
+  const procBody = new THREE.Group();
+  procRoot.add(procBody);
   const procParts: Part[] = [], procShells: THREE.Mesh[] = [], procCasters: THREE.Mesh[] = [];
   const makePart = (parent: THREE.Object3D, list: Part[], c: V3, opt: Partial<Omit<Part, "g" | "c">> = {}): Part => {
     const g = new THREE.Group();
@@ -754,7 +762,7 @@ export function createHeroWorld(o: HeroWorldOptions): HeroWorld {
   const isCabTop = (x: number, k: number) => inR(x, B.cab0, B.cab1) && k >= 11 && k <= 14;
   const coreKeep = (x: number, k: number) => x < B.frontB && x > B.rearB && !isDoor(x, k) && !isHood(x, k) && !isCabTop(x, k);
   const bodyPart = (keep: (x: number, k: number, s: number) => boolean, opt: Partial<Omit<Part, "g" | "c">>) => {
-    const geo = loft(stations, bodyHalf, keep), P = makePart(procRoot, procParts, centerOf(geo), opt);
+    const geo = loft(stations, bodyHalf, keep), P = makePart(procBody, procParts, centerOf(geo), opt);
     shell(geo, paint, P);
     return P;
   };
@@ -787,7 +795,7 @@ export function createHeroWorld(o: HeroWorldOptions): HeroWorld {
     g.computeVertexNormals();
     return g;
   })();
-  const WSCREEN = makePart(procRoot, procParts, centerOf(wsGeo), { off: V(0.35, 1.55, 0), rot: { x: 0, y: 0, z: -0.35 }, d: 0.2, arc: 0.2 });
+  const WSCREEN = makePart(procBody, procParts, centerOf(wsGeo), { off: V(0.35, 1.55, 0), rot: { x: 0, y: 0, z: -0.35 }, d: 0.2, arc: 0.2 });
   shell(wsGeo, wsGlass, WSCREEN).castShadow = false;
   {
     const frame: V3[] = [];
@@ -821,7 +829,7 @@ export function createHeroWorld(o: HeroWorldOptions): HeroWorld {
     g.computeVertexNormals();
     return g;
   };
-  const HUMPS = makePart(procRoot, procParts, V(-1.1, 0.98, 0), { off: V(-0.35, 1.3, 0), rot: { x: 0, y: 0, z: 0.15 }, d: 0.22, arc: 0.2 });
+  const HUMPS = makePart(procBody, procParts, V(-1.1, 0.98, 0), { off: V(-0.35, 1.3, 0), rot: { x: 0, y: 0, z: 0.15 }, d: 0.22, arc: 0.2 });
   [0.37, -0.37].forEach((zc) => shell(humpGeo(zc), paint, HUMPS));
 
   // Side intakes
@@ -1024,7 +1032,7 @@ export function createHeroWorld(o: HeroWorldOptions): HeroWorld {
   // Mirrors
   [-1, 1].forEach((s) => {
     const mx = 0.8, my = ybelt(mx) + 0.1, mz = s * (plan(mx) * 0.86 + 0.13);
-    const P = makePart(procRoot, procParts, V(mx, my, mz), { off: V(0.5, 1.25, s * 1.9), rot: { x: s * 0.6, y: 0.3, z: 0.4 }, d: 0.22, arc: 0.2 });
+    const P = makePart(procBody, procParts, V(mx, my, mz), { off: V(0.5, 1.25, s * 1.9), rot: { x: s * 0.6, y: 0.3, z: 0.4 }, d: 0.22, arc: 0.2 });
     const housing = shadowed(new THREE.Mesh(new THREE.SphereGeometry(0.1, 32, 20), paint));
     housing.scale.set(1.45, 0.55, 0.85);
     housing.position.set(mx, my, mz);
@@ -1041,7 +1049,7 @@ export function createHeroWorld(o: HeroWorldOptions): HeroWorld {
 
   // Cockpit
   const seat = (x: number, z: number, y0: number) => {
-    const P = makePart(procRoot, procParts, V(x, y0, z));
+    const P = makePart(procBody, procParts, V(x, y0, z));
     const gg = new THREE.Group();
     gg.position.set(x, y0, z);
     const cush = new THREE.Mesh(rbox(0.5, 0.11, 0.48, 0.05), leather);
@@ -1063,7 +1071,7 @@ export function createHeroWorld(o: HeroWorldOptions): HeroWorld {
   Object.assign(seats[0], { off: V(0.1, 1.45, 0.6), rot: { x: 0.15, y: 0.2, z: 0.1 }, d: 0.26, arc: 0.15 });
   Object.assign(seats[1], { off: V(0.1, 1.45, -0.6), rot: { x: -0.15, y: -0.2, z: 0.1 }, d: 0.26, arc: 0.15 });
   {
-    const P = makePart(procRoot, procParts, V(0.42, 0.74, 0), { off: V(0.35, 1.05, 0), rot: { x: 0, y: 0, z: 0.15 }, d: 0.28, arc: 0.1 });
+    const P = makePart(procBody, procParts, V(0.42, 0.74, 0), { off: V(0.35, 1.05, 0), rot: { x: 0, y: 0, z: 0.15 }, d: 0.28, arc: 0.1 });
     const dash = shadowed(new THREE.Mesh(rbox(0.34, 0.18, 1.5, 0.06), dashMat));
     dash.position.set(0.52, 0.74, 0);
     put(P, dash);
@@ -1175,8 +1183,11 @@ export function createHeroWorld(o: HeroWorldOptions): HeroWorld {
       const n = Math.floor(clamp01(w / 0.85) * BAR_SEG) * BAR_RAD * 6;
       barHalves.forEach((m) => m.geometry.setDrawRange(0, n));
     },
-    update(e, theta) {
+    update(e, theta, body) {
       animParts(procParts, e);
+      // Suspension: pitch about the rear axle, plus heave.
+      procBody.rotation.z = body.pitch;
+      procBody.position.set(RXP - RXP * Math.cos(body.pitch), -RXP * Math.sin(body.pitch) + body.heave, 0);
       const p = smooth(clamp01((e - 0.1) / 0.62)), q = smooth(clamp01((e - 0.22) / 0.62));
       procWheels.forEach((w) => {
         w.g.position.set(w.base.x + Math.sign(w.base.x) * 0.2 * p, w.base.y + 0.12 * p, w.base.z + w.side * 0.42 * p);
@@ -1416,6 +1427,9 @@ export function createHeroWorld(o: HeroWorldOptions): HeroWorld {
   let clockT = 0, theta = 0, cur = 0, userPaint: number | null = null;
   /** Clock time the intro started (car in place), or null while loading. */
   let startT: number | null = null;
+  /** Suspension state: last tunnel blend and its smoothed rate (the "acceleration"). */
+  let lastTn = 0, accel = 0;
+  const bodyMotion: BodyMotion = { heave: 0, pitch: 0 };
   let lastState: HeroWorldState = { cap: -2, swatch: -1, progress: -1 };
   /**
    * Intro framing (homepage only; the reference has no text beside the car): the
@@ -1476,6 +1490,11 @@ export function createHeroWorld(o: HeroWorldOptions): HeroWorld {
     const clay = smooth(clamp01(s.clay)), ghost = smooth(clamp01(s.ghost)), e = smooth(clamp01(s.explode)), tn = smooth(clamp01(s.tunnel));
     const solidPaint = 1 - ghost;
 
+    // Lights on: the studio rises from dim as the car arrives, and the studio
+    // reflections drift slowly across the paint so the car never looks frozen.
+    renderer.toneMappingExposure = EXPOSURE * (since < 0 ? 0.3 : 0.3 + 0.7 * smooth(clamp01(since / 1.8)));
+    scene.environmentRotation.y = Math.sin(clockT * 0.08) * 0.35;
+
     // Chroma: a line of light repaints the body front→back (and back→front on the way out).
     FX.uClayX.value = clay <= 0.001 ? 50 : clay >= 0.999 ? -50 : 3.4 - 6.8 * clay;
     FX.uScan.value = Math.sin(Math.PI * clay);
@@ -1499,9 +1518,11 @@ export function createHeroWorld(o: HeroWorldOptions): HeroWorld {
     rig.paintMats.forEach((m) => m.color.lerp(paintTarget, Math.min(1, dt * 4.5)));
     const swatch = clay > 0.5 ? chromaIdx() : userPaint !== null ? userPaint : s.paint > 0.5 ? 1 : 0;
 
-    // Light pass along the shoulder.
-    sweepLight.intensity = Math.sin(s.sweep * Math.PI) * 30 * LIGHT;
-    sweepLight.position.set(-3.4 + s.sweep * 6.8, 2.0, 2.3);
+    // Light pass along the shoulder: once as the car arrives, then in chapter II.
+    const arrive = since < 0 ? 0 : clamp01((since - 0.2) / 2.0);
+    const pass = s.sweep > 0 ? s.sweep : arrive < 1 ? arrive : 0;
+    sweepLight.intensity = Math.sin(pass * Math.PI) * 30 * LIGHT;
+    sweepLight.position.set(-3.4 + pass * 6.8, 2.0, 2.3);
 
     // Studio grid + floor mood.
     const grid = clamp01(s.grid) * (1 - tn);
@@ -1519,7 +1540,14 @@ export function createHeroWorld(o: HeroWorldOptions): HeroWorld {
       if (m.position.x < -22) m.position.x += 120;
     });
     theta -= (speed / rig.wheelR) * dt;
-    car.position.y = tn ? Math.sin(clockT * 9) * 0.004 * tn : 0;
+    // Suspension (body only; the wheels stay planted): the body settles once as the
+    // light bar wakes, squats as the drive speeds up and dives when it slows (scrolling
+    // back), and rides the road in the tunnel.
+    const settle = since - 1.7;
+    accel += ((tn - lastTn) / Math.max(dt, 1e-3) - accel) * Math.min(1, dt * 5);
+    lastTn = tn;
+    bodyMotion.heave = (settle > 0 ? -0.022 * Math.exp(-settle * 3) * Math.sin(settle * 10) : 0) + Math.sin(clockT * 9) * 0.004 * tn;
+    bodyMotion.pitch = THREE.MathUtils.clamp(accel * 0.02, -0.012, 0.012);
     rig.tailMats.forEach((m) => (m.emissiveIntensity = 0.6 + tn * 3.5));
     tailGlow.material.opacity = (0.28 + tn * 0.5) * solidPaint;
     (floor.material as THREE.ShadowMaterial).opacity = 0.15 * (1 - tn * 0.4);
@@ -1528,7 +1556,7 @@ export function createHeroWorld(o: HeroWorldOptions): HeroWorld {
     batteryMat.emissiveIntensity = Math.max(ghost, e) * 2.2;
     cells.forEach((c, i) => (c.position.y = 0.39 + e * 0.03 * Math.sin(i * 0.7 + clockT * 2)));
     (blob.material as THREE.MeshBasicMaterial).opacity = 1 - e * 0.4;
-    rig.update(e, theta);
+    rig.update(e, theta, bodyMotion);
     animParts(chassisParts, e);
 
     updateCallouts(clamp01((ghost - 0.55) / 0.35) * (1 - clamp01(e * 4)));
@@ -1967,7 +1995,8 @@ function makeGLBRig(
   } else headPos = [V(L / 2 - 0.02, 0.48 * H, 0.34 * Wd), V(L / 2 - 0.02, 0.48 * H, -0.34 * Wd)];
   const tailPos = tails.length ? V(Math.min(...tails.map((bb) => bb.min.x)), avg(tails.map((bb) => bb.getCenter(new THREE.Vector3()).y)), 0) : V(-L / 2 + 0.02, 0.6 * H, 0);
 
-  let lastE = -1;
+  let lastE = -1, lastHeave = 0, lastPitch = 0;
+  const _B = new THREE.Matrix4(), _Bp = new THREE.Matrix4(), _Bn = new THREE.Matrix4();
   return {
     root,
     L,
@@ -1986,13 +2015,21 @@ function makeGLBRig(
     wheelY: wy.length ? avg(wy) : 0.36,
     wheelR: wr.length ? avg(wr) : 0.36,
     info: `${Object.keys(clusters).length} wheels · ${paintCount ? "paint found" : "paint not found"} · ${heads.length ? "headlights found" : "no headlights named"} · ${layers.length} parts`,
-    update(e, theta) {
-      if (e !== lastE) {
+    update(e, theta, body) {
+      if (e !== lastE || body.heave !== lastHeave || body.pitch !== lastPitch) {
+        // Suspension: pitch about the rear axle, plus heave; then each layer's explode offset.
+        const px = rxs.length ? avg(rxs) : -0.3 * L, py = wy.length ? avg(wy) : 0.36;
+        _Bp.makeTranslation(px, py + body.heave, 0);
+        _B.makeRotationZ(body.pitch);
+        _Bn.makeTranslation(-px, -py, 0);
+        _B.premultiply(_Bp).multiply(_Bn);
         layers.forEach((n) => {
-          _T.makeTranslation(n.off.x * e, n.off.y * e, n.off.z * e);
+          _T.makeTranslation(n.off.x * e, n.off.y * e, n.off.z * e).multiply(_B);
           applyNode(n, _T);
         });
         lastE = e;
+        lastHeave = body.heave;
+        lastPitch = body.pitch;
       }
       wheelNodes.forEach((n) => {
         // Exploded offset in the rig's frame; spin about the wheel's own axle through its centre.

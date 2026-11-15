@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { ArrowRight } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { AnimatedNumber } from "@/components/ui/AnimatedNumber";
 import { Segmented } from "@/components/ui/Segmented";
 import { WhatsAppButton } from "@/components/whatsapp/WhatsAppButton";
 import { financeConfig } from "@/config/finance";
@@ -164,7 +165,9 @@ export function EmiResults({
     <div className="flex h-full flex-col gap-6">
       <div aria-live="polite" aria-atomic>
         <p className="eyebrow text-accent-2">{islamic ? t("islamic.monthly") : t("monthly")}</p>
-        <p className="mt-2 text-4xl font-light tracking-tight tabular sm:text-5xl">{f.bdt(loan.monthlyPayment)}</p>
+        <p className="mt-2 text-4xl font-light tracking-tight sm:text-5xl">
+          <AnimatedNumber value={loan.monthlyPayment} kind="bdt" />
+        </p>
         <p className="mt-1 text-sm text-muted-on-dark">{t("perMonthFor", { months: f.number(calc.tenure) })}</p>
       </div>
       <dl className="grid grid-cols-2 gap-x-4 gap-y-4 border-t border-line-on-dark pt-5 text-sm">

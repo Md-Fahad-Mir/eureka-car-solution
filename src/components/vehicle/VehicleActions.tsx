@@ -40,7 +40,8 @@ export function FavoriteButton({ vehicleId, name, display = "icon", className }:
       }}
       className={cn(display === "icon" ? iconButton : labelledButton, saved && "border-accent text-accent-ink", className)}
     >
-      <Heart aria-hidden className={cn("size-[18px]", saved && "fill-current")} />
+      {/* The heart pops as it fills (motion allowed only). */}
+      <Heart aria-hidden className={cn("size-[18px]", saved && "fill-current motion-safe:animate-[pop_0.5s_var(--ease-cinema)]")} />
       {display === "labelled" ? <span>{t(saved ? "saved" : "save")}</span> : null}
     </button>
   );

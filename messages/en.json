@@ -257,21 +257,36 @@
       "anyBrand": "Any brand",
       "anyBudget": "Any budget",
       "upTo": "Up to {amount}",
-      "submit": "Show vehicles"
+      "submit": "Show vehicles",
+      "eyebrow": "Find",
+      "lead": "Search by condition, powertrain, brand and budget. Every listing shows the price, EMI and condition up front.",
+      "hint": "Leave any field empty to see everything.",
+      "stats": {
+        "vehicles": "Vehicles available",
+        "brands": "Brands",
+        "showrooms": "Showrooms"
+      },
+      "popular": "Popular searches"
     },
     "browse": {
       "eyebrow": "Browse",
       "title": "Start with what you need",
       "all": "All vehicles",
-      "byFuel": "By fuel type",
-      "count": "{count, plural, =0 {None right now} one {# vehicle} other {# vehicles}}"
+      "count": "{count, plural, =0 {None right now} one {# vehicle} other {# vehicles}}",
+      "lead": "Electric, hybrid, petrol or diesel: start from the powertrain that fits how you drive."
     },
     "shelves": {
       "featuredEyebrow": "Featured",
       "featuredTitle": "Hand-picked this week",
       "arrivalsEyebrow": "New arrivals",
       "arrivalsTitle": "Just in",
-      "viewAll": "View all"
+      "viewAll": "View all",
+      "featuredLead": "Chosen by our team this week for condition and value.",
+      "arrivalsLead": "The latest arrivals, including vehicles still on their way to the showroom.",
+      "spotlight": "Pick of the week",
+      "details": "View details",
+      "previous": "Previous vehicles",
+      "next": "More vehicles"
     },
     "brands": {
       "eyebrow": "Brands",
@@ -298,6 +313,10 @@
           "value": "Charge overnight",
           "body": "A home wall box fills most batteries while you sleep."
         }
+      },
+      "bars": {
+        "ev": "Electric",
+        "petrol": "Petrol"
       }
     },
     "savings": {
@@ -324,7 +343,8 @@
       "power": "Power",
       "seats": "Seats",
       "cta": "Compare these two",
-      "pick": "Pick your own"
+      "pick": "Pick your own",
+      "vs": "vs"
     },
     "emi": {
       "eyebrow": "EMI and financing",
@@ -336,7 +356,21 @@
       "eyebrow": "Test drive",
       "title": "Feel it before you decide",
       "lead": "Pick a vehicle, a showroom and a time. A product specialist rides with you and never rushes you.",
-      "cta": "Book a test drive"
+      "cta": "Book a test drive",
+      "steps": {
+        "choose": {
+          "title": "Choose a vehicle",
+          "body": "Any vehicle in stock, at the showroom that has it."
+        },
+        "time": {
+          "title": "Pick a time",
+          "body": "Choose a showroom, a day and a slot that suits you."
+        },
+        "drive": {
+          "title": "Drive, unhurried",
+          "body": "A product specialist rides with you and answers every question."
+        }
+      }
     },
     "afterSales": {
       "eyebrow": "After-sales care",
@@ -368,12 +402,16 @@
       "lead": "How buying with us feels.",
       "sample": "Sample",
       "rating": "Rated {rating} out of 5",
-      "note": "Sample testimonials with fictional names, shown for illustration until real, consented reviews are added."
+      "note": "Sample testimonials with fictional names, shown for illustration until real, consented reviews are added.",
+      "previous": "Previous testimonial",
+      "next": "Next testimonial",
+      "position": "{n} of {total}"
     },
     "showrooms": {
       "eyebrow": "Showrooms",
       "title": "Visit us across Bangladesh",
-      "all": "All showrooms and directions"
+      "all": "All showrooms and directions",
+      "lead": "Walk in, or book a time at the showroom nearest you."
     }
   },
   "taxonomy": {
@@ -1334,6 +1372,7 @@
     "searchPlaceholder": "Search brand or model",
     "searchSubmit": "Search",
     "scrollHint": "Scroll to explore",
+    "skipStory": "Skip to search",
     "chapterNav": "Story chapters",
     "loading3d": "Loading the 3D studio…",
     "stageWord": "EUREKA",

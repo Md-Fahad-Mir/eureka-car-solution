@@ -37,6 +37,22 @@
 
   --header-h: 76px;
   --header-h-compact: 60px;
+
+  /* Motion language: one easing family and one duration scale for every
+     section. "cinema" is the long, settling curve of the 3D hero; "out-soft"
+     is for UI feedback; stagger is the gap between items in a group. */
+  --ease-cinema: cubic-bezier(0.16, 0.84, 0.2, 1);
+  --ease-in-out-soft: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-fast: 220ms;
+  --dur-base: 550ms;
+  --dur-slow: 900ms;
+  --dur-cinema: 1300ms;
+  --stagger: 70ms;
+
+  /* Surfaces: two elevations and the champagne-gold sheen used on accents. */
+  --shadow-soft: 0 1px 2px rgb(22 26 22 / 0.04), 0 14px 34px -20px rgb(22 26 22 / 0.3);
+  --shadow-lift: 0 2px 6px rgb(22 26 22 / 0.05), 0 34px 70px -34px rgb(22 26 22 / 0.5);
+  --gold: linear-gradient(100deg, #7f6638 0%, #c8b07c 55%, #937846 100%);
 }
 
 @theme inline {
@@ -249,6 +265,11 @@
   font-variant-numeric: tabular-nums;
 }
 
+/* Vertical rhythm between homepage sections (one value, so the page breathes evenly). */
+@utility section-gap {
+  margin-top: clamp(6rem, 10vw, 9.5rem);
+}
+
 /* Keep page content (e.g. the footer) clear of the fixed compare tray.
    --compare-tray-h is published by CompareTray (ResizeObserver). */
 body {
@@ -415,6 +436,277 @@ body {
   transition:
     opacity 1s ease 0.6s,
     transform 1.2s var(--ease-out-soft) 0.6s;
+}
+
+/* ───────────────────────── Motion system ─────────────────────────
+   One IntersectionObserver (components/motion/MotionObserver) marks every
+   [data-reveal] element with [data-shown] as it enters the viewport. Start
+   states apply only while that observer runs ([data-motion] on <html>) and
+   motion is allowed, so without JavaScript or with reduced motion everything
+   is simply visible. Variants: rise (default), fade, scale, mask (a headline
+   rises out of a clip), wipe (a panel opens left to right), draw (SVG strokes
+   with pathLength="1" and class "draw"). Stagger with --i (index) and --delay.
+   Put data-reveal on wrappers, never on an element with its own hover
+   transition (the reveal transition would replace it). */
+.draw {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+}
+@media (prefers-reduced-motion: no-preference) {
+  :root[data-motion] [data-reveal] {
+    transition:
+      opacity var(--dur-slow) var(--ease-cinema),
+      transform var(--dur-cinema) var(--ease-cinema),
+      clip-path var(--dur-cinema) var(--ease-cinema);
+    transition-delay: calc(var(--i, 0) * var(--stagger) + var(--delay, 0ms));
+  }
+  :root[data-motion] [data-reveal]:not([data-shown]) {
+    opacity: 0;
+    transform: translate3d(0, 32px, 0);
+  }
+  :root[data-motion] [data-reveal="fade"]:not([data-shown]) {
+    transform: none;
+  }
+  :root[data-motion] [data-reveal="scale"]:not([data-shown]) {
+    transform: scale(0.94);
+  }
+  :root[data-motion] [data-reveal="mask"] {
+    clip-path: inset(-20% -4% -25% -4%);
+  }
+  /* Clip-based start states leave a 1px sliver: an element (or anything inside it)
+     that is clipped away completely never counts as intersecting, so it would never
+     be revealed. */
+  :root[data-motion] [data-reveal="mask"]:not([data-shown]) {
+    opacity: 1;
+    clip-path: inset(-20% -4% calc(100% - 1px) -4%);
+    transform: translate3d(0, 0.5em, 0);
+  }
+  :root[data-motion] [data-reveal="wipe"] {
+    clip-path: inset(0 0 0 0 round var(--radius-card, 20px));
+  }
+  :root[data-motion] [data-reveal="wipe"]:not([data-shown]) {
+    opacity: 1;
+    transform: none;
+    clip-path: inset(0 calc(100% - 1px) 0 0 round var(--radius-card, 20px));
+  }
+  :root[data-motion] [data-reveal="draw"]:not([data-shown]) {
+    opacity: 1;
+    transform: none;
+  }
+  :root[data-motion] [data-reveal="draw"] .draw {
+    transition: stroke-dashoffset 1.8s var(--ease-cinema);
+    transition-delay: calc(var(--i, 0) * 140ms + var(--delay, 0ms));
+  }
+  :root[data-motion] [data-reveal="draw"]:not([data-shown]) .draw {
+    stroke-dashoffset: 1;
+  }
+  /* Bars inside a revealed block grow from the left, one after another. */
+  :root[data-motion] [data-reveal] .grow-x {
+    transform-origin: left;
+    transition: transform 1.4s var(--ease-cinema) calc(var(--i, 0) * 140ms + 300ms);
+  }
+  :root[data-motion] [data-reveal]:not([data-shown]) .grow-x {
+    transform: scaleX(0);
+  }
+}
+
+/* Scroll-linked depth (CSS scroll-driven animations where supported; static
+   elsewhere). Individual transform properties, so they never fight a reveal. */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .scroll-parallax {
+      animation: scroll-parallax linear both;
+      animation-timeline: view();
+      animation-range: cover 0% cover 100%;
+    }
+    .scroll-grow-y {
+      transform-origin: top;
+      animation: scroll-grow-y linear both;
+      animation-timeline: view();
+      animation-range: entry 40% cover 60%;
+    }
+    .scroll-grow-x {
+      transform-origin: left;
+      animation: scroll-grow-x linear both;
+      animation-timeline: view();
+      animation-range: entry 60% cover 45%;
+    }
+  }
+}
+@keyframes scroll-parallax {
+  from {
+    translate: 0 var(--parallax, 48px);
+  }
+  to {
+    translate: 0 calc(var(--parallax, 48px) * -1);
+  }
+}
+@keyframes scroll-grow-y {
+  from {
+    scale: 1 0;
+  }
+}
+@keyframes scroll-grow-x {
+  from {
+    scale: 0 1;
+  }
+}
+
+/* Micro-interactions shared across the homepage, header and footer. */
+.link-sweep {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  background-size: 0 1px;
+  transition: background-size var(--dur-base) var(--ease-cinema);
+}
+.link-sweep:hover,
+.group:hover .link-sweep,
+.link-sweep:focus-visible {
+  background-size: 100% 1px;
+}
+/* A light sheen crosses a button on hover. */
+.sheen {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+.sheen::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(110deg, transparent 30%, rgb(255 255 255 / 0.28) 50%, transparent 70%);
+  translate: -120% 0;
+  transition: translate 0s;
+  pointer-events: none;
+}
+.sheen:hover::after {
+  translate: 120% 0;
+  transition: translate 0.9s var(--ease-cinema);
+}
+.gold-text {
+  background: var(--gold);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+@keyframes header-in {
+  from {
+    opacity: 0;
+    transform: translateY(-100%);
+  }
+}
+/* Hero intro layers on load: lines rise and fade in; the headline only rises. */
+@keyframes hero-rise {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+}
+@keyframes hero-lift {
+  from {
+    transform: translateY(0.35em);
+  }
+}
+/* Static hero poster (phones, no WebGL): the lifted parts float and the light bar breathes. */
+@media (prefers-reduced-motion: no-preference) {
+  .poster-float {
+    animation: poster-float 6.5s var(--ease-in-out-soft) infinite;
+  }
+  .poster-glow {
+    animation: poster-glow 3.4s var(--ease-in-out-soft) infinite;
+  }
+}
+@keyframes poster-float {
+  50% {
+    transform: translateY(-12px);
+  }
+}
+@keyframes poster-glow {
+  50% {
+    opacity: 0.8;
+  }
+}
+@keyframes pulse-ring {
+  0% {
+    opacity: 0.55;
+    transform: scale(0.8);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.9);
+  }
+}
+@keyframes pop {
+  40% {
+    transform: scale(1.28);
+  }
+  70% {
+    transform: scale(0.92);
+  }
+}
+/* Test-drive band: a road tilted away from the viewer whose lane dashes rush
+   towards them. Only a transform animates, on the compositor. */
+.road-stage {
+  /* The right half of the band (empty beside the copy); on phones, a faint strip behind everything. */
+  position: absolute;
+  inset: 0 0 42% 48%;
+  z-index: -1;
+  overflow: hidden;
+  perspective: 480px;
+  perspective-origin: 50% 0%;
+  pointer-events: none;
+  mask-image: linear-gradient(to top, transparent, black 25%, black 60%, transparent 95%), linear-gradient(to right, transparent, black 30%);
+  mask-composite: intersect;
+}
+@media (width < 64rem) {
+  .road-stage {
+    display: none;
+  }
+}
+.road {
+  position: absolute;
+  inset: 0 -10%;
+  transform: rotateX(70deg);
+  transform-origin: 50% 100%;
+  overflow: hidden;
+  opacity: 0.7;
+}
+.road::before {
+  content: "";
+  position: absolute;
+  inset: -200px 0 0;
+  background:
+    linear-gradient(to bottom, rgb(200 176 124 / 0.75) 0 45%, transparent 45% 100%) 50% 0 / 4px 200px repeat-y,
+    linear-gradient(
+      to right,
+      transparent calc(30% - 2px),
+      rgb(243 239 231 / 0.22) calc(30% - 2px) 30%,
+      transparent 30% calc(70% - 2px),
+      rgb(243 239 231 / 0.22) calc(70% - 2px) 70%,
+      transparent 70%
+    );
+}
+@media (prefers-reduced-motion: no-preference) {
+  .road::before {
+    animation: road-rush 0.9s linear infinite;
+  }
+}
+@keyframes road-rush {
+  to {
+    transform: translateY(200px);
+  }
+}
+@keyframes light-drift {
+  0%,
+  100% {
+    transform: translate3d(-12%, 0, 0) rotate(-8deg);
+  }
+  50% {
+    transform: translate3d(12%, 4%, 0) rotate(-8deg);
+  }
 }
 
 /* ───────────────────────── Motion ───────────────────────── */

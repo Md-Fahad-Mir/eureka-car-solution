@@ -20,30 +20,33 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 /**
- * Homepage (brief §10.A): 3D hero, then quick search, browse, vehicles,
- * brands, EV, savings, compare, EMI, test drive, after-sales, testimonials and
- * showrooms. The newsletter sits in the footer. (No fleet band: D38.)
+ * Homepage (brief §10.A) as one numbered journey: the 3D story hands over to
+ * the search console, then browse, vehicles, brands, EV, savings, compare,
+ * EMI, test drive, after-sales, testimonials and showrooms. The newsletter
+ * sits in the footer. (No fleet band: D38; no category tiles: user request.)
  */
 export default async function HomePage() {
   const t = await getTranslations("home.emi");
   return (
     <>
       <Hero3D />
-      <QuickSearch />
-      <BrowseBy />
-      <VehicleShelves />
-      <PopularBrands />
-      <EvTeaser />
-      <SavingsTeaser />
-      <CompareTeaser />
-      <section aria-labelledby="emi-highlight" className="container-page mt-24">
-        <SectionHeading id="emi-highlight" eyebrow={t("eyebrow")} title={t("title")} lead={t("lead")} link={{ href: "/finance", label: t("all") }} />
-        <EmiCalculator initialPrice={financeConfig.samplePrice} />
+      <QuickSearch index={1} />
+      <BrowseBy index={2} />
+      <VehicleShelves index={3} />
+      <PopularBrands index={5} />
+      <EvTeaser index={6} />
+      <SavingsTeaser index={7} />
+      <CompareTeaser index={8} />
+      <section aria-labelledby="emi-highlight" className="container-page section-gap">
+        <SectionHeading id="emi-highlight" index={9} eyebrow={t("eyebrow")} title={t("title")} lead={t("lead")} link={{ href: "/finance", label: t("all") }} />
+        <div data-reveal>
+          <EmiCalculator initialPrice={financeConfig.samplePrice} />
+        </div>
       </section>
-      <TestDriveBand />
-      <AfterSales />
-      <Testimonials />
-      <ShowroomStrip />
+      <TestDriveBand index={10} />
+      <AfterSales index={11} />
+      <Testimonials index={12} />
+      <ShowroomStrip index={13} />
     </>
   );
 }

@@ -130,6 +130,10 @@ All data access goes through `src/lib/api/*`. Components never import mock data,
   - Each page has localised metadata with canonical and hreflang links and Open Graph.
   - JSON-LD: vehicles (Car + Offer), showrooms (AutoDealer), EV guides (Article + FAQPage) and breadcrumbs.
   - `sitemap.xml` and `robots.txt` are generated.
+- **Motion:**
+  - One CSS-driven system: `data-reveal` on an element (rise, fade, scale, mask, wipe, draw) plus `stagger()` from `src/lib/motion.ts`; a single IntersectionObserver reveals elements as they arrive.
+  - Scroll-linked depth uses CSS scroll-driven animations where the browser supports them, and stays static elsewhere.
+  - Nothing is hidden without JavaScript, and with reduced motion everything is shown still (the hero becomes the poster).
 - **Performance:**
   - Server Components by default, with Cache Components and partial prerendering.
   - Charts and the 3D hero are loaded lazily.

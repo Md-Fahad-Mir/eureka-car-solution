@@ -5,6 +5,7 @@ import { Toaster } from "@/components/ui/Toaster";
 import { CompareTray } from "@/components/vehicle/CompareTray";
 import { FloatingWhatsApp } from "@/components/whatsapp/FloatingWhatsApp";
 import { useRehydrateStores } from "@/stores/hydration";
+import { MotionObserver } from "./MotionObserver";
 
 /** Client-only chrome mounted once in the locale layout. */
 export function ClientShell() {
@@ -17,6 +18,7 @@ export function ClientShell() {
         <CompareTray />
       </Suspense>
       <Toaster />
+      <MotionObserver />
     </>
   );
 }

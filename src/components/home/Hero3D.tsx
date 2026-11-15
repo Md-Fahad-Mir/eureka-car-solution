@@ -2,7 +2,7 @@
 
 import dynamic from "next/dynamic";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { ArrowRight, Search } from "lucide-react";
+import { ArrowDown, ArrowRight, Search } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { ButtonLink } from "@/components/ui/Button";
 import { HERO_CHAPTER_KEYFRAMES, HERO_CHAPTERS, HERO_FINALE, HERO_KEYFRAME_COUNT, heroConfig } from "@/config/hero";
@@ -177,20 +177,24 @@ export function Hero3D() {
           )}
         >
           <div ref={introRef} className="max-w-xl immersive:max-w-md xl:immersive:max-w-lg">
-            <p className="eyebrow text-accent-ink">{t("eyebrow")}</p>
-            <h1 id="hero-title" className="display-xl mt-5 immersive:display-lg">
+            {/* Layered entrance on load. The headline only moves (never fades), so it paints at once and stays the LCP element. */}
+            <p className="eyebrow flex items-center gap-3 text-accent-ink motion-safe:animate-[hero-rise_1s_var(--ease-cinema)_both]">
+              <span aria-hidden className="h-px w-10 bg-accent" />
+              {t("eyebrow")}
+            </p>
+            <h1 id="hero-title" className="display-xl mt-5 motion-safe:animate-[hero-lift_1.2s_var(--ease-cinema)_both] immersive:display-lg">
               {t("title")} <em className="font-light text-accent-ink">{t("titleAccent")}</em>
             </h1>
-            <p className="mt-5 max-w-lg text-lg leading-relaxed text-muted">{t("lead")}</p>
-            <div className="mt-7 flex flex-wrap gap-3">
-              <ButtonLink href="/vehicles" size="lg">
+            <p className="mt-5 max-w-lg text-lg leading-relaxed text-muted motion-safe:animate-[hero-rise_1s_var(--ease-cinema)_0.15s_both]">{t("lead")}</p>
+            <div className="mt-7 flex flex-wrap gap-3 motion-safe:animate-[hero-rise_1s_var(--ease-cinema)_0.3s_both]">
+              <ButtonLink href="/vehicles" size="lg" className="sheen">
                 {t("ctaBrowse")}
               </ButtonLink>
               <ButtonLink href="/test-drive" size="lg" variant="outline">
                 {t("ctaTestDrive")}
               </ButtonLink>
             </div>
-            <form action={`/${locale}/vehicles`} method="get" role="search" className="relative mt-6 max-w-md">
+            <form action={`/${locale}/vehicles`} method="get" role="search" className="relative mt-6 max-w-md motion-safe:animate-[hero-rise_1s_var(--ease-cinema)_0.45s_both]">
               <label htmlFor="hero-search" className="sr-only">
                 {t("searchLabel")}
               </label>
@@ -359,8 +363,29 @@ export function Hero3D() {
               </div>
             </div>
 
+            {/* Hand-off: at the finale the frame's lower edge melts into the page, under the rising search console. */}
+            <div
+              aria-hidden
+              className={cn(
+                "pointer-events-none absolute inset-x-0 bottom-0 h-56 bg-gradient-to-t from-bg via-bg/70 to-transparent transition-opacity duration-1000",
+                finale ? "opacity-100" : "opacity-0",
+              )}
+            />
+
             {/* Progress bar + credit */}
             <div className="container-page absolute inset-x-0 bottom-8 flex items-center gap-6 text-[0.6875rem] text-muted">
+              {/* The story is long; this jumps straight to the search console below it. */}
+              <a
+                href="#find"
+                className={cn(
+                  "group inline-flex h-8 items-center gap-1.5 rounded-full border border-line-strong px-3.5 text-ink transition-[background-color,color,border-color,opacity] duration-300 hover:border-ink hover:bg-ink hover:text-bg-alt",
+                  finale && "pointer-events-none opacity-0",
+                )}
+                tabIndex={finale ? -1 : undefined}
+              >
+                {t("skipStory")}
+                <ArrowDown aria-hidden className="size-3.5 transition-transform duration-300 group-hover:translate-y-0.5" />
+              </a>
               <div aria-hidden className="relative h-px flex-1 bg-line">
                 <div className="absolute inset-y-0 left-0 bg-gradient-to-r from-ink to-accent" style={{ width: `${state.progress * 100}%` }} />
               </div>

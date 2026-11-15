@@ -93,7 +93,7 @@ export function HeroPoster({
       <path d="M470 276 L462 392 M742 276 L736 392" stroke="rgba(22,26,22,0.22)" />
       {/* Light-bar signatures */}
       <rect x="944" y="316" width="62" height="3.5" rx="1.75" fill="url(#hp-bar)" />
-      <rect x="940" y="310" width="70" height="16" rx="8" fill="#f3e2b8" opacity="0.35" filter="url(#hp-soft)" />
+      <rect className="poster-glow" x="940" y="310" width="70" height="16" rx="8" fill="#f3e2b8" opacity="0.35" filter="url(#hp-soft)" />
       <rect x="140" y="334" width="40" height="3.5" rx="1.75" fill="#b9463f" opacity="0.85" />
 
       {/* Wheels */}
@@ -120,27 +120,35 @@ export function HeroPoster({
         </g>
       ))}
 
-      {/* Exploded parts */}
+      {/* Exploded parts (each floats gently, out of step with the others; outer groups carry the motion) */}
       {/* Door, lifted and tilted */}
-      <g transform="translate(470 74) rotate(-8)">
-        <path d="M0 40 L262 20 L276 132 L18 150 Z" fill="url(#hp-part)" stroke="rgba(22,26,22,0.16)" />
-        <path d="M24 46 L232 30 L240 74 L28 88 Z" fill="url(#hp-glass)" opacity="0.85" />
-        <rect x="196" y="100" width="34" height="5" rx="2.5" fill="rgba(22,26,22,0.25)" />
+      <g className="poster-float">
+        <g transform="translate(470 74) rotate(-8)">
+          <path d="M0 40 L262 20 L276 132 L18 150 Z" fill="url(#hp-part)" stroke="rgba(22,26,22,0.16)" />
+          <path d="M24 46 L232 30 L240 74 L28 88 Z" fill="url(#hp-glass)" opacity="0.85" />
+          <rect x="196" y="100" width="34" height="5" rx="2.5" fill="rgba(22,26,22,0.25)" />
+        </g>
       </g>
       {/* Spare wheel, rotated in perspective */}
-      <g transform="translate(1060 170)">
-        <ellipse cx="0" cy="0" rx="30" ry="64" fill="#232529" />
-        <ellipse cx="6" cy="0" rx="20" ry="44" fill="#e2e2dc" stroke="#c4c5bf" />
-        <ellipse cx="8" cy="0" rx="6" ry="12" fill="#9c8150" />
+      <g className="poster-float" style={{ animationDelay: "-2.2s" }}>
+        <g transform="translate(1060 170)">
+          <ellipse cx="0" cy="0" rx="30" ry="64" fill="#232529" />
+          <ellipse cx="6" cy="0" rx="20" ry="44" fill="#e2e2dc" stroke="#c4c5bf" />
+          <ellipse cx="8" cy="0" rx="6" ry="12" fill="#9c8150" />
+        </g>
       </g>
       {/* Seat */}
-      <g transform="translate(250 150) rotate(6)">
-        <path d="M10 70 C6 30 14 6 34 2 C48 0 54 12 52 34 L48 70 Z" fill="url(#hp-part)" stroke="rgba(22,26,22,0.16)" />
-        <path d="M10 70 L92 70 C98 70 100 78 96 84 L18 90 C10 90 8 80 10 70 Z" fill="url(#hp-part)" stroke="rgba(22,26,22,0.16)" />
+      <g className="poster-float" style={{ animationDelay: "-4.1s" }}>
+        <g transform="translate(250 150) rotate(6)">
+          <path d="M10 70 C6 30 14 6 34 2 C48 0 54 12 52 34 L48 70 Z" fill="url(#hp-part)" stroke="rgba(22,26,22,0.16)" />
+          <path d="M10 70 L92 70 C98 70 100 78 96 84 L18 90 C10 90 8 80 10 70 Z" fill="url(#hp-part)" stroke="rgba(22,26,22,0.16)" />
+        </g>
       </g>
       {/* Mirror */}
-      <g transform="translate(820 150) rotate(-14)">
-        <path d="M0 18 C0 6 12 0 30 0 L48 2 C56 4 56 22 48 26 L12 30 C4 30 0 26 0 18 Z" fill="url(#hp-part)" stroke="rgba(22,26,22,0.16)" />
+      <g className="poster-float" style={{ animationDelay: "-1.3s" }}>
+        <g transform="translate(820 150) rotate(-14)">
+          <path d="M0 18 C0 6 12 0 30 0 L48 2 C56 4 56 22 48 26 L12 30 C4 30 0 26 0 18 Z" fill="url(#hp-part)" stroke="rgba(22,26,22,0.16)" />
+        </g>
       </g>
       {/* Small fixings */}
       <g fill="#cfd0c9" stroke="rgba(22,26,22,0.15)">

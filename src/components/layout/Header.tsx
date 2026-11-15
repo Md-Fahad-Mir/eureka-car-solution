@@ -17,6 +17,12 @@ import { NavItemLink, OnRouteChange } from "./RouteAware";
 
 type MenuId = "vehicles" | "services";
 
+/** Top-level nav item: a gold underline grows from the centre on hover, and stays for the open menu or current page. */
+const NAV_ITEM =
+  "relative inline-flex h-10 items-center gap-1.5 rounded-full px-2 text-sm font-medium transition-colors duration-300 hover:text-accent-ink xl:px-3.5 " +
+  "after:absolute after:inset-x-2 after:bottom-1 after:h-px after:origin-center after:scale-x-0 after:bg-accent after:transition-transform after:duration-500 after:ease-(--ease-cinema) hover:after:scale-x-100 xl:after:inset-x-3.5 " +
+  "aria-expanded:after:scale-x-100 aria-[current=page]:after:scale-x-100";
+
 const MENUS: Record<MenuId, { groups: NavGroup[]; lead: "megaVehiclesLead" | "megaServicesLead"; cta: { key: "megaVehiclesCta" | "megaServicesCta"; href: string } }> = {
   vehicles: { groups: vehicleMenu, lead: "megaVehiclesLead", cta: { key: "megaVehiclesCta", href: "/vehicles" } },
   services: { groups: servicesMenu, lead: "megaServicesLead", cta: { key: "megaServicesCta", href: "/service" } },
@@ -94,9 +100,9 @@ export function Header() {
         if (!e.currentTarget.contains(e.relatedTarget as Node)) setOpenMenu(null);
       }}
       className={cn(
-        "sticky top-0 z-50 border-b transition-[background-color,border-color,backdrop-filter] duration-300",
+        "sticky top-0 z-50 border-b transition-[background-color,border-color,backdrop-filter,box-shadow] duration-500 ease-(--ease-cinema) motion-safe:animate-[header-in_0.9s_var(--ease-cinema)_both]",
         scrolled || openMenu
-          ? "border-line bg-bg/90 backdrop-blur-xl supports-[backdrop-filter]:bg-bg/75"
+          ? "border-line bg-bg/90 shadow-[0_12px_32px_-26px_rgb(22_26_22/0.45)] backdrop-blur-xl supports-[backdrop-filter]:bg-bg/75"
           : "border-transparent bg-bg",
       )}
     >
@@ -120,15 +126,12 @@ export function Header() {
                   aria-expanded={openMenu === id}
                   aria-controls={`${menuBaseId}-${id}`}
                   onClick={() => setOpenMenu((m) => (m === id ? null : id))}
-                  className={cn(
-                    "inline-flex h-10 items-center gap-1.5 rounded-full px-3.5 text-sm font-medium transition-colors hover:bg-ink/[0.05]",
-                    openMenu === id && "bg-ink/[0.06]",
-                  )}
+                  className={NAV_ITEM}
                 >
                   {t(id)}
                   <ChevronDown
                     aria-hidden
-                    className={cn("size-3.5 transition-transform duration-200", openMenu === id && "rotate-180")}
+                    className={cn("size-3.5 transition-transform duration-300 ease-(--ease-cinema)", openMenu === id && "rotate-180")}
                   />
                 </button>
               </li>
@@ -137,7 +140,7 @@ export function Header() {
               <li key={link.href} onMouseEnter={hoverClose}>
                 <NavItemLink
                   href={link.href}
-                  className="inline-flex h-10 items-center rounded-full px-3.5 text-sm font-medium transition-colors hover:bg-ink/[0.05]"
+                  className={NAV_ITEM}
                   activeClassName="text-accent-ink"
                 >
                   {t(link.key)}
@@ -150,15 +153,15 @@ export function Header() {
         <div className="ml-auto flex items-center gap-0.5 sm:gap-1">
           <LanguageSwitcher className="hidden sm:inline-flex" />
           <IconLink href="/compare" label={tHeader("compareCount", { count: compareCount })} badge={compareCount ? count(compareCount) : null}>
-            <GitCompareArrows aria-hidden className="size-[18px]" />
+            <GitCompareArrows aria-hidden className="size-[18px] transition-transform duration-500 ease-(--ease-cinema) group-hover:rotate-180" />
           </IconLink>
           <IconLink href="/account/saved" label={tHeader("favouritesCount", { count: favouriteCount })} badge={favouriteCount ? count(favouriteCount) : null}>
-            <Heart aria-hidden className="size-[18px]" />
+            <Heart aria-hidden className="size-[18px] transition-[transform,color] duration-300 group-hover:scale-115 group-hover:text-accent-ink" />
           </IconLink>
           <IconLink href="/account" label={tHeader("account")} className="hidden sm:grid">
-            <User aria-hidden className="size-[18px]" />
+            <User aria-hidden className="size-[18px] transition-transform duration-300 group-hover:-translate-y-0.5" />
           </IconLink>
-          <ButtonLink href="/test-drive" size="sm" className="ml-2 hidden md:inline-flex">
+          <ButtonLink href="/test-drive" size="sm" className="sheen ml-2 hidden md:inline-flex">
             {tHeader("bookTestDrive")}
           </ButtonLink>
           <button
@@ -207,7 +210,7 @@ function IconLink({
     <Link
       href={href}
       aria-label={label}
-      className={cn("relative grid size-10 place-items-center rounded-full transition-colors hover:bg-ink/[0.06]", className)}
+      className={cn("group relative grid size-10 place-items-center rounded-full transition-colors duration-300 hover:bg-ink/[0.06]", className)}
     >
       {children}
       {badge ? (
@@ -241,15 +244,21 @@ function MegaPanel({
   return (
     <div
       id={id}
-      hidden={!open}
+      inert={!open}
       onMouseEnter={onMouseEnter}
       className={cn(
-        "absolute inset-x-0 top-full border-b border-line bg-bg-alt shadow-[0_40px_60px_-40px_rgba(22,26,22,0.35)]",
-        open ? "hidden lg:block" : "hidden",
+        "absolute inset-x-0 top-full hidden border-b border-line bg-bg-alt shadow-[0_40px_60px_-40px_rgba(22,26,22,0.35)] lg:block",
+        "transition-[opacity,transform,visibility] duration-300 ease-(--ease-cinema)",
+        open ? "visible translate-y-0 opacity-100" : "invisible pointer-events-none -translate-y-2 opacity-0 delay-75",
       )}
     >
       <div className="container-page grid grid-cols-12 gap-8 py-10">
-        <div className="col-span-3 flex flex-col justify-between gap-6 border-r border-line pr-8">
+        <div
+          className={cn(
+            "col-span-3 flex flex-col justify-between gap-6 border-r border-line pr-8 transition-[opacity,transform] duration-500 ease-(--ease-cinema)",
+            open ? "translate-y-0 opacity-100" : "translate-y-2 opacity-0",
+          )}
+        >
           <div>
             <p className="eyebrow text-accent-ink">{t(menuId)}</p>
             <p className="mt-3 text-[0.9375rem] leading-relaxed text-muted">{t(lead)}</p>
@@ -260,7 +269,11 @@ function MegaPanel({
           </Link>
         </div>
         {groups.map((group, gi) => (
-          <div key={group.key} className="col-span-3">
+          <div
+            key={group.key}
+            style={{ transitionDelay: open ? `${(gi + 1) * 60}ms` : "0ms" }}
+            className={cn("col-span-3 transition-[opacity,transform] duration-500 ease-(--ease-cinema)", open ? "translate-y-0 opacity-100" : "translate-y-2 opacity-0")}
+          >
             <p className="flex items-center gap-3 text-xs text-muted">
               <span className="tabular">{formatNumber(gi + 1, locale, { minimumIntegerDigits: 2 })}</span>
               <span aria-hidden className="h-px w-6 bg-line-strong" />
