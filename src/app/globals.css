@@ -276,14 +276,6 @@ body {
   letter-spacing: 0;
 }
 
-/* The 3D frame (canvas + callout overlay) starts below the compact sticky header,
-   so the whole frame is visible, as in the full-window reference. */
-.hero-frame {
-  inset: var(--header-h-compact) 0 0;
-  width: 100%;
-  height: calc(100% - var(--header-h-compact));
-}
-
 /* Hero stage, ported from the reference showcase: faint wordmark and chapter
    numerals behind the car (with pointer parallax), vignette and film grain over it. */
 .hero-stage {

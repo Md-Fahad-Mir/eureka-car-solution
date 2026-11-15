@@ -16,6 +16,19 @@ const HeroCanvas = dynamic(() => import("@/components/three/HeroCanvas"), { ssr:
 
 const LAST_CHAPTER = HERO_CHAPTERS.length - 1;
 
+/**
+ * The 3D frame (canvas + callout overlay) sits below the compact sticky header, so the
+ * whole frame is visible, as in the full-window reference. Inline on purpose: the canvas
+ * must never end up 0×0 (React Three Fiber renders nothing then), whatever the stylesheet.
+ */
+const FRAME_STYLE = {
+  position: "absolute",
+  top: "var(--header-h-compact)",
+  left: 0,
+  width: "100%",
+  height: "calc(100% - var(--header-h-compact))",
+} as const;
+
 type Mode = "pending" | "immersive" | "poster";
 
 /**
@@ -218,7 +231,7 @@ export function Hero3D() {
 
         {/* 3D canvas */}
         {showCanvas ? (
-          <div className={cn("hero-frame absolute transition-opacity duration-1000", ready ? "opacity-100" : "opacity-0")}>
+          <div style={FRAME_STYLE} className={cn("transition-opacity duration-1000", ready ? "opacity-100" : "opacity-0")}>
             <HeroCanvas
               active={active}
               getProgress={getProgress}
@@ -238,7 +251,7 @@ export function Hero3D() {
             <div aria-hidden className="hero-grain" />
           </>
         ) : null}
-        <svg ref={calloutRef} aria-hidden className="hero-frame pointer-events-none absolute opacity-0" />
+        <svg ref={calloutRef} aria-hidden style={FRAME_STYLE} className="pointer-events-none opacity-0" />
 
         {immersive ? (
           <>
