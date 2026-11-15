@@ -1,6 +1,6 @@
 import type * as THREE from "three";
 
-/** Suspension motion of the body only (the wheels stay planted): heave (m), pitch (rad, + nose up) about the rear axle, roll (rad, + leaning right). */
+/** Suspension motion of the body only (the wheels stay planted): heave (m), pitch (rad, + nose up) about mid-wheelbase, roll (rad, + leaning right). */
 export type BodyMotion = { heave: number; pitch: number; roll: number };
 
 /** What the hero world needs from a car (built by makeGLBRig). Lengths in metres, car frame: x forward, y up, z right. */

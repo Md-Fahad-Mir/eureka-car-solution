@@ -31,6 +31,23 @@ function boxOf(obj: THREE.Object3D) {
   });
   return box;
 }
+/**
+ * Exact bounds from the vertices. Transformed bounding boxes (boxOf) balloon for parts posed
+ * at an angle, such as wheels frozen mid-rotation: they overstated the wheel radius (so the
+ * wheels turned too slowly for the distance) and the car's lowest point (so it floated).
+ */
+function exactBoxOf(obj: THREE.Object3D) {
+  obj.updateWorldMatrix(true, true);
+  const box = new THREE.Box3(), v = new THREE.Vector3();
+  obj.traverse((o) => {
+    const m = o as THREE.Mesh;
+    if (!m.isMesh || !m.visible || !m.geometry) return;
+    const pos = m.geometry.attributes.position;
+    for (let i = 0; i < pos.count; i++) box.expandByPoint(v.fromBufferAttribute(pos, i).applyMatrix4(m.matrixWorld));
+  });
+  return box;
+}
+
 const WHEEL_RE = /wheel|tire|tyre| rims? |felge|reifen|rueda|roue/;
 const NOTWHEEL_RE = /steer|arch|well|spare|house|cover|guard|base/;
 const HEAD_RE = /head ?(light|lamp)|front ?(light|lamp)|(light|lamp)s? ?front| drl |daytime/;
@@ -109,7 +126,8 @@ export function makeGLBRig(
   root.updateMatrixWorld(true);
   b = boxOf(orient);
   const c = b.getCenter(new THREE.Vector3());
-  orient.position.set(-c.x, -b.min.y, -c.z);
+  // Stand the tyres on y = 0 (exact lowest point; the transformed boxes sat it ~18 cm too high).
+  orient.position.set(-c.x, -exactBoxOf(orient).min.y, -c.z);
   root.updateMatrixWorld(true);
   b = boxOf(orient);
   s = b.getSize(new THREE.Vector3());
@@ -134,7 +152,7 @@ export function makeGLBRig(
     for (const ch of o.children) {
       const t = tok(ch.name);
       if (WHEEL_RE.test(t) && !NOTWHEEL_RE.test(t)) {
-        const bb = boxOf(ch);
+        const bb = exactBoxOf(ch);
         if (!bb.isEmpty() && wheelOK(bb)) {
           cands.push({ node: ch, bb });
           candSet.add(ch);
@@ -154,7 +172,7 @@ export function makeGLBRig(
     if (/ (tire|tyre|tires|tyres|rim|rims|wheel|wheels|rubber|felge|reifen) /.test(t) && !NOTWHEEL_RE.test(t)) {
       const bb = mb.get(m)!;
       if (wheelOK(bb)) {
-        cands.push({ node: m, bb });
+        cands.push({ node: m, bb: exactBoxOf(m) });
         candSet.add(m);
       } else if (bb.getCenter(new THREE.Vector3()).y < 0.5 * H) stay.add(m);
     }
@@ -178,6 +196,8 @@ export function makeGLBRig(
     front: boolean;
     /** Wheel centre in the rig's frame (steering pivot). */
     hub: V3;
+    /** Toe the model was posed with (rad, about the vertical), undone so the wheel points straight ahead. */
+    toe: number;
     axis: V3;
     spin: number;
     pivot: V3;
@@ -193,7 +213,11 @@ export function makeGLBRig(
         along = z;
       }
     }
-    return { axis, spin: Math.sign(along) || 1, pivot: ctr.clone().applyMatrix4(np.base.clone().invert()) };
+    // The axle's heading in the rig frame: a wheel posed turned (e.g. -30° on this model's front pair)
+    // must be straightened, or it points off course while the car drives straight.
+    const dir = axis.clone().applyMatrix3(rot).normalize();
+    if (dir.z < 0) dir.negate();
+    return { axis, spin: Math.sign(along) || 1, pivot: ctr.clone().applyMatrix4(np.base.clone().invert()), toe: Math.atan2(dir.x, dir.z) };
   };
   const CALIPER_RE = / (brake ?pad|brakepad|caliper|calliper|brake) /;
   const calipersOf = (node: THREE.Object3D) =>
@@ -355,7 +379,8 @@ export function makeGLBRig(
 
   const last: BodyMotion = { heave: NaN, pitch: NaN, roll: NaN };
   const _B = new THREE.Matrix4(), _M = new THREE.Matrix4();
-  const px = rxs.length ? avg(rxs) : -0.3 * L, py = wy.length ? avg(wy) : 0.36;
+  // Pitch about the middle of the wheelbase, so each axle's arch moves half as far.
+  const px = fxs.length && rxs.length ? (avg(fxs) + avg(rxs)) / 2 : 0, py = wy.length ? avg(wy) : 0.36;
   return {
     root,
     L,
@@ -375,7 +400,7 @@ export function makeGLBRig(
     info: `${Object.keys(clusters).length} wheels · ${paintCount ? "paint found" : "paint not found"} · ${heads.length ? "headlights found" : "no headlights named"} · ${layers.length} parts`,
     update(spin, steer, body) {
       if (body.heave !== last.heave || body.pitch !== last.pitch || body.roll !== last.roll) {
-        // Suspension: heave, pitch about the rear axle, roll about the axle line.
+        // Suspension: heave, pitch about mid-wheelbase, roll about the axle line.
         _B.makeTranslation(0, body.heave, 0)
           .multiply(_M.makeTranslation(px, py, 0))
           .multiply(_T.makeRotationZ(body.pitch))
@@ -386,8 +411,10 @@ export function makeGLBRig(
         Object.assign(last, body);
       }
       wheelNodes.forEach((n) => {
-        // Steer (front pair) about the vertical through the hub, in the rig's frame...
-        if (n.front) _T.makeTranslation(n.hub.x, n.hub.y, n.hub.z).multiply(_R.makeRotationY(steer)).multiply(_T2.makeTranslation(-n.hub.x, -n.hub.y, -n.hub.z));
+        // Heading about the vertical through the hub, in the rig's frame: the posed toe undone,
+        // plus the steer for the front pair...
+        const heading = (n.front ? steer : 0) - n.toe;
+        if (Math.abs(heading) > 1e-6) _T.makeTranslation(n.hub.x, n.hub.y, n.hub.z).multiply(_R.makeRotationY(heading)).multiply(_T2.makeTranslation(-n.hub.x, -n.hub.y, -n.hub.z));
         else _T.identity();
         // ...and spin about the wheel's own axle through its centre, in its own frame.
         _R.makeRotationAxis(n.axis, n.spin * spin);

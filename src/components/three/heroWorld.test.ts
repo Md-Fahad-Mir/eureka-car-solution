@@ -53,13 +53,13 @@ describe("vehicle dynamics", () => {
     expect(steerFor(2.7, 0.05)).toBeCloseTo(Math.atan(0.135));
     expect(steerFor(2.7, -0.05)).toBeLessThan(0);
     expect(rollFor(10, 0.05)).toBeGreaterThan(0);
-    expect(rollFor(100, 1)).toBe(0.045); // capped
+    expect(rollFor(100, 1)).toBe(0.016); // capped: the arches stay round the tyres
   });
 
   it("squats when accelerating and dives when braking, within limits", () => {
     expect(pitchFor(2)).toBeGreaterThan(0);
     expect(pitchFor(-2)).toBeLessThan(0);
-    expect(pitchFor(1000)).toBe(0.03);
+    expect(pitchFor(1000)).toBe(0.01);
   });
 });
 

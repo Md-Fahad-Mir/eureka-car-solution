@@ -78,10 +78,13 @@ export function arcLength(s: number) {
 export const steerFor = (wheelbase: number, curvature: number) => Math.atan(wheelbase * curvature);
 /** Wheel spin angle for a distance travelled: rolling without slip, θ = -d / r (forward = negative about the axle). */
 export const spinFor = (distance: number, wheelRadius: number) => -distance / wheelRadius;
-/** Body roll (rad, + = leaning right) from lateral acceleration v²κ: about 0.35° per m/s², capped. */
-export const rollFor = (speed: number, curvature: number) => clamp(0.006 * speed * speed * curvature, -0.045, 0.045);
-/** Body pitch (rad, + = nose up) from longitudinal acceleration: squat when speeding up, dive when braking. */
-export const pitchFor = (accel: number) => clamp(0.004 * accel, -0.03, 0.03);
+/**
+ * Body roll (rad, + = leaning right) from lateral acceleration v²κ: about 0.35° per m/s².
+ * Capped so the body moves no more than ~1.5 cm over a wheel: the arches must stay round the tyres.
+ */
+export const rollFor = (speed: number, curvature: number) => clamp(0.006 * speed * speed * curvature, -0.016, 0.016);
+/** Body pitch (rad, + = nose up, about mid-wheelbase) from longitudinal acceleration: squat when speeding up, dive when braking. Capped like roll. */
+export const pitchFor = (accel: number) => clamp(0.004 * accel, -0.01, 0.01);
 
 /* ───────────── Camera helpers ───────────── */
 
