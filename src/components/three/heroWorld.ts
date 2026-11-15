@@ -1619,9 +1619,11 @@ function prep(node: THREE.Object3D): NodePrep {
   const pw = node.parent!.matrixWorld.clone();
   return { node, pwInv: pw.clone().invert(), base: pw.clone().multiply(node.matrix) };
 }
-function applyNode(n: NodePrep, pre: THREE.Matrix4) {
+/** Re-poses a node: `pre` acts in the rig's frame (offsets), `post` in the node's own frame (spin). */
+function applyNode(n: NodePrep, pre: THREE.Matrix4, post?: THREE.Matrix4) {
   n.node.matrixAutoUpdate = false;
   n.node.matrix.copy(n.pwInv).multiply(pre).multiply(n.base);
+  if (post) n.node.matrix.multiply(post);
   n.node.matrixWorldNeedsUpdate = true;
 }
 
@@ -1738,14 +1740,51 @@ function makeGLBRig(
     clusters[k].nodes.push(cd.node);
     clusters[k].bb.union(cd.bb);
   });
-  type WheelNode = NodePrep & { ctr: V3; sx: number; sz: number };
+  /**
+   * Wheels spin about their own axle, in their own frame: a model's front wheels are
+   * often posed steered, so their axle isn't the car's lateral axis, and spinning them
+   * about that axis made them wobble out of the arches. `axis` is the local axis that
+   * points most nearly across the car (world Z), `spin` its direction, `pivot` the
+   * wheel centre in local space. Brake calipers inside the wheel are held still.
+   */
+  type WheelNode = NodePrep & {
+    sx: number;
+    sz: number;
+    axis: V3;
+    spin: number;
+    pivot: V3;
+    calipers: { node: THREE.Object3D; base: THREE.Matrix4 }[];
+  };
+  const spinFrame = (np: NodePrep, ctr: V3) => {
+    const rot = new THREE.Matrix3().setFromMatrix4(np.base);
+    let axis = V(1, 0, 0), along = 0;
+    for (const a of [V(1, 0, 0), V(0, 1, 0), V(0, 0, 1)]) {
+      const z = a.clone().applyMatrix3(rot).normalize().z;
+      if (Math.abs(z) > Math.abs(along)) {
+        axis = a;
+        along = z;
+      }
+    }
+    return { axis, spin: Math.sign(along) || 1, pivot: ctr.clone().applyMatrix4(np.base.clone().invert()) };
+  };
+  const CALIPER_RE = / (brake ?pad|brakepad|caliper|calliper|brake) /;
+  const calipersOf = (node: THREE.Object3D) =>
+    node.children
+      .filter((c) => CALIPER_RE.test(tok(c.name + " " + ((c as THREE.Mesh).isMesh ? matNames(c as THREE.Mesh) : ""))) && !/ disc /.test(tok(c.name)))
+      .map((c) => {
+        c.updateMatrix();
+        return { node: c, base: c.matrix.clone() };
+      });
   const wheelNodes: WheelNode[] = [], fxs: number[] = [], rxs: number[] = [], wy: number[] = [], wr: number[] = [];
   Object.keys(clusters).forEach((k) => {
     const cl = clusters[k], ctr = cl.bb.getCenter(new THREE.Vector3()), sz = cl.bb.getSize(new THREE.Vector3());
     (k[0] === "F" ? fxs : rxs).push(ctr.x);
     wy.push(ctr.y);
     wr.push(sz.y / 2);
-    cl.nodes.forEach((n) => wheelNodes.push({ ...prep(n), ctr, sx: k[0] === "F" ? 1 : -1, sz: k[1] === "L" ? 1 : -1 }));
+    cl.nodes.forEach((n) => {
+      const np = prep(n);
+      wheelNodes.push({ ...np, ...spinFrame(np, ctr), sx: k[0] === "F" ? 1 : -1, sz: k[1] === "L" ? 1 : -1, calipers: calipersOf(n) });
+    });
   });
   const avg = (a: number[]) => a.reduce((p, q) => p + q, 0) / a.length;
 
@@ -1916,11 +1955,22 @@ function makeGLBRig(
         lastE = e;
       }
       wheelNodes.forEach((n) => {
-        _T.makeTranslation(n.ctr.x + n.sx * e * 0.35, n.ctr.y + e * 0.12, n.ctr.z + n.sz * e * 0.75);
-        _R.makeRotationZ(theta);
-        _T2.makeTranslation(-n.ctr.x, -n.ctr.y, -n.ctr.z);
-        _P.copy(_T).multiply(_R).multiply(_T2);
-        applyNode(n, _P);
+        // Exploded offset in the rig's frame; spin about the wheel's own axle through its centre.
+        _T.makeTranslation(n.sx * e * 0.35, e * 0.12, n.sz * e * 0.75);
+        _R.makeRotationAxis(n.axis, n.spin * theta);
+        _T2.makeTranslation(-n.pivot.x, -n.pivot.y, -n.pivot.z);
+        _P.makeTranslation(n.pivot.x, n.pivot.y, n.pivot.z).multiply(_R).multiply(_T2);
+        applyNode(n, _T, _P);
+        if (n.calipers.length) {
+          // Undo the spin for the calipers (they're children of the wheel, but don't rotate).
+          _R.makeRotationAxis(n.axis, -n.spin * theta);
+          _P.makeTranslation(n.pivot.x, n.pivot.y, n.pivot.z).multiply(_R).multiply(_T2);
+          n.calipers.forEach((c) => {
+            c.node.matrixAutoUpdate = false;
+            c.node.matrix.copy(_P).multiply(c.base);
+            c.node.matrixWorldNeedsUpdate = true;
+          });
+        }
       });
     },
     dispose() {
