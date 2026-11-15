@@ -178,15 +178,10 @@ export function Hero3D() {
           </div>
         </div>
 
-        {/* Static poster: LCP-safe first paint and the no-3D fallback */}
-        <div
-          className={cn(
-            "container-page relative pb-16 transition-opacity duration-700",
-            "immersive:absolute immersive:inset-0 immersive:flex immersive:max-w-none immersive:items-center immersive:justify-end immersive:pb-0 immersive:pl-[36vw] immersive:pr-[7vw]",
-            immersive && ready && "pointer-events-none opacity-0",
-          )}
-        >
-          <div className="mx-auto w-full max-w-3xl immersive:mx-0 immersive:max-w-none">
+        {/* Static poster: the hero image when there's no 3D (phones, reduced motion, no WebGL).
+            Hidden wherever the 3D story runs, so it never shows under or cross-fades with the animated car. */}
+        <div className="container-page relative pb-16 immersive:hidden">
+          <div className="mx-auto w-full max-w-3xl">
             <HeroPoster
               label={tHome("poster.alt")}
               callouts={[
