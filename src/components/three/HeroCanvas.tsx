@@ -4,23 +4,29 @@ import { Component, Suspense, useEffect, useLayoutEffect, useRef, useState, type
 import * as THREE from "three";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { PerformanceMonitor, useGLTF } from "@react-three/drei";
-import { heroConfig } from "@/config/hero";
-import { createHeroWorld, type HeroWorld, type HeroWorldState } from "./heroWorld";
+import { heroConfig, heroModel, type CarAnchor } from "@/config/hero";
+import { createHeroWorld, type ExploreApi, type HeroWorld, type HeroWorldState } from "./heroWorld";
 
 export type HeroCanvasProps = {
   /** Render loop runs only while the hero is on screen. */
   active: boolean;
   getProgress: () => number;
   onState: (state: HeroWorldState) => void;
-  /** Called once the real car is in place (`true`), or when it failed and the procedural car stays (`false`). */
-  onReady: (withModel: boolean) => void;
-  paint: number | null;
+  /** The car is on stage and the intro has started. */
+  onReady: () => void;
+  /** The model couldn't be loaded (the hero falls back to the static poster). */
+  onFail: () => void;
   calloutSvgRef: RefObject<SVGSVGElement | null>;
+  /** Technology callouts: localised label + anchor on the car. */
+  features: { label: string; at: CarAnchor }[];
   /** Background layer that takes the pointer parallax (--mx / --my). */
   stageRef: RefObject<HTMLElement | null>;
-  /** The intro text block; the car is framed in the space beside it until the story starts. */
+  /** The intro text block; in the hero composition the car is framed beside it. */
   introRef: RefObject<HTMLElement | null>;
-  calloutLabels: string[];
+  /** Filled with the Explore camera controls once the world exists. */
+  exploreRef: RefObject<ExploreApi | null>;
+  /** Studio fog colour (the hero backdrop). */
+  fogHex: string;
 };
 
 /**
@@ -36,7 +42,7 @@ export default function HeroCanvas(props: HeroCanvasProps) {
       dpr={[heroConfig.minDpr, dpr]}
       shadows
       gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
-      camera={{ fov: 30, near: 0.1, far: 200, position: [12.5, 3.4, 10.5] }}
+      camera={{ fov: 30, near: 0.05, far: 200, position: [7.6, 1.5, 6.4] }}
       style={{ position: "absolute", inset: 0 }}
     >
       <PerformanceMonitor
@@ -50,7 +56,7 @@ export default function HeroCanvas(props: HeroCanvasProps) {
   );
 }
 
-function World({ getProgress, onState, onReady, paint, calloutSvgRef, calloutLabels, stageRef, introRef }: HeroCanvasProps) {
+function World({ getProgress, onState, onReady, onFail, calloutSvgRef, features, stageRef, introRef, exploreRef, fogHex }: HeroCanvasProps) {
   const { gl, scene, camera, size, viewport } = useThree();
   const world = useRef<HeroWorld | null>(null);
   const [failed, setFailed] = useState(false);
@@ -60,24 +66,22 @@ function World({ getProgress, onState, onReady, paint, calloutSvgRef, calloutLab
   });
 
   useLayoutEffect(() => {
-    const bg = getComputedStyle(document.documentElement).getPropertyValue("--bg").trim() || "#e4e7df";
     const w = createHeroWorld({
       renderer: gl,
       scene,
       camera: camera as THREE.PerspectiveCamera,
       calloutSvg: calloutSvgRef.current,
-      calloutLabels,
-      finishes: heroConfig.finishes.map((f) => f.hex),
-      chromaFinish: heroConfig.chromaFinish,
-      chromaAltFinish: heroConfig.chromaAltFinish,
+      features,
+      fogHex,
       stageEl: stageRef.current,
       introEl: introRef.current,
-      backgroundHex: bg,
       getProgress: () => callbacks.current.getProgress(),
       onState: (s) => callbacks.current.onState(s),
     });
     world.current = w;
+    exploreRef.current = w.explore;
     return () => {
+      exploreRef.current = null;
       w.dispose();
       world.current = null;
     };
@@ -86,12 +90,9 @@ function World({ getProgress, onState, onReady, paint, calloutSvgRef, calloutLab
   }, [gl, scene, camera]);
 
   useEffect(() => world.current?.resize(size.width, size.height, viewport.dpr), [size.width, size.height, viewport.dpr]);
-  useEffect(() => world.current?.setPaint(paint), [paint]);
   useEffect(() => {
-    if (!failed) return;
-    world.current?.start();
-    onReady(false);
-  }, [failed, onReady]);
+    if (failed) onFail();
+  }, [failed, onFail]);
 
   // Priority 1: this callback renders the frame itself (mirror pass + main pass).
   useFrame((_, dt) => world.current?.frame(dt), 1);
@@ -101,12 +102,12 @@ function World({ getProgress, onState, onReady, paint, calloutSvgRef, calloutLab
     <ModelErrorBoundary onError={() => setFailed(true)}>
       <Suspense fallback={null}>
         <RealCar
-          url={heroConfig.modelUrl}
+          url={heroModel.url}
           onLoaded={(car) => {
-            const info = world.current?.setModel(car, heroConfig.paintMaterialPattern);
+            const info = world.current?.setModel(car);
             if (process.env.NODE_ENV !== "production" && info) console.info(`[hero] ${info}`);
             world.current?.start();
-            onReady(true);
+            onReady();
           }}
         />
       </Suspense>
@@ -132,14 +133,14 @@ function RealCar({ url, onLoaded }: { url: string; onLoaded: (root: THREE.Object
   return null;
 }
 
-/** If the model can't load (missing file, unsupported compression), keep the procedural car. */
+/** If the model can't load (missing file, unsupported compression), report it; the hero shows the poster instead. */
 class ModelErrorBoundary extends Component<{ onError: () => void; children: ReactNode }, { failed: boolean }> {
   state = { failed: false };
   static getDerivedStateFromError() {
     return { failed: true };
   }
   componentDidCatch(error: unknown) {
-    console.warn("[hero] 3D model failed to load; showing the procedural car instead.", error);
+    console.warn("[hero] 3D model failed to load; showing the poster instead.", error);
     this.props.onError();
   }
   render() {

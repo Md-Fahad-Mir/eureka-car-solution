@@ -19,7 +19,7 @@ type MenuId = "vehicles" | "services";
 
 /** Top-level nav item: a gold underline grows from the centre on hover, and stays for the open menu or current page. */
 const NAV_ITEM =
-  "relative inline-flex h-10 items-center gap-1.5 rounded-full px-2 text-sm font-medium transition-colors duration-300 hover:text-accent-ink xl:px-3.5 " +
+  "relative inline-flex h-10 items-center gap-1.5 rounded-full px-2 text-sm font-medium transition-colors duration-300 hover:text-accent-ink group-data-[dark]/header:hover:text-accent-2 xl:px-3.5 " +
   "after:absolute after:inset-x-2 after:bottom-1 after:h-px after:origin-center after:scale-x-0 after:bg-accent after:transition-transform after:duration-500 after:ease-(--ease-cinema) hover:after:scale-x-100 xl:after:inset-x-3.5 " +
   "aria-expanded:after:scale-x-100 aria-[current=page]:after:scale-x-100";
 
@@ -41,6 +41,8 @@ export function Header() {
   const menuBaseId = useId();
 
   const [scrolled, setScrolled] = useState(false);
+  /** A dark section (the immersive 3D hero) is under the header: switch to the dark treatment. */
+  const [overDark, setOverDark] = useState(false);
   const [openMenu, setOpenMenu] = useState<MenuId | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
   const headerRef = useRef<HTMLElement>(null);
@@ -56,10 +58,28 @@ export function Header() {
   }, []);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 24);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    const check = () => {
+      setScrolled(window.scrollY > 24);
+      // Layout height (not the animated box: the header slides in on load).
+      const bar = headerRef.current?.offsetHeight ?? 60;
+      let dark = false;
+      document.querySelectorAll("[data-header-dark]").forEach((el) => {
+        const r = el.getBoundingClientRect();
+        if (r.width > 0 && r.top <= bar && r.bottom > bar) dark = true;
+      });
+      setOverDark(dark);
+    };
+    check();
+    window.addEventListener("scroll", check, { passive: true });
+    window.addEventListener("resize", check);
+    // The hero decides whether it's immersive after hydration: re-check when the marker appears or goes.
+    const mo = new MutationObserver(check);
+    mo.observe(document.body, { subtree: true, attributes: true, attributeFilter: ["data-header-dark", "data-mode"], childList: true });
+    return () => {
+      window.removeEventListener("scroll", check);
+      window.removeEventListener("resize", check);
+      mo.disconnect();
+    };
   }, []);
 
   useEffect(() => {
@@ -91,19 +111,24 @@ export function Header() {
   };
 
   const count = (n: number) => formatNumber(n, locale);
+  // Over the dark studio the header goes dark too (but not while a light mega-menu or the sheet is open).
+  const dark = overDark && !openMenu && !mobileOpen;
 
   return (
     <header
       ref={headerRef}
+      data-dark={dark ? "" : undefined}
       onMouseLeave={hoverClose}
       onBlur={(e) => {
         if (!e.currentTarget.contains(e.relatedTarget as Node)) setOpenMenu(null);
       }}
       className={cn(
-        "sticky top-0 z-50 border-b transition-[background-color,border-color,backdrop-filter,box-shadow] duration-500 ease-(--ease-cinema) motion-safe:animate-[header-in_0.9s_var(--ease-cinema)_both]",
-        scrolled || openMenu
-          ? "border-line bg-bg/90 shadow-[0_12px_32px_-26px_rgb(22_26_22/0.45)] backdrop-blur-xl supports-[backdrop-filter]:bg-bg/75"
-          : "border-transparent bg-bg",
+        "group/header sticky top-0 z-50 border-b transition-[background-color,border-color,backdrop-filter,box-shadow,color] duration-500 ease-(--ease-cinema) motion-safe:animate-[header-in_0.9s_var(--ease-cinema)_both]",
+        dark
+          ? "on-dark border-line-on-dark bg-[#070a11]/80 text-on-dark backdrop-blur-xl"
+          : scrolled || openMenu
+            ? "border-line bg-bg/90 shadow-[0_12px_32px_-26px_rgb(22_26_22/0.45)] backdrop-blur-xl supports-[backdrop-filter]:bg-bg/75"
+            : "border-transparent bg-bg",
       )}
     >
       <div
@@ -112,7 +137,7 @@ export function Header() {
           scrolled ? "h-[var(--header-h-compact)]" : "h-[var(--header-h)]",
         )}
       >
-        <Logo className="mr-2 xl:mr-6" />
+        <Logo tone={dark ? "light" : "ink"} className="mr-2 xl:mr-6" />
 
         <nav aria-label={tA11y("mainNav")} className="hidden lg:block">
           <ul className="flex items-center gap-0.5">
@@ -151,17 +176,17 @@ export function Header() {
         </nav>
 
         <div className="ml-auto flex items-center gap-0.5 sm:gap-1">
-          <LanguageSwitcher className="hidden sm:inline-flex" />
+          <LanguageSwitcher tone={dark ? "light" : "ink"} className="hidden sm:inline-flex" />
           <IconLink href="/compare" label={tHeader("compareCount", { count: compareCount })} badge={compareCount ? count(compareCount) : null}>
             <GitCompareArrows aria-hidden className="size-[18px] transition-transform duration-500 ease-(--ease-cinema) group-hover:rotate-180" />
           </IconLink>
           <IconLink href="/account/saved" label={tHeader("favouritesCount", { count: favouriteCount })} badge={favouriteCount ? count(favouriteCount) : null}>
-            <Heart aria-hidden className="size-[18px] transition-[transform,color] duration-300 group-hover:scale-115 group-hover:text-accent-ink" />
+            <Heart aria-hidden className="size-[18px] transition-[transform,color] duration-300 group-hover:scale-115 group-hover:text-accent-ink group-data-[dark]/header:group-hover:text-accent-2" />
           </IconLink>
           <IconLink href="/account" label={tHeader("account")} className="hidden sm:grid">
             <User aria-hidden className="size-[18px] transition-transform duration-300 group-hover:-translate-y-0.5" />
           </IconLink>
-          <ButtonLink href="/test-drive" size="sm" className="sheen ml-2 hidden md:inline-flex">
+          <ButtonLink href="/test-drive" size="sm" variant={dark ? "light" : "primary"} className="sheen ml-2 hidden md:inline-flex">
             {tHeader("bookTestDrive")}
           </ButtonLink>
           <button
@@ -169,7 +194,7 @@ export function Header() {
             onClick={() => setMobileOpen(true)}
             aria-haspopup="dialog"
             aria-expanded={mobileOpen}
-            className="ml-1 inline-flex h-10 items-center gap-2 rounded-full px-3 text-sm font-medium hover:bg-ink/[0.06] lg:hidden"
+            className="ml-1 inline-flex h-10 items-center gap-2 rounded-full px-3 text-sm font-medium hover:bg-ink/[0.06] group-data-[dark]/header:hover:bg-white/10 lg:hidden"
           >
             <Menu aria-hidden className="size-5" />
             <span className="sr-only sm:not-sr-only">{tHeader("menu")}</span>
@@ -210,7 +235,7 @@ function IconLink({
     <Link
       href={href}
       aria-label={label}
-      className={cn("group relative grid size-10 place-items-center rounded-full transition-colors duration-300 hover:bg-ink/[0.06]", className)}
+      className={cn("group relative grid size-10 place-items-center rounded-full transition-colors duration-300 hover:bg-ink/[0.06] group-data-[dark]/header:hover:bg-white/10", className)}
     >
       {children}
       {badge ? (

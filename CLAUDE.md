@@ -39,7 +39,8 @@ Next.js 16 App Router (Turbopack, `cacheComponents`), React 19, TypeScript stric
 
 ## 3D hero
 - `src/components/three/*` (three.js / R3F) is homepage-only and loaded via `next/dynamic` from `components/home/Hero3D.tsx`. Never import it elsewhere.
-- Car model: `public/models/hero-car.glb` (CC BY 4.0, credit in `config/hero.ts`, shown under the hero). Rebuild with `npm run prepare:hero-car`.
+- Car model: `public/models/hero-car.glb` (CC BY 4.0). Everything model-specific (credit, paint, feature anchors) is `heroModel` in `config/hero.ts`.
+- `three/choreography.ts` is the pure, tested maths (path, wheel spin = distance / radius, steer from curvature, suspension, intro and keyframes); `heroWorld.ts` is the scene; `glbRig.ts` turns any car glTF into a rig. Never show a stand-in as a specific real vehicle.
 
 ## Honesty rules
 - Never imply a real booking, approval, payment or server save. Every confirmation shows `<DemoNotice>` with the reference.

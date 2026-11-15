@@ -1376,83 +1376,78 @@
     "chapterNav": "Story chapters",
     "loading3d": "Loading the 3D studio…",
     "stageWord": "EUREKA",
-    "finishTitle": "Choose your finish",
-    "finishes": {
-      "crimson": "Crimson Reserve",
-      "sapphire": "Midnight Sapphire",
-      "orange": "Solar Orange",
-      "teal": "Electric Teal",
-      "lime": "Racing Lime",
-      "champagne": "Champagne Gold"
-    },
     "chapters": {
-      "awakening": {
-        "num": "I · Awakening",
+      "overview": {
+        "num": "I · Overview",
         "numeral": "I",
-        "short": "Awakening",
-        "title": "Into the",
-        "titleAccent": "light",
-        "body": "A single line of light draws itself across the nose. Every journey with us starts the same way: with the right vehicle, presented honestly."
-      },
-      "form": {
-        "num": "II · Form",
-        "numeral": "II",
-        "short": "Form",
+        "short": "Overview",
         "title": "Every line,",
-        "titleAccent": "in the round",
-        "body": "One unbroken surface from nose to tail. Walk all the way round, just as you would in our showroom."
+        "titleAccent": "in proportion",
+        "body": "Stance, glasshouse and wheelbase, seen side-on before anything else."
       },
-      "finish": {
-        "num": "III · Finish",
+      "design": {
+        "num": "II · Exterior design",
+        "numeral": "II",
+        "short": "Design",
+        "title": "Detail,",
+        "titleAccent": "up close",
+        "body": "Lamps, wheels and surfaces, close enough to judge the finish."
+      },
+      "performance": {
+        "num": "III · Performance",
         "numeral": "III",
-        "short": "Finish",
-        "title": "Choose your",
-        "titleAccent": "finish",
-        "body": "Six finishes to try on. Pick the colour that is yours, then find the vehicle that wears it best."
+        "short": "Performance",
+        "title": "Composed",
+        "titleAccent": "on the move",
+        "body": "Watch the wheels track the road, the nose dip under braking and the body lean through the bend."
       },
-      "chroma": {
-        "num": "IV · Chroma",
+      "technology": {
+        "num": "IV · Technology",
         "numeral": "IV",
-        "short": "Chroma",
-        "title": "One line of light,",
-        "titleAccent": "a bolder colour",
-        "body": "A single pass of light lays a bolder colour over the body, so you can judge it in any light."
+        "short": "Technology",
+        "title": "What matters,",
+        "titleAccent": "pointed out",
+        "body": "The details worth asking about on a test drive."
       },
-      "engineering": {
-        "num": "V · Engineering",
+      "interior": {
+        "num": "V · Interior",
         "numeral": "V",
-        "short": "Engineering",
+        "short": "Interior",
         "title": "Look",
-        "titleAccent": "beneath",
-        "body": "Motors, battery floor, suspension and brakes, laid out with nothing to hide."
+        "titleAccent": "inside",
+        "body": "Through the glass for now. Take a seat at the showroom."
       },
-      "deconstructed": {
-        "num": "VI · Deconstructed",
+      "explore": {
+        "num": "VI · Explore",
         "numeral": "VI",
-        "short": "Deconstructed",
-        "title": "Taken apart,",
-        "titleAccent": "piece by piece",
-        "body": "Every panel and component considered on its own. Then each one returns to its place."
-      },
-      "drive": {
-        "num": "VII · The drive",
-        "numeral": "VII",
-        "short": "The drive",
-        "title": "Then,",
-        "titleAccent": "it's yours",
-        "body": "Finance it your way, service it with us, and drive away with confidence."
+        "short": "Explore",
+        "title": "Now it's",
+        "titleAccent": "your turn",
+        "body": "Drag to walk around it, pick a view, then book the real thing."
       }
     },
-    "finaleLead": "Test drives by appointment, at any of our showrooms.",
-    "callouts": {
-      "c1": "Front motor",
-      "c2": "Battery floor",
-      "c3": "Suspension",
-      "c4": "Disc brakes",
-      "c5": "Rear motor",
-      "c6": "Cabin"
+    "credit": "3D model: <model>{title}</model> by {author}, © {year} {holder}, <licence>{licenceName}</licence>. Modified: logos removed, compressed.",
+    "features": {
+      "lamps": "Slim LED headlamps",
+      "wheels": "Large alloys, big brakes",
+      "cabin": "Two-tone cabin",
+      "tail": "Full-width tail lamps"
     },
-    "credit": "3D model: <model>{title}</model> by {author}, © {year} {holder}, <licence>{licenceName}</licence>. Modified: logos removed, compressed."
+    "explore": {
+      "hint": "Drag to turn the car",
+      "views": "Views",
+      "view": {
+        "front": "Front",
+        "threeQuarter": "Three-quarter",
+        "side": "Side",
+        "rear": "Rear"
+      },
+      "left": "Turn left",
+      "right": "Turn right",
+      "zoomIn": "Zoom in",
+      "zoomOut": "Zoom out",
+      "reset": "Reset view"
+    }
   },
   "forms": {
     "name": "Full name",

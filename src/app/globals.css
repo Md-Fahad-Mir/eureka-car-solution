@@ -279,26 +279,27 @@ body {
 /* Hero scroll story length (set inline from config) and x-ray callout type. */
 @media (width >= 48rem) and (prefers-reduced-motion: no-preference) {
   [data-hero]:not([data-mode="poster"]) {
-    height: var(--hero-scroll, 1400vh);
+    height: var(--hero-scroll, 1000vh);
   }
 }
+/* Technology callouts over the dark studio. */
 .hero-callout-num {
   font: 600 10px var(--font-body);
   letter-spacing: 0.18em;
-  fill: var(--accent-ink);
+  fill: var(--accent-2);
 }
 .hero-callout-text {
   font: 500 11px var(--font-body);
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  fill: var(--ink);
+  fill: var(--on-dark);
 }
 .hero-callout-text:lang(bn) {
   letter-spacing: 0;
 }
 
-/* Hero stage, ported from the reference showcase: faint wordmark and chapter
-   numerals behind the car (with pointer parallax), vignette and film grain over it. */
+/* Hero stage (dark studio): faint wordmark and chapter numerals behind the car
+   (with pointer parallax), vignette and film grain over it. */
 .hero-stage {
   position: absolute;
   inset: 0;
@@ -315,7 +316,7 @@ body {
   font-weight: 300;
   line-height: 1;
   white-space: nowrap;
-  color: rgb(22 26 22 / 0.035);
+  color: rgb(243 239 231 / 0.03);
   opacity: 0;
   transition:
     opacity 1.6s ease,
@@ -337,7 +338,7 @@ body {
   font-weight: 200;
   line-height: 1;
   color: transparent;
-  -webkit-text-stroke: 1px rgb(22 26 22 / 0.085);
+  -webkit-text-stroke: 1px rgb(243 239 231 / 0.08);
   opacity: 0;
   transform: translateY(-50%) translateY(40px);
   transition:
@@ -352,14 +353,14 @@ body {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background: radial-gradient(125% 95% at 50% 42%, transparent 58%, rgb(44 56 40 / 0.11) 100%);
+  background: radial-gradient(125% 95% at 50% 42%, transparent 50%, rgb(3 5 9 / 0.55) 100%);
 }
 .hero-grain {
   position: absolute;
   inset: -50%;
   pointer-events: none;
-  opacity: 0.07;
-  mix-blend-mode: multiply;
+  opacity: 0.05;
+  mix-blend-mode: overlay;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   animation: hero-grain 1.2s steps(6) infinite;
 }
@@ -369,9 +370,6 @@ body {
   40% { transform: translate(2%, -3%); }
   60% { transform: translate(-2%, -1%); }
   80% { transform: translate(3%, 2%); }
-}
-.hero-finale-veil {
-  background: radial-gradient(ellipse 60% 55% at center, color-mix(in srgb, var(--bg) 94%, transparent) 0%, color-mix(in srgb, var(--bg) 70%, transparent) 50%, transparent 80%);
 }
 
 /* Chapter captions: the line draws in, the title rises out of a clip box unit by

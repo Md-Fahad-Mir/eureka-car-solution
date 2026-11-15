@@ -93,23 +93,25 @@ Images go through `next/image` (AVIF/WebP, responsive sizes). Any image without 
 
 ## Hero 3D model
 
-The homepage hero loads `public/models/hero-car.glb` with React Three Fiber, on desktop only. It isn't used:
+The homepage hero is a cinematic, scroll-driven 3D experience in a dark studio, rendered with React Three Fiber on desktop and tablet (768 px and up). It isn't used:
 - below 768 px;
 - with reduced motion;
 - without WebGL;
-- on low-memory devices.
+- on low-memory devices;
+- if the model can't be loaded.
 
 In those cases a static poster is shown instead. three.js is shipped only to the homepage.
 
-**Current model:** "Car Concept" from the Khronos glTF Sample Assets, by Eric Chadwick, © 2024 Darmstadt Graphics Group GmbH, licensed CC BY 4.0. Logos were removed and the geometry compressed. The required credit is shown under the hero and is configured in `src/config/hero.ts`.
+**What it does:** a timed intro (lights rise, headlights ignite, the camera orbits, the car drives in and stops), then a scroll story: Overview, Exterior design, Performance (a real drive through a lane change), Technology (feature callouts), Interior, and Explore, where visitors drag to turn the car, pick a view or zoom. Wheel spin is computed from the distance travelled and the wheel radius; front-wheel steer comes from the path's curvature; the body squats, dives and rolls from the real acceleration and cornering. The maths is in `src/components/three/choreography.ts` (unit-tested), the scene in `heroWorld.ts`, and the model handling in `glbRig.ts`.
 
-**To use a different car:**
-1. Download a model you're licensed to use on a public website (glTF or GLB) into `reference/models/<name>/`. That folder is git-ignored.
-2. Run `npm run prepare:hero-car -- reference/models/<name>/scene.gltf --inspect` to list its parts and materials. Adjust the `DROP` patterns in `scripts/prepare-hero-car.mjs` so manufacturer badges and plates are removed.
-3. Run `npm run prepare:hero-car -- reference/models/<name>/scene.gltf`. This writes `public/models/hero-car.glb`: simplified, WebP textures, meshopt-compressed.
-4. Update `credit`, `lengthM` and `paintMaterialPattern` in `src/config/hero.ts`.
+**Current model:** "Car Concept" from the Khronos glTF Sample Assets, by Eric Chadwick, © 2024 Darmstadt Graphics Group GmbH, licensed CC BY 4.0. Logos were removed and the geometry compressed. The required credit is shown under the hero.
 
-The Toyota Land Cruiser 300 GR Sport swap is prepared on the branch `feat/hero-land-cruiser` (4x4 drivetrain in the x-ray chapter, copy, credit, pipeline) and is waiting for the model file.
+**To use a different car (e.g. a Toyota Land Cruiser Prado):**
+1. Get a model you're licensed to use **in a real-time web page** (many stock-model licences restrict WebGL use or serving the file to browsers; check before buying). glTF/GLB is easiest; FBX/OBJ can be converted to glTF in Blender. Put it in `reference/models/<name>/` (git-ignored).
+2. Process it into `public/models/hero-car.glb` (simplified, WebP textures, meshopt-compressed, manufacturer badges and plates removed). The generic pipeline with `--inspect` and badge removal is on the branch `feat/hero-land-cruiser` (`scripts/prepare-hero-car.mjs`); merge that script first.
+3. Update `heroModel` in `src/config/hero.ts`: credit, paint material pattern and colour, and the feature anchors, with matching `hero.features.*` copy in both languages that describes what the model really shows.
+
+The choreography adapts to the model's size. Wheels, lamps and paint are detected by name, so models with clearly named parts work best.
 
 ## Connecting a real API
 
