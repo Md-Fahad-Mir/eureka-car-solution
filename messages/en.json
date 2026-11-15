@@ -264,7 +264,6 @@
       "title": "Start with what you need",
       "all": "All vehicles",
       "byFuel": "By fuel type",
-      "byCategory": "By category",
       "count": "{count, plural, =0 {None right now} one {# vehicle} other {# vehicles}}"
     },
     "shelves": {
