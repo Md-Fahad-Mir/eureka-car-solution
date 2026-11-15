@@ -6,11 +6,13 @@
  * mirror-gloss floor pass and the scroll choreography map 1:1 onto the
  * reference this way. R3F owns the renderer, canvas, resize and frame loop.
  *
- * Chapters (scroll 0→1): I Awakening (light bar) → II Finish (light sweep,
- * paint) → III Engineering (clay scan → x-ray + callouts → exploded) →
- * IV The Drive (tunnel), then hand-off to the normal homepage sections.
+ * Chapters (scroll 0→1), as in the reference: I Awakening (light bar) →
+ * II Form (shoulder light sweep) → III Finish (paint) → IV Chroma (a line of
+ * light repaints the body) → V Engineering (x-ray + callouts) → VI Deconstructed
+ * (exploded view) → VII The Drive (tunnel) → finale, then the homepage sections.
  */
 import * as THREE from "three";
+import { HERO_FINALE } from "@/config/hero";
 
 type V3 = THREE.Vector3;
 const V = (x: number, y: number, z: number) => new THREE.Vector3(x, y, z);
@@ -30,7 +32,13 @@ export type HeroWorldOptions = {
   calloutSvg: SVGSVGElement | null;
   calloutLabels: string[];
   finishes: readonly string[];
-  clayHex: string;
+  /** Chroma chapter colour (index into `finishes`), and the one used if the visitor picked it already. */
+  chromaFinish: number;
+  chromaAltFinish: number;
+  /** Element whose --mx / --my custom properties follow the smoothed pointer (background parallax). */
+  stageEl: HTMLElement | null;
+  /** Homepage intro text; until the story starts the car is framed in the space to its right. */
+  introEl: HTMLElement | null;
   /** Background colour the scene fades into (fog). */
   backgroundHex: string;
   getProgress: () => number;
@@ -39,6 +47,8 @@ export type HeroWorldOptions = {
 
 export type HeroWorld = {
   setPaint: (index: number | null) => void;
+  /** Start the intro (camera glide-in, light bar) once the car is in place. */
+  start: () => void;
   /** Swap in a real car (glTF scene). Returns a one-line diagnostic. */
   setModel: (root: THREE.Object3D, paintPattern: RegExp | null) => string;
   resize: (width: number, height: number, dpr: number) => void;
@@ -59,8 +69,7 @@ type FxUniforms = {
 const FRAG_HEAD = /* glsl */ `
 varying vec3 vWPos;
 uniform float uClayX; uniform float uScan; uniform float uGhost;
-uniform vec3 uClayCol; uniform vec3 uScanCol;
-float clayMask(){ return smoothstep(uClayX - 0.035, uClayX + 0.035, vWPos.x); }`;
+uniform vec3 uClayCol; uniform vec3 uScanCol;`;
 
 function makePatcher(fx: FxUniforms) {
   const patched = new Set<THREE.Material>();
@@ -87,28 +96,7 @@ function makePatcher(fx: FxUniforms) {
         "#include <color_fragment>",
         `#include <color_fragment>
 #ifdef PAINTSWEEP
- diffuseColor.rgb = mix(diffuseColor.rgb, uClayCol, clayMask());
-#endif`,
-      )
-      .replace(
-        "#include <roughnessmap_fragment>",
-        `#include <roughnessmap_fragment>
-#ifdef PAINTSWEEP
- roughnessFactor = mix(roughnessFactor, 0.62, clayMask());
-#endif`,
-      )
-      .replace(
-        "#include <metalnessmap_fragment>",
-        `#include <metalnessmap_fragment>
-#ifdef PAINTSWEEP
- metalnessFactor = mix(metalnessFactor, 0.0, clayMask());
-#endif`,
-      )
-      .replace(
-        "#include <lights_physical_fragment>",
-        `#include <lights_physical_fragment>
-#if defined(PAINTSWEEP) && defined(USE_CLEARCOAT)
- material.clearcoat *= 1.0 - clayMask();
+ diffuseColor.rgb = mix(diffuseColor.rgb, uClayCol, smoothstep(uClayX - 0.035, uClayX + 0.035, vWPos.x));
 #endif`,
       )
       .replace(
@@ -270,7 +258,7 @@ type Keyframe = {
   explode: number;
   tunnel: number;
   grid: number;
-  /** -1 intro overlay · 0..3 chapters · 4 hand-off. */
+  /** -1 homepage intro · 0..6 chapters · 7 finale. */
   cap: number;
   /** Arrive by orbiting around the car's vertical axis instead of a straight line. */
   orbit?: boolean;
@@ -289,27 +277,29 @@ const kf = (cam: V3, tgt: V3, o: Partial<Keyframe>): Keyframe => ({
   ...o,
 });
 
-/** Condensed from the reference's 13 keyframes / 7 chapters to 4 chapters (brief §11). */
+/**
+ * The reference's 13 keyframes. Only two things differ: keyframe 0 shows the
+ * homepage intro (headline, search) instead of chapter I, and the camera
+ * orbits round the car into the tunnel instead of cutting past its rear corner.
+ */
 const K: Keyframe[] = [
   kf(V(7.8, 2.2, 6.4), V(0, 0.55, 0), { head: 0, paint: 0, cap: -1 }),
   kf(V(7.2, 0.85, 1.0), V(0, 0.6, 0), { paint: 0, cap: 0 }),
   kf(V(2.5, 0.7, 3.4), V(1.5, 0.55, 0), { paint: 0, cap: 1 }),
-  kf(V(-1.9, 1.0, 3.8), V(-1.2, 0.6, 0), { cap: 1 }),
-  kf(V(0.3, 0.95, 9.4), V(0, 0.62, 0), { cap: 1 }),
-  kf(V(-0.4, 1.05, 9.0), V(0, 0.62, 0), { clay: 1, grid: 1, cap: 2 }),
-  kf(V(4.2, 6.6, 5.2), V(0, 0.3, 0), { clay: 1, ghost: 1, grid: 0.6, cap: 2 }),
-  kf(V(9.6, 3.6, 8.6), V(0, 1.0, 0), { clay: 1, explode: 1, grid: 1, cap: 2 }),
-  kf(V(-7.6, 4.2, 9.6), V(0, 0.95, 0), { clay: 1, explode: 1, grid: 1, cap: 2 }),
-  kf(V(6.4, 1.25, 5.4), V(0, 0.65, 0), { cap: 3 }),
-  // Orbit round the side into the tunnel; the camera ends a little left of the lane
-  // so the car clears the bottom-left caption.
-  kf(V(-8.2, 1.8, -0.75), V(3, 0.85, -0.75), { tunnel: 1, cap: 3, orbit: true }),
-  kf(V(-8.8, 1.6, 0), V(3, 0.85, 0), { tunnel: 1, cap: 4 }),
+  kf(V(-1.9, 1.0, 3.8), V(-1.2, 0.6, 0), { paint: 0, cap: 1 }),
+  kf(V(-7.0, 1.1, 0.5), V(0, 0.7, 0), { cap: 2 }),
+  kf(V(0.3, 0.95, 9.4), V(0, 0.62, 0), { cap: 3 }),
+  kf(V(-0.4, 1.05, 9.0), V(0, 0.62, 0), { clay: 1, grid: 1, cap: 3 }),
+  kf(V(4.2, 6.6, 5.2), V(0, 0.3, 0), { clay: 1, ghost: 1, grid: 0.6, cap: 4 }),
+  kf(V(7.6, 2.7, 6.8), V(0, 1.05, 0), { clay: 1, explode: 1, grid: 1, cap: 5 }),
+  kf(V(-5.8, 3.3, 7.6), V(0, 1.0, 0), { clay: 1, explode: 1, grid: 1, cap: 5 }),
+  kf(V(6.4, 1.25, 5.4), V(0, 0.65, 0), { clay: 1, cap: 6 }),
+  kf(V(-7.4, 1.75, 0), V(3, 0.85, 0), { clay: 1, tunnel: 1, cap: 6, orbit: true }),
+  kf(V(-7.8, 1.6, 0), V(3, 0.85, 0), { clay: 1, tunnel: 1, cap: HERO_FINALE }),
 ];
-/** Keyframe index where each chapter starts (for the chapter index links). */
-export const CHAPTER_KEYFRAMES = [1, 2, 5, 9];
-export const KEYFRAME_COUNT = K.length;
-/** Which segment carries the light sweep along the shoulder. */
+/** Caption state per keyframe (checked against the config in heroWorld.test.ts). */
+export const KEYFRAME_CAPS = K.map((k) => k.cap);
+/** Which segment carries the light sweep along the shoulder (Form chapter). */
 const SWEEP_SEGMENT = 2;
 
 const hold = (f: number) => smooth(clamp01((f - 0.12) / 0.76));
@@ -368,7 +358,7 @@ export function createHeroWorld(o: HeroWorldOptions): HeroWorld {
     uClayX: { value: 50 },
     uScan: { value: 0 },
     uGhost: { value: 0 },
-    uClayCol: { value: new THREE.Color(o.clayHex) },
+    uClayCol: { value: new THREE.Color(o.finishes[o.chromaFinish]) },
     uScanCol: { value: new THREE.Color(1.0, 0.78, 0.42) },
   };
   const patchMat = makePatcher(FX);
@@ -528,12 +518,12 @@ export function createHeroWorld(o: HeroWorldOptions): HeroWorld {
 
   /* Materials */
   const FIN = o.finishes.map((h) => new THREE.Color(h));
-  const G = { ghost: true, sweep: true };
+  const G = { ghost: true };
   const CH = { chassis: true };
   const std = (p: THREE.MeshStandardMaterialParameters, opts: Parameters<typeof patchMat>[1]) => patchMat(track(new THREE.MeshStandardMaterial(p)), opts);
   const paint = patchMat(
     track(new THREE.MeshPhysicalMaterial({ color: FIN[0].clone(), metalness: 0.55, roughness: 0.2, clearcoat: 1, clearcoatRoughness: 0.03, envMapIntensity: 1.4, side: THREE.DoubleSide })),
-    G,
+    { ghost: true, sweep: true },
   );
   const chrome = std({ color: 0xeeeeee, metalness: 1, roughness: 0.12, envMapIntensity: 1.5 }, G);
   const satin = std({ color: 0xcfd1d4, metalness: 1, roughness: 0.22, envMapIntensity: 1.4 }, G);
@@ -550,7 +540,7 @@ export function createHeroWorld(o: HeroWorldOptions): HeroWorld {
     track(new THREE.MeshPhysicalMaterial({ color: 0x0a0f14, metalness: 0, roughness: 0.04, transparent: true, opacity: 0.3, envMapIntensity: 1.7, clearcoat: 1, side: THREE.DoubleSide, depthWrite: false })),
     { ghost: true },
   );
-  // Chassis + interior: full colour in the x-ray view.
+  // Chassis + interior: full colour in the x-ray and exploded views.
   const discMat = std({ color: 0x6e7279, metalness: 0.9, roughness: 0.38 }, CH);
   const caliperMat = std({ color: 0xb8925a, metalness: 0.85, roughness: 0.26, envMapIntensity: 1.4 }, CH);
   const springMat = std({ color: new THREE.Color("#8f1b2c"), metalness: 0.35, roughness: 0.32 }, CH);
@@ -561,9 +551,9 @@ export function createHeroWorld(o: HeroWorldOptions): HeroWorld {
   const batteryMat = std({ color: 0x0d2a33, emissive: 0x22d3ee, emissiveIntensity: 0, metalness: 0.3, roughness: 0.4 }, CH);
   const cableMat = std({ color: new THREE.Color("#e07a1f"), metalness: 0.1, roughness: 0.5 }, CH);
   const goldCh = std({ color: 0xb8925a, metalness: 0.95, roughness: 0.24 }, CH);
-  const leather = std({ color: new THREE.Color("#6a3a22"), metalness: 0, roughness: 0.55 }, { sweep: true });
-  const dashMat = std({ color: 0x17181a, metalness: 0.2, roughness: 0.5 }, { sweep: true });
-  const screenMat = std({ color: 0x05070a, emissive: 0x9fb6c9, emissiveIntensity: 0.35, metalness: 0.5, roughness: 0.1 }, {});
+  const leather = std({ color: new THREE.Color("#6a3a22"), metalness: 0, roughness: 0.55 }, CH);
+  const dashMat = std({ color: 0x17181a, metalness: 0.2, roughness: 0.5 }, CH);
+  const screenMat = std({ color: 0x05070a, emissive: 0x9fb6c9, emissiveIntensity: 0.35, metalness: 0.5, roughness: 0.1 }, CH);
 
   /* Car container + shared lighting effects */
   const car = new THREE.Group();
@@ -1424,9 +1414,37 @@ export function createHeroWorld(o: HeroWorldOptions): HeroWorld {
   /* ── Frame ── */
   const camPos = V(12.5, 3.4, 10.5), camTgt = K[0].tgt.clone(), paintTarget = new THREE.Color();
   let clockT = 0, theta = 0, cur = 0, userPaint: number | null = null;
+  /** Clock time the intro started (car in place), or null while loading. */
+  let startT: number | null = null;
   let lastState: HeroWorldState = { cap: -2, swatch: -1, progress: -1 };
-  /** Horizontal film offset (mm on a 35 mm gauge) used while the intro text is shown. */
-  let introOffset = 7;
+  /**
+   * Intro framing (homepage only; the reference has no text beside the car): the
+   * camera's film offset and zoom that put the whole car, as seen from keyframe 0,
+   * in the space right of the intro text. Recomputed on resize and when the car changes.
+   */
+  const introFit = { offset: 0, zoom: 1 };
+  const fitIntro = () => {
+    const aspect = viewW / viewH, tanHalf = Math.tan(THREE.MathUtils.degToRad(camera.fov / 2));
+    const cam = new THREE.PerspectiveCamera(camera.fov, aspect, 0.1, 200);
+    cam.position.copy(K[0].cam);
+    cam.lookAt(K[0].tgt);
+    cam.updateMatrixWorld();
+    let x0 = Infinity, x1 = -Infinity;
+    for (const cx of [-0.5, 0.5]) for (const cy of [0, 1]) for (const cz of [-0.5, 0.5]) {
+      const p = V(cx * rig.L, cy * rig.H, cz * rig.W).project(cam);
+      x0 = Math.min(x0, p.x);
+      x1 = Math.max(x1, p.x);
+    }
+    // Free band in NDC: from just right of the text to the right edge, less a margin.
+    const textRight = o.introEl ? o.introEl.getBoundingClientRect().right / viewW : 0;
+    const lo = 2 * Math.min(0.6, textRight + 0.03) - 1, hi = 2 * 0.97 - 1;
+    const zoom = Math.max(0.6, Math.min(1, (hi - lo) / (x1 - x0)));
+    const shift = (lo + hi) / 2 - ((x0 + x1) / 2) * zoom;
+    introFit.zoom = zoom;
+    introFit.offset = (shift * 35 * tanHalf * aspect) / zoom;
+  };
+
+  const chromaIdx = () => (userPaint === o.chromaFinish ? o.chromaAltFinish : o.chromaFinish);
 
   const frame = (rawDt: number) => {
     const dt = Math.min(rawDt, 0.05);
@@ -1438,7 +1456,12 @@ export function createHeroWorld(o: HeroWorldOptions): HeroWorld {
     mouse.sy += (mouse.y - mouse.sy) * dt * 2;
     const drift = V(Math.sin(clockT * 0.22) * 0.12, Math.sin(clockT * 0.3) * 0.05, Math.cos(clockT * 0.19) * 0.12);
     const want = s.cam.clone().add(drift).add(V(0, -mouse.sy * 0.35, mouse.sx * 0.6));
-    const glide = Math.min(4, 0.55 + clockT * 1.1);
+    if (o.stageEl) {
+      o.stageEl.style.setProperty("--mx", mouse.sx.toFixed(3));
+      o.stageEl.style.setProperty("--my", mouse.sy.toFixed(3));
+    }
+    const since = startT === null ? -1 : clockT - startT;
+    const glide = since < 0 ? 0 : Math.min(4, 0.55 + since * 1.1);
     camPos.lerp(want, Math.min(1, dt * glide));
     camTgt.lerp(s.tgt, Math.min(1, dt * Math.max(glide, 0.5)));
     camera.position.copy(camPos);
@@ -1446,22 +1469,24 @@ export function createHeroWorld(o: HeroWorldOptions): HeroWorld {
     // Intro: slide the car into the right of the frame, clear of the HTML headline,
     // then ease back to centre as the story starts.
     const intro = 1 - smooth(clamp01(cur * (K.length - 1)));
-    camera.filmOffset = -introOffset * intro;
+    camera.filmOffset = -introFit.offset * intro;
+    camera.zoom = 1 + (introFit.zoom - 1) * intro;
     camera.updateProjectionMatrix();
 
     const clay = smooth(clamp01(s.clay)), ghost = smooth(clamp01(s.ghost)), e = smooth(clamp01(s.explode)), tn = smooth(clamp01(s.tunnel));
     const solidPaint = 1 - ghost;
 
-    // Clay scan sweeps front→back on the way in and back→front on the way out.
+    // Chroma: a line of light repaints the body front→back (and back→front on the way out).
     FX.uClayX.value = clay <= 0.001 ? 50 : clay >= 0.999 ? -50 : 3.4 - 6.8 * clay;
     FX.uScan.value = Math.sin(Math.PI * clay);
     FX.uGhost.value = ghost;
+    FX.uClayCol.value.copy(FIN[chromaIdx()]);
     rig.shells.forEach((m) => (m.visible = ghost > 0.01));
     rig.casters.forEach((m) => (m.castShadow = ghost < 0.5));
     chassisG.visible = ghost > 0.01 || e > 0.01;
 
     // Welcome sequence: light bar draws itself, then lamps bloom.
-    const wake = Math.max(s.head, clamp01((clockT - 0.5) / 1.8));
+    const wake = Math.max(s.head, since < 0 ? 0 : clamp01((since - 0.5) / 1.8));
     rig.wake?.(wake);
     const bloom = rig.wake ? clamp01((wake - 0.7) / 0.3) : wake;
     rig.headMats.forEach((m) => (m.emissiveIntensity = (rig.wake ? wake : bloom) * rig.headGain));
@@ -1472,7 +1497,7 @@ export function createHeroWorld(o: HeroWorldOptions): HeroWorld {
     if (userPaint !== null) paintTarget.copy(FIN[userPaint]);
     else paintTarget.copy(FIN[0]).lerp(FIN[1], smooth(clamp01(s.paint)));
     rig.paintMats.forEach((m) => m.color.lerp(paintTarget, Math.min(1, dt * 4.5)));
-    const swatch = userPaint !== null ? userPaint : s.paint > 0.5 ? 1 : 0;
+    const swatch = clay > 0.5 ? chromaIdx() : userPaint !== null ? userPaint : s.paint > 0.5 ? 1 : 0;
 
     // Light pass along the shoulder.
     sweepLight.intensity = Math.sin(s.sweep * Math.PI) * 30 * LIGHT;
@@ -1518,6 +1543,7 @@ export function createHeroWorld(o: HeroWorldOptions): HeroWorld {
     mirrorCam.fov = camera.fov;
     mirrorCam.filmGauge = camera.filmGauge;
     mirrorCam.filmOffset = camera.filmOffset;
+    mirrorCam.zoom = camera.zoom;
     mirrorCam.aspect = camera.aspect;
     mirrorCam.near = camera.near;
     mirrorCam.far = camera.far;
@@ -1548,6 +1574,9 @@ export function createHeroWorld(o: HeroWorldOptions): HeroWorld {
     setPaint: (i) => {
       userPaint = i;
     },
+    start: () => {
+      startT ??= clockT;
+    },
     setModel: (src, paintPattern) => {
       if (glbRig) {
         car.remove(glbRig.root);
@@ -1556,14 +1585,14 @@ export function createHeroWorld(o: HeroWorldOptions): HeroWorld {
       glbRig = makeGLBRig(src, paintPattern, { paint, ghostMat, patchMat, track });
       car.add(glbRig.root);
       setRig(glbRig);
+      fitIntro();
       warmShaders();
       return (glbRig as Rig & { info?: string }).info ?? "";
     },
     resize: (w, h, dpr) => {
       viewW = w;
       viewH = h;
-      // Wider screens have more room beside the text, so shift less.
-      introOffset = w >= 1600 ? 7 : w >= 1360 ? 8.5 : w >= 1100 ? 10 : 11.5;
+      fitIntro();
       const rw = Math.max(2, Math.floor(w * dpr * 0.5)), rh = Math.max(2, Math.floor(h * dpr * 0.5));
       reflRT.setSize(rw, rh);
       (mirrorMat.uniforms.texel.value as THREE.Vector2).set(1 / rw, 1 / rh);
@@ -1571,6 +1600,8 @@ export function createHeroWorld(o: HeroWorldOptions): HeroWorld {
     frame,
     dispose: () => {
       window.removeEventListener("mousemove", onMouse);
+      o.stageEl?.style.removeProperty("--mx");
+      o.stageEl?.style.removeProperty("--my");
       scene.remove(root);
       scene.environment = null;
       scene.fog = null;
@@ -1788,7 +1819,7 @@ function makeGLBRig(
   });
   const avg = (a: number[]) => a.reduce((p, q) => p + q, 0) / a.length;
 
-  // Exploded layers: every top-most non-wheel mesh flies out radially and upwards.
+  // Exploded layers (as in the reference): every top-most non-wheel mesh lifts, higher parts further.
   const hasCandDesc = (o: THREE.Object3D) => {
     let f = false;
     o.traverse((x) => {
@@ -1804,12 +1835,8 @@ function makeGLBRig(
   const layers: Layer[] = [];
   layerSet.forEach((m) => {
     for (let p = m.parent; p; p = p.parent) if (layerSet.has(p as THREE.Mesh)) return;
-    const cc = mb.get(m)!.getCenter(new THREE.Vector3());
-    const hN = clamp01(cc.y / H);
-    const lift = (0.6 + 0.9 * hN) * (H / 1.4);
-    const side = (cc.z / (Wd / 2)) * 0.45 * Wd;
-    const fore = (cc.x / (L / 2)) * 0.1 * L;
-    layers.push({ ...prep(m), off: V(fore, lift, side) });
+    const hN = clamp01(mb.get(m)!.getCenter(new THREE.Vector3()).y / H);
+    layers.push({ ...prep(m), off: V(0, (0.85 + 1.15 * hN) * (H / 1.4), 0) });
   });
 
   // Head/tail lights get their own emissive materials.
@@ -1841,6 +1868,19 @@ function makeGLBRig(
       (kind === "head" ? heads : tails).push(mb.get(m)!);
     }
   });
+
+  // Transmissive glass becomes the reference's tinted glass. Transmission renders through a
+  // screen-sized buffer that doesn't line up in the mirror pass (blocky streaks in the
+  // floor reflection), and it costs an extra pass every frame.
+  meshes.forEach((m) =>
+    matsOf(m).forEach((mt) => {
+      const pm = mt as THREE.MeshPhysicalMaterial;
+      if (!pm.isMeshPhysicalMaterial || !(pm.transmission > 0)) return;
+      Object.assign(pm, { transmission: 0, transparent: true, opacity: 0.3, depthWrite: false, metalness: 0, roughness: 0.04, clearcoat: 1, envMapIntensity: 1.7 });
+      pm.color.set(0x0a0f14);
+      pm.needsUpdate = true;
+    }),
+  );
 
   // Paint: configured pattern first, then name heuristics, then the dominant body material.
   const isGlass = (mt: THREE.Material, m: THREE.Mesh) => {
@@ -1897,10 +1937,10 @@ function makeGLBRig(
     }
   });
 
-  // Clay sweep + x-ray ghost for every model material (glass and lights don't turn to clay).
+  // X-ray ghost for every model material (the shared paint material also carries the chroma sweep).
   const shells: THREE.Mesh[] = [], casters: THREE.Mesh[] = [];
   meshes.forEach((m) => {
-    matsOf(m).forEach((mt) => ctx.patchMat(mt, { ghost: true, sweep: !lightSet.has(mt) && !isGlass(mt, m) }));
+    matsOf(m).forEach((mt) => ctx.patchMat(mt, { ghost: true }));
     casters.push(m);
     const gs = new THREE.Mesh(m.geometry, ctx.ghostMat);
     gs.visible = false;
@@ -1956,7 +1996,7 @@ function makeGLBRig(
       }
       wheelNodes.forEach((n) => {
         // Exploded offset in the rig's frame; spin about the wheel's own axle through its centre.
-        _T.makeTranslation(n.sx * e * 0.35, e * 0.12, n.sz * e * 0.75);
+        _T.makeTranslation(n.sx * e * 0.35, 0, n.sz * e * 0.75);
         _R.makeRotationAxis(n.axis, n.spin * theta);
         _T2.makeTranslation(-n.pivot.x, -n.pivot.y, -n.pivot.z);
         _P.makeTranslation(n.pivot.x, n.pivot.y, n.pivot.z).multiply(_R).multiply(_T2);

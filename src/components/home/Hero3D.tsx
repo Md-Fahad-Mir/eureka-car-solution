@@ -5,7 +5,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { ArrowRight, Search } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { ButtonLink } from "@/components/ui/Button";
-import { HERO_CHAPTERS, heroConfig } from "@/config/hero";
+import { HERO_CHAPTER_KEYFRAMES, HERO_CHAPTERS, HERO_FINALE, HERO_KEYFRAME_COUNT, heroConfig } from "@/config/hero";
 import { useFormat } from "@/lib/format/useFormat";
 import { cn } from "@/lib/utils";
 import type { HeroWorldState } from "@/components/three/heroWorld";
@@ -14,9 +14,7 @@ import { HeroPoster } from "./HeroPoster";
 // three.js + R3F load only here, only on capable devices, after first paint.
 const HeroCanvas = dynamic(() => import("@/components/three/HeroCanvas"), { ssr: false });
 
-/** Keyframe index where each chapter starts; mirrors CHAPTER_KEYFRAMES in heroWorld (kept here to avoid importing three). */
-const CHAPTER_KEYFRAMES = [1, 2, 5, 9];
-const KEYFRAME_COUNT = 12;
+const LAST_CHAPTER = HERO_CHAPTERS.length - 1;
 
 type Mode = "pending" | "immersive" | "poster";
 
@@ -33,12 +31,16 @@ export function Hero3D() {
   const f = useFormat();
   const sectionRef = useRef<HTMLElement>(null);
   const calloutRef = useRef<SVGSVGElement>(null);
+  const stageRef = useRef<HTMLDivElement>(null);
+  const introRef = useRef<HTMLDivElement>(null);
   const progressRef = useRef(0);
 
   const [mode, setMode] = useState<Mode>("pending");
   const [mountCanvas, setMountCanvas] = useState(false);
   const [active, setActive] = useState(true);
   const [ready, setReady] = useState(false);
+  /** The real car is showing (false while loading, or if it failed and the procedural car stayed). */
+  const [modelShown, setModelShown] = useState(false);
   const [state, setState] = useState<HeroWorldState>({ cap: -1, swatch: 0, progress: 0 });
   const [paint, setPaint] = useState<number | null>(null);
 
@@ -100,7 +102,10 @@ export function Hero3D() {
   }, [mode]);
 
   const getProgress = useCallback(() => progressRef.current, []);
-  const onReady = useCallback(() => setReady(true), []);
+  const onReady = useCallback((withModel: boolean) => {
+    setModelShown(withModel);
+    setReady(true);
+  }, []);
   const immersive = mode === "immersive";
   // Narrowing the window (or turning on reduced motion) unmounts the 3D again.
   const showCanvas = mountCanvas && immersive;
@@ -110,11 +115,14 @@ export function Hero3D() {
     const el = sectionRef.current;
     if (!el) return;
     const total = el.offsetHeight - window.innerHeight;
-    const top = el.getBoundingClientRect().top + window.scrollY + (CHAPTER_KEYFRAMES[i] / (KEYFRAME_COUNT - 1)) * total;
+    const top = el.getBoundingClientRect().top + window.scrollY + (HERO_CHAPTER_KEYFRAMES[i] / (HERO_KEYFRAME_COUNT - 1)) * total;
     window.scrollTo({ top, behavior: "smooth" });
   };
 
   const calloutLabels = (["c1", "c2", "c3", "c4", "c5", "c6"] as const).map((k) => t(`callouts.${k}`));
+  /** Chapter shown in the index and progress label (the finale belongs to the last chapter). */
+  const chapter = ready && state.cap >= 0 ? Math.min(state.cap, LAST_CHAPTER) : -1;
+  const finale = ready && state.cap === HERO_FINALE;
 
   return (
     <section
@@ -129,8 +137,23 @@ export function Hero3D() {
         {/* Studio backdrop */}
         <div
           aria-hidden
-          className="bg-studio-grid absolute inset-0 opacity-60 [mask-image:radial-gradient(ellipse_70%_60%_at_60%_45%,black,transparent)]"
+          className={cn(
+            "bg-studio-grid absolute inset-0 opacity-60 transition-opacity duration-1000 [mask-image:radial-gradient(ellipse_70%_60%_at_60%_45%,black,transparent)]",
+            immersive && !showIntro && "opacity-0",
+          )}
         />
+
+        {/* Stage behind the car: faint wordmark (intro, chapter I) and the chapter numeral, with pointer parallax. */}
+        {immersive ? (
+          <div ref={stageRef} aria-hidden className="hero-stage">
+            <div className={cn("hero-bigword", ready && state.cap <= 0 && "is-on")}>{t("stageWord")}</div>
+            {HERO_CHAPTERS.map((ch, i) => (
+              <div key={ch} className={cn("hero-numeral", ready && state.cap === i && "is-on")}>
+                {t(`chapters.${ch}.numeral`)}
+              </div>
+            ))}
+          </div>
+        ) : null}
 
         {/* Intro: headline, CTAs, search (always in the DOM) */}
         <div
@@ -140,7 +163,7 @@ export function Hero3D() {
             immersive && !showIntro && "pointer-events-none -translate-y-3 opacity-0",
           )}
         >
-          <div className="max-w-xl immersive:max-w-md xl:immersive:max-w-lg">
+          <div ref={introRef} className="max-w-xl immersive:max-w-md xl:immersive:max-w-lg">
             <p className="eyebrow text-accent-ink">{t("eyebrow")}</p>
             <h1 id="hero-title" className="display-xl mt-5 immersive:display-lg">
               {t("title")} <em className="font-light text-accent-ink">{t("titleAccent")}</em>
@@ -195,7 +218,7 @@ export function Hero3D() {
 
         {/* 3D canvas */}
         {showCanvas ? (
-          <div className={cn("absolute inset-0 transition-opacity duration-1000", ready ? "opacity-100" : "opacity-0")}>
+          <div className={cn("hero-frame absolute transition-opacity duration-1000", ready ? "opacity-100" : "opacity-0")}>
             <HeroCanvas
               active={active}
               getProgress={getProgress}
@@ -204,10 +227,18 @@ export function Hero3D() {
               paint={paint}
               calloutSvgRef={calloutRef}
               calloutLabels={calloutLabels}
+              stageRef={stageRef}
+              introRef={introRef}
             />
           </div>
         ) : null}
-        <svg ref={calloutRef} aria-hidden className="pointer-events-none absolute inset-0 h-full w-full opacity-0" />
+        {immersive ? (
+          <>
+            <div aria-hidden className="hero-vignette" />
+            <div aria-hidden className="hero-grain" />
+          </>
+        ) : null}
+        <svg ref={calloutRef} aria-hidden className="hero-frame pointer-events-none absolute opacity-0" />
 
         {immersive ? (
           <>
@@ -218,35 +249,32 @@ export function Hero3D() {
                 <div
                   className={cn(
                     "absolute -bottom-6 -left-12 h-[calc(100%+3rem)] w-[min(40rem,80vw)] rounded-[50%] bg-bg/70 blur-3xl transition-opacity duration-700",
-                    ready && state.cap >= 0 && state.cap < HERO_CHAPTERS.length ? "opacity-100" : "opacity-0",
+                    ready && state.cap >= 0 && state.cap <= LAST_CHAPTER ? "opacity-100" : "opacity-0",
                   )}
                 />
-                {HERO_CHAPTERS.map((ch, i) => (
-                  <div
-                    key={ch}
-                    className={cn(
-                      "absolute bottom-0 max-w-xl transition-[opacity,transform] duration-700 ease-out-soft",
-                      ready && state.cap === i ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0",
-                    )}
-                  >
-                    <p className="eyebrow flex items-center gap-3 text-accent-ink">
-                      <span aria-hidden className="h-px w-9 bg-accent" />
-                      {t(`chapters.${ch}.num`)}
-                    </p>
-                    <p className="display-lg mt-4">
-                      {t(`chapters.${ch}.title`)} <em className="font-light text-accent-ink">{t(`chapters.${ch}.titleAccent`)}</em>
-                    </p>
-                    <p className="mt-4 max-w-md text-[0.9375rem] leading-relaxed text-muted">{t(`chapters.${ch}.body`)}</p>
-                  </div>
-                ))}
+                {HERO_CHAPTERS.map((ch, i) => {
+                  const title = t(`chapters.${ch}.title`);
+                  return (
+                    <div key={ch} data-on={ready && state.cap === i ? "" : undefined} className="hero-cap absolute bottom-0 max-w-2xl">
+                      <p className="hero-cap-num eyebrow flex items-center gap-3 text-accent-ink">{t(`chapters.${ch}.num`)}</p>
+                      <p className="display-lg mt-4">
+                        <Reveal text={title} by={locale === "en" ? "letter" : "word"} />{" "}
+                        <em className="font-light text-accent-ink">
+                          <Reveal text={t(`chapters.${ch}.titleAccent`)} by={locale === "en" ? "letter" : "word"} from={title.length} />
+                        </em>
+                      </p>
+                      <p className="hero-cap-body mt-4 max-w-md text-[0.9375rem] leading-relaxed text-muted">{t(`chapters.${ch}.body`)}</p>
+                    </div>
+                  );
+                })}
               </div>
             </div>
 
-            {/* Finish swatches (chapter II) */}
+            {/* Finish swatches (chapter III) */}
             <div
               className={cn(
                 "absolute right-24 bottom-28 transition-[opacity,transform] duration-700 ease-out-soft",
-                ready && state.cap === 1 ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-4 opacity-0",
+                ready && state.cap === 2 ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-4 opacity-0",
               )}
             >
               <p className="eyebrow mb-4 text-muted">{t("finishTitle")}</p>
@@ -255,7 +283,7 @@ export function Hero3D() {
                   <button
                     key={fin.key}
                     type="button"
-                    tabIndex={ready && state.cap === 1 ? 0 : -1}
+                    tabIndex={ready && state.cap === 2 ? 0 : -1}
                     aria-pressed={state.swatch === i}
                     onClick={() => setPaint(i)}
                     className="group flex w-16 flex-col items-center gap-2 text-center text-[0.6875rem] leading-tight text-muted aria-pressed:text-ink"
@@ -277,16 +305,46 @@ export function Hero3D() {
                   key={ch}
                   type="button"
                   onClick={() => goToChapter(i)}
-                  aria-current={state.cap === i ? "step" : undefined}
+                  aria-current={chapter === i ? "step" : undefined}
                   className="group flex items-center gap-3 text-[0.6875rem] text-muted"
                 >
-                  <span className={cn("transition-opacity", state.cap === i ? "text-ink opacity-100" : "opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100")}>
+                  <span className={cn("transition-opacity", chapter === i ? "text-ink opacity-100" : "opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100")}>
                     {t(`chapters.${ch}.short`)}
                   </span>
-                  <span aria-hidden className={cn("h-px transition-all duration-500", state.cap === i ? "w-10 bg-accent" : "w-4 bg-ink/25")} />
+                  <span aria-hidden className={cn("h-px transition-all duration-700", chapter === i ? "w-10 bg-accent" : "w-4 bg-ink/25")} />
                 </button>
               ))}
             </nav>
+
+            {/* Finale over the tunnel (the reference's closing card), with the homepage's own headline and CTAs. */}
+            <div
+              inert={!finale}
+              className={cn(
+                "absolute inset-0 isolate flex flex-col items-center justify-center text-center transition-opacity duration-1000",
+                finale ? "opacity-100" : "pointer-events-none opacity-0",
+              )}
+            >
+              <div aria-hidden className="hero-finale-veil absolute inset-0 -z-10" />
+              <p className="eyebrow flex items-center gap-4 text-accent-ink">
+                <span aria-hidden className="h-px w-9 bg-accent" />
+                {t("eyebrow")}
+                <span aria-hidden className="h-px w-9 bg-accent" />
+              </p>
+              <p aria-hidden className="display-xl mt-6">
+                {t("title")}
+                <br />
+                <em className="font-light text-accent-ink">{t("titleAccent")}</em>
+              </p>
+              <p className="mt-6 text-[0.9375rem] text-muted">{t("finaleLead")}</p>
+              <div className="mt-8 flex flex-wrap justify-center gap-3">
+                <ButtonLink href="/test-drive" size="lg">
+                  {t("ctaTestDrive")}
+                </ButtonLink>
+                <ButtonLink href="/vehicles" size="lg" variant="outline">
+                  {t("ctaBrowse")}
+                </ButtonLink>
+              </div>
+            </div>
 
             {/* Progress bar + credit */}
             <div className="container-page absolute inset-x-0 bottom-8 flex items-center gap-6 text-[0.6875rem] text-muted">
@@ -294,10 +352,10 @@ export function Hero3D() {
                 <div className="absolute inset-y-0 left-0 bg-gradient-to-r from-ink to-accent" style={{ width: `${state.progress * 100}%` }} />
               </div>
               <span className="min-w-36 text-right">
-                {state.cap >= 0 && state.cap < HERO_CHAPTERS.length ? t(`chapters.${HERO_CHAPTERS[state.cap]}.num`) : t("scrollHint")}
+                {chapter >= 0 ? t(`chapters.${HERO_CHAPTERS[chapter]}.num`) : t("scrollHint")}
               </span>
             </div>
-            {ready ? (
+            {ready && modelShown ? (
               <p className="absolute right-6 bottom-2 text-[0.625rem] text-muted/80 xl:right-12">
                 {t.rich("credit", {
                   model: (chunks) => (
@@ -319,7 +377,7 @@ export function Hero3D() {
               </p>
             ) : (
               <p className="absolute right-6 bottom-2 text-[0.625rem] text-muted xl:right-12" role="status">
-                {showCanvas ? t("loading3d") : ""}
+                {showCanvas && !ready ? t("loading3d") : ""}
               </p>
             )}
           </>
@@ -336,4 +394,26 @@ export function Hero3D() {
       </ol>
     </section>
   );
+}
+
+/**
+ * Masked rise-in for a caption line, as in the reference: each unit slides up out of
+ * its word's clip box, staggered. English goes letter by letter; Bangla word by word,
+ * because splitting letters would break conjuncts and vowel signs.
+ */
+function Reveal({ text, by, from = 0 }: { text: string; by: "letter" | "word"; from?: number }) {
+  let i = from;
+  const words = text.split(/\s+/).filter(Boolean);
+  return words.map((word, w) => (
+    <span key={w}>
+      {w > 0 ? " " : null}
+      <span className="hero-w">
+        {(by === "letter" ? [...word] : [word]).map((unit, u) => (
+          <span key={u} className="hero-l" style={{ ["--i" as string]: i++ }}>
+            {unit}
+          </span>
+        ))}
+      </span>
+    </span>
+  ));
 }

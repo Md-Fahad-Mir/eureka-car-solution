@@ -24,23 +24,36 @@ export const heroConfig = {
     licenceUrl: "https://creativecommons.org/licenses/by/4.0/",
     sourceUrl: "https://github.com/KhronosGroup/glTF-Sample-Assets/tree/main/Models/CarConcept",
   },
-  /** Total height of the scroll story (brief: 350–450vh), then normal sections continue. */
-  scrollLengthVh: 450,
-  /** Selectable finishes (labels in messages `hero.finishes.*`). */
+  /**
+   * Total height of the scroll story, matching the reference showcase (1400vh:
+   * about one screen of scrolling per keyframe), then the normal sections continue.
+   */
+  scrollLengthVh: 1400,
+  /** Selectable finishes, as in the reference (labels in messages `hero.finishes.*`). */
   finishes: [
     { key: "crimson", hex: "#8c1428" },
     { key: "sapphire", hex: "#1d3a8f" },
-    { key: "graphite", hex: "#3a3d42" },
+    { key: "orange", hex: "#e2571e" },
     { key: "teal", hex: "#0e8a8f" },
-    { key: "pearl", hex: "#e9e6de" },
+    { key: "lime", hex: "#8fc31f" },
     { key: "champagne", hex: "#a8875a" },
   ],
-  /** Matte studio clay used in the engineering chapter (ref. images 1 & 4). */
-  clayHex: "#e9e8e3",
+  /**
+   * Chroma chapter: a line of light repaints the body in this finish (index into
+   * `finishes`), or in `chromaAltFinish` if the visitor already chose that one.
+   */
+  chromaFinish: 2,
+  chromaAltFinish: 3,
   /** Rendering budget. */
   maxDpr: 1.75,
   minDpr: 1,
 } as const;
 
-export type HeroChapter = "awakening" | "finish" | "engineering" | "drive";
-export const HERO_CHAPTERS: HeroChapter[] = ["awakening", "finish", "engineering", "drive"];
+/** The reference's seven chapters (copy in messages `hero.chapters.*`). */
+export const HERO_CHAPTERS = ["awakening", "form", "finish", "chroma", "engineering", "deconstructed", "drive"] as const;
+export type HeroChapter = (typeof HERO_CHAPTERS)[number];
+/** Keyframe at which each chapter settles (chapter index links scroll here), out of `HERO_KEYFRAME_COUNT`. */
+export const HERO_CHAPTER_KEYFRAMES = [1, 2, 4, 5, 7, 8, 11] as const;
+export const HERO_KEYFRAME_COUNT = 13;
+/** World caption state after the last chapter: the finale over the tunnel. */
+export const HERO_FINALE = HERO_CHAPTERS.length;

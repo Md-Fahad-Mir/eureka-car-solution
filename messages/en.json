@@ -1337,45 +1337,75 @@
     "scrollHint": "Scroll to explore",
     "chapterNav": "Story chapters",
     "loading3d": "Loading the 3D studio…",
-    "finishTitle": "Choose a finish",
+    "stageWord": "EUREKA",
+    "finishTitle": "Choose your finish",
     "finishes": {
-      "crimson": "Crimson",
-      "sapphire": "Sapphire",
-      "graphite": "Graphite",
-      "teal": "Teal",
-      "pearl": "Pearl",
-      "champagne": "Champagne"
+      "crimson": "Crimson Reserve",
+      "sapphire": "Midnight Sapphire",
+      "orange": "Solar Orange",
+      "teal": "Electric Teal",
+      "lime": "Racing Lime",
+      "champagne": "Champagne Gold"
     },
     "chapters": {
       "awakening": {
         "num": "I · Awakening",
+        "numeral": "I",
         "short": "Awakening",
         "title": "Into the",
         "titleAccent": "light",
         "body": "A single line of light draws itself across the nose. Every journey with us starts the same way: with the right vehicle, presented honestly."
       },
+      "form": {
+        "num": "II · Form",
+        "numeral": "II",
+        "short": "Form",
+        "title": "Every line,",
+        "titleAccent": "in the round",
+        "body": "One unbroken surface from nose to tail. Walk all the way round, just as you would in our showroom."
+      },
       "finish": {
-        "num": "II · Finish",
+        "num": "III · Finish",
+        "numeral": "III",
         "short": "Finish",
         "title": "Choose your",
         "titleAccent": "finish",
-        "body": "Light moves along the shoulder, exactly as it does in our showroom. Pick a colour, then find the vehicle that wears it best."
+        "body": "Six finishes to try on. Pick the colour that is yours, then find the vehicle that wears it best."
+      },
+      "chroma": {
+        "num": "IV · Chroma",
+        "numeral": "IV",
+        "short": "Chroma",
+        "title": "One line of light,",
+        "titleAccent": "a bolder colour",
+        "body": "A single pass of light lays a bolder colour over the body, so you can judge it in any light."
       },
       "engineering": {
-        "num": "III · Engineering",
+        "num": "V · Engineering",
+        "numeral": "V",
         "short": "Engineering",
+        "title": "Look",
+        "titleAccent": "beneath",
+        "body": "Motors, battery floor, suspension and brakes, laid out with nothing to hide."
+      },
+      "deconstructed": {
+        "num": "VI · Deconstructed",
+        "numeral": "VI",
+        "short": "Deconstructed",
         "title": "Taken apart,",
         "titleAccent": "piece by piece",
-        "body": "Battery, motors, suspension, brakes and cabin: see what matters underneath before you decide."
+        "body": "Every panel and component considered on its own. Then each one returns to its place."
       },
       "drive": {
-        "num": "IV · The drive",
+        "num": "VII · The drive",
+        "numeral": "VII",
         "short": "The drive",
         "title": "Then,",
         "titleAccent": "it's yours",
         "body": "Finance it your way, service it with us, and drive away with confidence."
       }
     },
+    "finaleLead": "Test drives by appointment, at any of our showrooms.",
     "callouts": {
       "c1": "Front motor",
       "c2": "Battery floor",

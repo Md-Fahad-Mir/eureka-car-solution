@@ -258,7 +258,7 @@ body {
 /* Hero scroll story length (set inline from config) and x-ray callout type. */
 @media (width >= 48rem) and (prefers-reduced-motion: no-preference) {
   [data-hero]:not([data-mode="poster"]) {
-    height: var(--hero-scroll, 450vh);
+    height: var(--hero-scroll, 1400vh);
   }
 }
 .hero-callout-num {
@@ -271,6 +271,158 @@ body {
   letter-spacing: 0.14em;
   text-transform: uppercase;
   fill: var(--ink);
+}
+.hero-callout-text:lang(bn) {
+  letter-spacing: 0;
+}
+
+/* The 3D frame (canvas + callout overlay) starts below the compact sticky header,
+   so the whole frame is visible, as in the full-window reference. */
+.hero-frame {
+  inset: var(--header-h-compact) 0 0;
+  width: 100%;
+  height: calc(100% - var(--header-h-compact));
+}
+
+/* Hero stage, ported from the reference showcase: faint wordmark and chapter
+   numerals behind the car (with pointer parallax), vignette and film grain over it. */
+.hero-stage {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  transform: translate3d(calc(var(--mx, 0) * -18px), calc(var(--my, 0) * -10px), 0);
+}
+.hero-bigword {
+  position: absolute;
+  left: 50%;
+  top: 36%;
+  transform: translate(-50%, -50%) scale(1.04);
+  font-size: 21vw;
+  font-weight: 300;
+  line-height: 1;
+  white-space: nowrap;
+  color: rgb(22 26 22 / 0.035);
+  opacity: 0;
+  transition:
+    opacity 1.6s ease,
+    transform 2.4s var(--ease-out-soft);
+}
+.hero-bigword:lang(en) {
+  letter-spacing: 0.14em;
+  padding-left: 0.14em;
+}
+.hero-bigword.is-on {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+.hero-numeral {
+  position: absolute;
+  right: 8vw;
+  top: 46%;
+  font-size: 46vh;
+  font-weight: 200;
+  line-height: 1;
+  color: transparent;
+  -webkit-text-stroke: 1px rgb(22 26 22 / 0.085);
+  opacity: 0;
+  transform: translateY(-50%) translateY(40px);
+  transition:
+    opacity 1.1s ease,
+    transform 1.4s var(--ease-out-soft);
+}
+.hero-numeral.is-on {
+  opacity: 1;
+  transform: translateY(-50%);
+}
+.hero-vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(125% 95% at 50% 42%, transparent 58%, rgb(44 56 40 / 0.11) 100%);
+}
+.hero-grain {
+  position: absolute;
+  inset: -50%;
+  pointer-events: none;
+  opacity: 0.07;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation: hero-grain 1.2s steps(6) infinite;
+}
+@keyframes hero-grain {
+  0%, 100% { transform: translate(0, 0); }
+  20% { transform: translate(-3%, 2%); }
+  40% { transform: translate(2%, -3%); }
+  60% { transform: translate(-2%, -1%); }
+  80% { transform: translate(3%, 2%); }
+}
+.hero-finale-veil {
+  background: radial-gradient(ellipse 60% 55% at center, color-mix(in srgb, var(--bg) 94%, transparent) 0%, color-mix(in srgb, var(--bg) 70%, transparent) 50%, transparent 80%);
+}
+
+/* Chapter captions: the line draws in, the title rises out of a clip box unit by
+   unit, then the body fades up (reference timings). */
+.hero-cap {
+  visibility: hidden;
+  transition: visibility 0s 0.8s;
+}
+.hero-cap[data-on] {
+  visibility: visible;
+  transition: visibility 0s;
+}
+.hero-cap-num {
+  opacity: 0;
+  transition: opacity 0.6s;
+}
+.hero-cap-num::before {
+  content: "";
+  width: 0;
+  height: 1px;
+  background: var(--accent);
+  transition: width 1.1s var(--ease-out-soft);
+}
+.hero-cap[data-on] .hero-cap-num {
+  opacity: 1;
+  transition-delay: 0.1s;
+}
+.hero-cap[data-on] .hero-cap-num::before {
+  width: 2.25rem;
+}
+.hero-w {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: bottom;
+  padding: 0 0.04em 0.1em 0;
+  margin-bottom: -0.1em;
+}
+.hero-w:lang(bn) {
+  padding-block: 0.2em;
+  margin-block: -0.2em;
+}
+.hero-l {
+  display: inline-block;
+  transform: translateY(112%);
+  transition: transform 0.55s var(--ease-out-soft);
+}
+.hero-cap[data-on] .hero-l {
+  transform: none;
+  transition-duration: 1.25s;
+  transition-delay: calc(var(--i) * 26ms + 0.12s);
+}
+.hero-cap-body {
+  opacity: 0;
+  transform: translateY(14px);
+  transition:
+    opacity 0.5s,
+    transform 0.5s;
+}
+.hero-cap[data-on] .hero-cap-body {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity 1s ease 0.6s,
+    transform 1.2s var(--ease-out-soft) 0.6s;
 }
 
 /* ───────────────────────── Motion ───────────────────────── */

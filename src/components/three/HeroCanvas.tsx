@@ -12,10 +12,14 @@ export type HeroCanvasProps = {
   active: boolean;
   getProgress: () => number;
   onState: (state: HeroWorldState) => void;
-  /** Called once the real car is in place (or the procedural fallback is final). */
-  onReady: () => void;
+  /** Called once the real car is in place (`true`), or when it failed and the procedural car stays (`false`). */
+  onReady: (withModel: boolean) => void;
   paint: number | null;
   calloutSvgRef: RefObject<SVGSVGElement | null>;
+  /** Background layer that takes the pointer parallax (--mx / --my). */
+  stageRef: RefObject<HTMLElement | null>;
+  /** The intro text block; the car is framed in the space beside it until the story starts. */
+  introRef: RefObject<HTMLElement | null>;
   calloutLabels: string[];
 };
 
@@ -46,7 +50,7 @@ export default function HeroCanvas(props: HeroCanvasProps) {
   );
 }
 
-function World({ getProgress, onState, onReady, paint, calloutSvgRef, calloutLabels }: HeroCanvasProps) {
+function World({ getProgress, onState, onReady, paint, calloutSvgRef, calloutLabels, stageRef, introRef }: HeroCanvasProps) {
   const { gl, scene, camera, size, viewport } = useThree();
   const world = useRef<HeroWorld | null>(null);
   const [failed, setFailed] = useState(false);
@@ -64,7 +68,10 @@ function World({ getProgress, onState, onReady, paint, calloutSvgRef, calloutLab
       calloutSvg: calloutSvgRef.current,
       calloutLabels,
       finishes: heroConfig.finishes.map((f) => f.hex),
-      clayHex: heroConfig.clayHex,
+      chromaFinish: heroConfig.chromaFinish,
+      chromaAltFinish: heroConfig.chromaAltFinish,
+      stageEl: stageRef.current,
+      introEl: introRef.current,
       backgroundHex: bg,
       getProgress: () => callbacks.current.getProgress(),
       onState: (s) => callbacks.current.onState(s),
@@ -81,7 +88,9 @@ function World({ getProgress, onState, onReady, paint, calloutSvgRef, calloutLab
   useEffect(() => world.current?.resize(size.width, size.height, viewport.dpr), [size.width, size.height, viewport.dpr]);
   useEffect(() => world.current?.setPaint(paint), [paint]);
   useEffect(() => {
-    if (failed) onReady();
+    if (!failed) return;
+    world.current?.start();
+    onReady(false);
   }, [failed, onReady]);
 
   // Priority 1: this callback renders the frame itself (mirror pass + main pass).
@@ -96,7 +105,8 @@ function World({ getProgress, onState, onReady, paint, calloutSvgRef, calloutLab
           onLoaded={(car) => {
             const info = world.current?.setModel(car, heroConfig.paintMaterialPattern);
             if (process.env.NODE_ENV !== "production" && info) console.info(`[hero] ${info}`);
-            onReady();
+            world.current?.start();
+            onReady(true);
           }}
         />
       </Suspense>
