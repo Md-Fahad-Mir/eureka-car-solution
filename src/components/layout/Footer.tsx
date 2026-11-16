@@ -48,7 +48,7 @@ export async function Footer() {
         {/* Sitemap + contact */}
         <div className="grid gap-12 py-14 lg:grid-cols-12">
           <div data-reveal className="flex flex-col gap-6 lg:col-span-4">
-            <Logo tone="light" />
+            <Logo tone="light" className="h-14 self-start" />
             <p className="max-w-sm text-sm leading-relaxed text-muted-on-dark">{t("tagline")}</p>
             <div className="flex flex-wrap gap-3">
               <WhatsAppButton context={{ kind: "general" }} size="md" />

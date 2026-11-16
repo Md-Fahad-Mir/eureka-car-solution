@@ -19,7 +19,7 @@ type MenuId = "vehicles" | "services";
 
 /** Top-level nav item: a gold underline grows from the centre on hover, and stays for the open menu or current page. */
 const NAV_ITEM =
-  "relative inline-flex h-10 items-center gap-1.5 rounded-full px-2 text-sm font-medium transition-colors duration-300 hover:text-accent-ink group-data-[dark]/header:hover:text-accent-2 xl:px-3.5 " +
+  "relative inline-flex h-10 items-center gap-1.5 rounded-full px-2 text-sm font-medium whitespace-nowrap transition-colors duration-300 hover:text-accent-ink group-data-[dark]/header:hover:text-accent-2 xl:px-3.5 " +
   "after:absolute after:inset-x-2 after:bottom-1 after:h-px after:origin-center after:scale-x-0 after:bg-accent after:transition-transform after:duration-500 after:ease-(--ease-cinema) hover:after:scale-x-100 xl:after:inset-x-3.5 " +
   "aria-expanded:after:scale-x-100 aria-[current=page]:after:scale-x-100";
 
@@ -137,7 +137,8 @@ export function Header() {
           scrolled ? "h-[var(--header-h-compact)]" : "h-[var(--header-h)]",
         )}
       >
-        <Logo tone={dark ? "light" : "ink"} className="mr-2 xl:mr-6" />
+        {/* A touch smaller from 1024 to 1279 px, where the full nav and actions share the row. */}
+        <Logo tone={dark ? "light" : "ink"} eager className="mr-2 lg:h-[38px] xl:mr-6 xl:h-11" />
 
         <nav aria-label={tA11y("mainNav")} className="hidden lg:block">
           <ul className="flex items-center gap-0.5">

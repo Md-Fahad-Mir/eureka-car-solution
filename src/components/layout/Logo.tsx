@@ -1,37 +1,50 @@
+import Image from "next/image";
+import { siteConfig } from "@/config/site";
 import { Link } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 
+/** Largest height the logo is shown at (px). The images' intrinsic size, so next/image serves 1×/2× files sharp enough for it. */
+const MAX_HEIGHT = 56;
+
 /**
- * Monogram + "EUREKA / CAR SOLUTION" wordmark. The mark's three bars echo the
- * light-bar sequence of the 3D hero. The wordmark is a brand mark, so it
- * stays in Latin script (lang="en") in both locales.
+ * The brand logo (the "Eureka / CAR SOLUTION" wordmark with its car line), linking home.
+ * Two renditions: full colour for light surfaces, cream and blue for dark ones. Both are
+ * in the page and CSS cross-fades between them, so the header can switch over the dark
+ * hero without waiting for a download. The link's accessible name is the logo's text.
+ *
+ * Sized by its height class (default `h-11`); the width follows the logo's proportions,
+ * so callers can size it per breakpoint (`className="h-9 xl:h-11"`).
  */
-export function Logo({ tone = "ink", className }: { tone?: "ink" | "light"; className?: string }) {
+export function Logo({
+  tone = "ink",
+  eager = false,
+  className,
+}: {
+  tone?: "ink" | "light";
+  /** Above the fold (the header): load straight away. */
+  eager?: boolean;
+  className?: string;
+}) {
+  const { logo, name } = siteConfig;
+  const width = Math.round(MAX_HEIGHT * logo.ratio);
+  const loading = eager ? "eager" : "lazy";
+  const img = "absolute inset-0 size-full transition-opacity duration-500 ease-(--ease-cinema)";
   return (
     <Link
       href="/"
-      className={cn("group flex items-center gap-3", tone === "light" ? "text-on-dark" : "text-ink", className)}
+      className={cn("relative block h-11 shrink-0 transition-opacity duration-300 hover:opacity-85", className)}
+      style={{ aspectRatio: logo.ratio }}
     >
-      <svg viewBox="0 0 40 40" aria-hidden className="size-9 shrink-0">
-        <rect x="0.75" y="0.75" width="38.5" height="38.5" rx="11" fill="none" stroke="var(--accent)" strokeWidth="1.5" />
-        <rect x="12" y="11" width="17" height="2.6" rx="1.3" fill="currentColor" />
-        <rect x="12" y="18.7" width="12.5" height="2.6" rx="1.3" fill="var(--accent)" className="transition-[width] duration-300 group-hover:[width:17px]" />
-        <rect x="12" y="26.4" width="17" height="2.6" rx="1.3" fill="currentColor" />
-        <rect x="12" y="11" width="2.6" height="18" rx="1.3" fill="currentColor" />
-      </svg>
-      <span lang="en" className="flex flex-col leading-none">
-        {/* The wordmark is the link's accessible name ("EUREKA CAR SOLUTION"). */}
-        <span className="text-[0.95rem] font-semibold tracking-[0.32em]">EUREKA</span>
-        <span className="sr-only"> </span>
-        <span
-          className={cn(
-            "mt-1 text-[0.55rem] font-medium tracking-[0.36em]",
-            tone === "light" ? "text-muted-on-dark" : "text-muted",
-          )}
-        >
-          CAR SOLUTION
-        </span>
-      </span>
+      <Image src={logo.src} alt={name} width={width} height={MAX_HEIGHT} loading={loading} className={cn(img, tone === "light" ? "opacity-0" : "opacity-100")} />
+      <Image
+        src={logo.srcOnDark}
+        alt=""
+        aria-hidden
+        width={width}
+        height={MAX_HEIGHT}
+        loading={loading}
+        className={cn(img, tone === "light" ? "opacity-100" : "opacity-0")}
+      />
     </Link>
   );
 }

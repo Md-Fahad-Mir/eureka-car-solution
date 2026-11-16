@@ -7,6 +7,11 @@
 export const siteConfig = {
   name: "Eureka Car Solution",
   shortName: "Eureka",
+  /**
+   * Brand logo, built from reference/brand/eureka-logo-source.png by `npm run prepare:logo`
+   * (transparent background; a cream-and-blue rendition for dark surfaces). `ratio` = width / height.
+   */
+  logo: { src: "/brand/eureka-logo.png", srcOnDark: "/brand/eureka-logo-light.png", ratio: 519 / 168 },
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
 
   /**

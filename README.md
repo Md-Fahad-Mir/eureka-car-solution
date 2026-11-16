@@ -29,6 +29,7 @@ English is at `/en`, Bangla at `/bn`. `/` redirects to the visitor's preferred l
 | `npm test` | Unit tests (Vitest): calculators, formatting, validation, WhatsApp links, API mocks, content integrity, translation parity |
 | `npm run test:e2e` | Playwright smoke tests and accessibility checks. Builds and starts the app on port 3100 (or reuses a server already running there). First run: `npx playwright install chromium` |
 | `npm run check` | Typecheck + lint + unit tests + build |
+| `npm run prepare:logo` | Rebuilds the logo files (header/footer logo on transparent, a light version for dark surfaces, favicon and home-screen icon) from `reference/brand/eureka-logo-source.png`, or from a path passed after `--` |
 | `npm run prepare:hero-car` | Rebuilds the homepage 3D car from a source model (see "Hero 3D model") |
 
 ## Environment variables
