@@ -543,10 +543,15 @@ export function createHeroWorld(o: HeroWorldOptions): HeroWorld {
     const zoom = Math.max(portrait ? 0.25 : 0.55, Math.min(1, (hi - lo) / (x1 - x0)));
     let down = 0, z = zoom;
     if (portrait && text) {
-      // Fit the car into the space between the text's bottom and the progress bar (px, in the
-      // canvas): small enough for its height too, then centred there.
+      // Fit the car into the free band (px, in the canvas): small enough for its height too, then
+      // centred there. Phones pin the intro's actions to the bottom, so the band is between the copy
+      // and the actions; otherwise it runs from the text's bottom to the progress bar.
       const top = renderer.domElement.getBoundingClientRect().top;
-      const a = Math.min(viewH * 0.8, text.bottom - top + 12), b = viewH - 64;
+      const copy = o.introEl?.querySelector("[data-hero-copy]")?.getBoundingClientRect();
+      const actions = o.introEl?.querySelector("[data-hero-actions]")?.getBoundingClientRect();
+      const split = copy && actions && actions.top - copy.bottom > 48;
+      const a = Math.min(viewH * 0.8, (split ? copy.bottom : text.bottom) - top + 12);
+      const b = split ? actions.top - top - 8 : viewH - 64;
       z = Math.max(0.2, Math.min(zoom, (0.94 * 2 * (b - a)) / viewH / (y1 - y0)));
       const want = 1 - (a + b) / viewH; // NDC y of that centre
       down = ((((y0 + y1) / 2) * z - want) / 2) * viewH;
@@ -716,8 +721,9 @@ export function createHeroWorld(o: HeroWorldOptions): HeroWorld {
     mirrorCam.aspect = camera.aspect;
     mirrorCam.near = camera.near;
     mirrorCam.far = camera.far;
-    // The mirror camera is the main camera reflected in the floor, so it takes the same view offset.
-    if (camera.view?.enabled) mirrorCam.setViewOffset(viewW, viewH, camera.view.offsetX, camera.view.offsetY, viewW, viewH);
+    // The mirror camera is the main camera reflected in the floor. Its image is upside down (up = -y),
+    // so the vertical view offset flips too; otherwise lifting the car leaves floor outside the reflection.
+    if (camera.view?.enabled) mirrorCam.setViewOffset(viewW, viewH, camera.view.offsetX, -camera.view.offsetY, viewW, viewH);
     else if (mirrorCam.view) mirrorCam.clearViewOffset();
     mirrorCam.updateProjectionMatrix();
     mirrorCam.position.set(camera.position.x, -camera.position.y, camera.position.z);

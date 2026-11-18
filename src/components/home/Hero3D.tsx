@@ -35,7 +35,7 @@ type Mode = "pending" | "immersive" | "poster";
 
 /**
  * Homepage hero. The headline, CTAs and search are plain HTML (LCP-safe and
- * usable without 3D). On screens at least 32rem tall (phones held upright too) without reduced motion, with WebGL and
+ * usable without 3D). On screens at least 32rem tall (phones, being narrow: 40rem) without reduced motion, with WebGL and
  * ≥ 4 GB device memory, the car plays a cinematic intro in a dark studio and a
  * scroll story across `heroConfig.scrollLengthVh`, ending in Explore, where the
  * visitor turns the car themselves. Everywhere else (and if the model fails to
@@ -63,8 +63,8 @@ export function Hero3D() {
 
   // Capability check → immersive or poster.
   useEffect(() => {
-    // Same condition as the `immersive` CSS variant (globals.css): any width, but not a short landscape phone.
-    const wide = window.matchMedia("(min-height: 32rem)");
+    // Same condition as the `immersive` CSS variant (globals.css): not a landscape phone or a very short phone window.
+    const wide = window.matchMedia("(min-height: 40rem), (min-width: 40rem) and (min-height: 32rem)");
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
     const webgl = (() => {
       try {
@@ -195,8 +195,8 @@ export function Hero3D() {
             aria-hidden
             className={cn(
               "pointer-events-none absolute inset-y-0 left-0 z-[5] w-[62%] bg-gradient-to-r from-[#070a11]/85 via-[#070a11]/45 to-transparent transition-opacity duration-1000",
-              // Phones: the headline spans the top, the car sits below it.
-              "max-md:bottom-auto max-md:h-[62%] max-md:w-full max-md:bg-gradient-to-b",
+              // Phones: the copy spans the top and the actions the bottom; the car sits between them.
+              "max-md:w-full max-md:bg-[linear-gradient(to_bottom,rgb(7_10_17/0.9),rgb(7_10_17/0.7)_30%,transparent_50%,transparent_68%,rgb(7_10_17/0.8))]",
               showIntro ? "opacity-100" : "opacity-0",
             )}
           />
@@ -207,57 +207,63 @@ export function Hero3D() {
           className={cn(
             "container-page relative z-10 pt-10 pb-8 transition-[opacity,transform] duration-700 ease-out-soft",
             "immersive:absolute immersive:inset-x-0 immersive:top-[calc(var(--header-h)+3vh)] immersive:pt-0 immersive:pb-0 immersive:text-on-dark",
-            // Phones: tighter, so the car has room under the text.
-            "max-sm:immersive:top-[calc(var(--header-h)+1rem)]",
+            // Phones: the copy sits at the top and the actions at the bottom, so the car has the middle. Before the
+            // first scroll the stage starts under the full header, so its lowest var(--header-h) is below the screen.
+            "max-sm:immersive:top-[calc(var(--header-h-compact)+0.5rem)] max-sm:immersive:bottom-[calc(var(--header-h)+5rem)] max-sm:immersive:flex max-sm:immersive:flex-col",
             immersive && !showIntro && "pointer-events-none -translate-y-3 opacity-0",
           )}
         >
-          <div ref={introRef} className="max-w-xl immersive:max-w-md xl:immersive:max-w-lg">
+          <div ref={introRef} className="max-w-xl immersive:max-w-md max-sm:immersive:flex max-sm:immersive:flex-1 max-sm:immersive:flex-col xl:immersive:max-w-lg">
             {/* Layered entrance on load. The headline only moves (never fades), so it paints at once and stays the LCP element. */}
-            <p className="eyebrow flex items-center gap-3 text-accent-ink motion-safe:animate-[hero-rise_1s_var(--ease-cinema)_both] immersive:text-accent-2">
-              <span aria-hidden className="h-px w-10 bg-accent" />
-              {t("eyebrow")}
-            </p>
-            <h1 id="hero-title" className="display-xl mt-5 motion-safe:animate-[hero-lift_1.2s_var(--ease-cinema)_both] immersive:display-lg max-sm:immersive:mt-3">
-              {t("title")} <em className="font-light text-accent-ink immersive:text-accent-2">{t("titleAccent")}</em>
-            </h1>
-            <p className="mt-5 max-w-lg text-lg leading-relaxed text-muted motion-safe:animate-[hero-rise_1s_var(--ease-cinema)_0.15s_both] immersive:text-muted-on-dark max-sm:immersive:mt-3 max-sm:immersive:text-[0.9375rem]">
-              {t("lead")}
-            </p>
-            <div className="mt-7 flex flex-wrap gap-3 motion-safe:animate-[hero-rise_1s_var(--ease-cinema)_0.3s_both] max-sm:immersive:mt-5 max-sm:immersive:gap-2">
-              <ButtonLink href="/vehicles" size="lg" className="sheen immersive:bg-on-dark immersive:text-ink immersive:hover:bg-white max-sm:immersive:h-11 max-sm:immersive:px-5 max-sm:immersive:text-sm">
-                {t("ctaBrowse")}
-              </ButtonLink>
-              <ButtonLink
-                href="/test-drive"
-                size="lg"
-                variant="outline"
-                className="immersive:border-line-on-dark immersive:text-on-dark immersive:hover:border-on-dark immersive:hover:bg-white/5 max-sm:immersive:h-11 max-sm:immersive:px-5 max-sm:immersive:text-sm"
-              >
-                {t("ctaTestDrive")}
-              </ButtonLink>
+            <div data-hero-copy>
+              <p className="eyebrow flex items-center gap-3 text-accent-ink motion-safe:animate-[hero-rise_1s_var(--ease-cinema)_both] immersive:text-accent-2">
+                <span aria-hidden className="h-px w-10 bg-accent" />
+                {t("eyebrow")}
+              </p>
+              <h1 id="hero-title" className="display-xl mt-5 motion-safe:animate-[hero-lift_1.2s_var(--ease-cinema)_both] immersive:display-lg max-sm:immersive:mt-3">
+                {t("title")} <em className="font-light text-accent-ink immersive:text-accent-2">{t("titleAccent")}</em>
+              </h1>
+              <p className="mt-5 max-w-lg text-lg leading-relaxed text-muted motion-safe:animate-[hero-rise_1s_var(--ease-cinema)_0.15s_both] immersive:text-muted-on-dark max-sm:immersive:mt-3 max-sm:immersive:text-[0.9375rem]">
+                {t("lead")}
+              </p>
             </div>
-            <form action={`/${locale}/vehicles`} method="get" role="search" className="relative mt-6 max-w-md motion-safe:animate-[hero-rise_1s_var(--ease-cinema)_0.45s_both] max-sm:immersive:mt-4">
-              <label htmlFor="hero-search" className="sr-only">
-                {t("searchLabel")}
-              </label>
-              <Search aria-hidden className="pointer-events-none absolute top-1/2 left-4 size-4 -translate-y-1/2 text-muted immersive:text-muted-on-dark" />
-              <input
-                id="hero-search"
-                name="q"
-                type="search"
-                enterKeyHint="search"
-                placeholder={t("searchPlaceholder")}
-                className="h-12 w-full rounded-full border border-line-strong bg-bg-alt/85 pr-24 pl-11 text-[0.9375rem] backdrop-blur placeholder:text-muted/80 focus:border-ink focus:ring-2 focus:ring-accent/35 focus:outline-none immersive:border-line-on-dark immersive:bg-white/[0.06] immersive:text-on-dark immersive:placeholder:text-muted-on-dark immersive:focus:border-on-dark [&::-webkit-search-cancel-button]:hidden"
-              />
-              <button
-                type="submit"
-                className="absolute top-1/2 right-1.5 inline-flex h-9 -translate-y-1/2 items-center gap-1.5 rounded-full bg-ink px-4 text-sm font-medium text-bg-alt hover:bg-ink/85 immersive:bg-on-dark immersive:text-ink immersive:hover:bg-white"
-              >
-                {t("searchSubmit")}
-                <ArrowRight aria-hidden className="size-3.5" />
-              </button>
-            </form>
+            {/* The camera fits the car between the copy and these (heroWorld reads both data attributes). */}
+            <div data-hero-actions className="max-sm:immersive:mt-auto">
+              <div className="mt-7 flex flex-wrap gap-3 motion-safe:animate-[hero-rise_1s_var(--ease-cinema)_0.3s_both] max-sm:immersive:mt-0 max-sm:immersive:gap-2">
+                <ButtonLink href="/vehicles" size="lg" className="sheen immersive:bg-on-dark immersive:text-ink immersive:hover:bg-white max-sm:immersive:h-11 max-sm:immersive:px-5 max-sm:immersive:text-sm">
+                  {t("ctaBrowse")}
+                </ButtonLink>
+                <ButtonLink
+                  href="/test-drive"
+                  size="lg"
+                  variant="outline"
+                  className="immersive:border-line-on-dark immersive:text-on-dark immersive:hover:border-on-dark immersive:hover:bg-white/5 max-sm:immersive:h-11 max-sm:immersive:px-5 max-sm:immersive:text-sm"
+                >
+                  {t("ctaTestDrive")}
+                </ButtonLink>
+              </div>
+              <form action={`/${locale}/vehicles`} method="get" role="search" className="relative mt-6 max-w-md motion-safe:animate-[hero-rise_1s_var(--ease-cinema)_0.45s_both] max-sm:immersive:mt-4">
+                <label htmlFor="hero-search" className="sr-only">
+                  {t("searchLabel")}
+                </label>
+                <Search aria-hidden className="pointer-events-none absolute top-1/2 left-4 size-4 -translate-y-1/2 text-muted immersive:text-muted-on-dark" />
+                <input
+                  id="hero-search"
+                  name="q"
+                  type="search"
+                  enterKeyHint="search"
+                  placeholder={t("searchPlaceholder")}
+                  className="h-12 w-full rounded-full border border-line-strong bg-bg-alt/85 pr-24 pl-11 text-[0.9375rem] backdrop-blur placeholder:text-muted/80 focus:border-ink focus:ring-2 focus:ring-accent/35 focus:outline-none immersive:border-line-on-dark immersive:bg-white/[0.06] immersive:text-on-dark immersive:placeholder:text-muted-on-dark immersive:focus:border-on-dark [&::-webkit-search-cancel-button]:hidden"
+                />
+                <button
+                  type="submit"
+                  className="absolute top-1/2 right-1.5 inline-flex h-9 -translate-y-1/2 items-center gap-1.5 rounded-full bg-ink px-4 text-sm font-medium text-bg-alt hover:bg-ink/85 immersive:bg-on-dark immersive:text-ink immersive:hover:bg-white"
+                >
+                  {t("searchSubmit")}
+                  <ArrowRight aria-hidden className="size-3.5" />
+                </button>
+              </form>
+            </div>
           </div>
         </div>
 
@@ -316,7 +322,7 @@ export function Hero3D() {
             />
 
             {/* Chapter captions (visual; the sr-only list below carries the same text) */}
-            <div aria-hidden className="pointer-events-none absolute right-0 bottom-24 left-0 text-on-dark">
+            <div aria-hidden className="pointer-events-none absolute right-0 bottom-24 left-0 text-on-dark max-md:bottom-[calc(var(--header-h)+3rem)]">
               <div className="container-page relative h-56">
                 {/* Soft backing so the caption stays legible while the car moves behind it. */}
                 <div
@@ -352,7 +358,7 @@ export function Hero3D() {
             <div
               inert={!exploring}
               className={cn(
-                "absolute right-6 bottom-24 flex flex-col items-end gap-4 transition-[opacity,transform] duration-700 ease-(--ease-cinema) max-md:left-4 max-md:right-4 max-md:bottom-20 max-md:gap-3 xl:right-12",
+                "absolute right-6 bottom-24 flex flex-col items-end gap-4 transition-[opacity,transform] duration-700 ease-(--ease-cinema) max-md:left-4 max-md:right-4 max-md:bottom-[calc(var(--header-h)+3rem)] max-md:gap-3 xl:right-12",
                 exploring ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-4 opacity-0",
               )}
             >
@@ -423,8 +429,9 @@ export function Hero3D() {
               )}
             />
 
-            {/* Progress bar + skip + credit */}
-            <div className="container-page absolute inset-x-0 bottom-8 flex items-center gap-4 text-[0.6875rem] text-muted-on-dark sm:gap-6">
+            {/* Progress bar + skip + credit. Phones: the bar sits above the (wrapping) credit, in view before the first scroll,
+                and stops short of the WhatsApp button. */}
+            <div className="container-page absolute inset-x-0 bottom-8 flex items-center gap-4 text-[0.6875rem] text-muted-on-dark max-md:bottom-[var(--header-h)] max-md:pr-20 sm:gap-6">
               {/* The story is long; this jumps straight to the search console below it. */}
               <a
                 href="#find"
@@ -440,10 +447,11 @@ export function Hero3D() {
               <div aria-hidden className="relative h-px flex-1 bg-line-on-dark">
                 <div className="absolute inset-y-0 left-0 bg-gradient-to-r from-on-dark/60 to-accent-2" style={{ width: `${state.progress * 100}%` }} />
               </div>
-              <span className="text-right sm:min-w-36">{chapter >= 0 ? t(`chapters.${HERO_CHAPTERS[chapter]}.num`) : t("scrollHint")}</span>
+              {/* Phones: the caption's eyebrow already names the chapter. */}
+              <span className={cn("text-right sm:min-w-36", chapter >= 0 && "max-md:hidden")}>{chapter >= 0 ? t(`chapters.${HERO_CHAPTERS[chapter]}.num`) : t("scrollHint")}</span>
             </div>
             {ready ? (
-              <p className="absolute right-6 bottom-2 text-[0.625rem] text-muted-on-dark xl:right-12">
+              <p className="absolute right-6 bottom-2 text-[0.625rem] text-muted-on-dark max-md:left-4 max-md:right-20 xl:right-12">
                 {t.rich("credit", {
                   model: (chunks) => (
                     <a href={heroModel.credit.sourceUrl} target="_blank" rel="noopener noreferrer" className="underline-offset-2 hover:underline">
@@ -463,7 +471,7 @@ export function Hero3D() {
                 })}
               </p>
             ) : (
-              <p className="absolute right-6 bottom-2 text-[0.625rem] text-muted-on-dark xl:right-12" role="status">
+              <p className="absolute right-6 bottom-2 text-[0.625rem] text-muted-on-dark max-md:left-4 max-md:right-20 xl:right-12" role="status">
                 {showCanvas ? t("loading3d") : ""}
               </p>
             )}

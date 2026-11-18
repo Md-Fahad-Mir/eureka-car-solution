@@ -92,12 +92,13 @@
   --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-/* Homepage 3D hero: "immersive" = tall enough (phones held upright included; landscape
-   phones get the poster: a 3D story in a 400 px tall window crowds the headline), motion allowed, and the
+/* Homepage 3D hero: "immersive" = tall enough (≥ 32rem; phones, being narrow, ≥ 40rem, so the
+   headline, the car and the search all fit; landscape phones and very short phone windows get the
+   poster), motion allowed, and the
    client capability check (WebGL, device memory) hasn't demoted it to the
    poster. Decided in CSS first so the tall layout is server-rendered (no CLS). */
 @custom-variant immersive {
-  @media (height >= 32rem) and (prefers-reduced-motion: no-preference) {
+  @media (height >= 40rem) and (prefers-reduced-motion: no-preference), (width >= 40rem) and (height >= 32rem) and (prefers-reduced-motion: no-preference) {
     :where([data-hero]:not([data-mode="poster"])) & {
       @slot;
     }
@@ -282,7 +283,7 @@ body {
 }
 
 /* Hero scroll story length (set inline from config) and x-ray callout type. */
-@media (height >= 32rem) and (prefers-reduced-motion: no-preference) {
+@media (height >= 40rem) and (prefers-reduced-motion: no-preference), (width >= 40rem) and (height >= 32rem) and (prefers-reduced-motion: no-preference) {
   [data-hero]:not([data-mode="poster"]) {
     height: var(--hero-scroll, 1000vh);
   }
