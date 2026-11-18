@@ -485,7 +485,10 @@ export function createHeroWorld(o: HeroWorldOptions): HeroWorld {
       x1 = Math.max(x1, _corner.x);
     }
     const textRight = o.introEl ? o.introEl.getBoundingClientRect().right / viewW : 0;
-    const lo = 2 * Math.min(0.6, textRight + 0.03) - 1, hi = 2 * 0.97 - 1;
+    // Landscape: the car sits right of the headline. Portrait (tablets held upright): the headline
+    // spans the top and the car already sits below it, so it may use the full width instead of
+    // being squeezed (and cut off) beside the text.
+    const lo = aspect < 1 ? 2 * 0.03 - 1 : 2 * Math.min(0.6, textRight + 0.03) - 1, hi = 2 * 0.97 - 1;
     const zoom = Math.max(0.55, Math.min(1, (hi - lo) / (x1 - x0)));
     const shift = (lo + hi) / 2 - ((x0 + x1) / 2) * zoom;
     return { offset: (shift * 35 * tanHalf * aspect) / zoom, zoom };

@@ -27,7 +27,8 @@ export function CompareTray() {
   const remove = useCompareStore((s) => s.remove);
   const clear = useCompareStore((s) => s.clear);
   const [cache, setCache] = useState<Record<string, VehicleWithBrand>>({});
-  // null = default: collapsed on phones, expanded from `sm` up (CSS-driven, no layout shift).
+  // null = default: collapsed on phones and short screens (landscape phones), expanded otherwise
+  // (CSS-driven, no layout shift).
   const [collapsed, setCollapsed] = useState<boolean | null>(null);
   const trayRef = useRef<HTMLElement>(null);
 
@@ -84,19 +85,19 @@ export function CompareTray() {
           </p>
           <button
             type="button"
-            onClick={() => setCollapsed((c) => !(c ?? window.matchMedia("(max-width: 639px)").matches))}
+            onClick={() => setCollapsed((c) => !(c ?? window.matchMedia("(max-width: 639px), (max-height: 511px)").matches))}
             aria-expanded={collapsed === null ? undefined : !collapsed}
             aria-controls="compare-tray-items"
-            className="ml-1 grid size-8 place-items-center rounded-full text-muted hover:bg-ink/[0.06] hover:text-ink"
+            className="ml-1 grid size-8 shrink-0 place-items-center rounded-full text-muted hover:bg-ink/[0.06] hover:text-ink"
           >
             <ChevronDown
               aria-hidden
-              className={cn("size-4 transition-transform", collapsed === null ? "max-sm:rotate-180" : collapsed && "rotate-180")}
+              className={cn("size-4 transition-transform", collapsed === null ? "max-sm:rotate-180 short:rotate-180" : collapsed && "rotate-180")}
             />
             <span className="sr-only">{t("toggle")}</span>
           </button>
           <div className="ml-auto flex items-center gap-2">
-            <button type="button" onClick={clear} className="hidden px-2 text-sm text-muted underline-offset-4 hover:text-ink hover:underline sm:block">
+            <button type="button" onClick={clear} className="hidden h-9 rounded-full px-3 text-sm text-muted underline-offset-4 hover:text-ink hover:underline sm:block">
               {t("clear")}
             </button>
             {canCompare ? (
@@ -112,7 +113,7 @@ export function CompareTray() {
         <ul
           id="compare-tray-items"
           hidden={collapsed === true}
-          className={cn("grid grid-cols-2 gap-2 border-t border-line p-3 sm:grid-cols-4 sm:p-4", collapsed === null && "max-sm:hidden")}
+          className={cn("grid grid-cols-2 gap-2 border-t border-line p-3 sm:grid-cols-4 sm:p-4", collapsed === null && "max-sm:hidden short:hidden")}
         >
           {ids.map((id) => {
             const v = cache[id];

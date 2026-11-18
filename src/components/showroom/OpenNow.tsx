@@ -24,17 +24,20 @@ export function OpenNow({ hours }: { hours: Record<Weekday, OpeningHours> }) {
   if (minute === null) return <span aria-hidden className="inline-block h-6 w-40 rounded-full bg-ink/[0.05]" />;
 
   const status = openStatus(hours, new Date(minute * 60_000));
+  // The status can be long ("Closed · opens 10:00 am tomorrow"); in narrow cards it wraps
+  // instead of spilling out. The radius still reads as a pill on one line.
+  const fit = "max-w-full whitespace-normal rounded-[0.875rem]";
   if (status.open) {
     return (
-      <Badge tone="success">
-        <span aria-hidden className="size-1.5 rounded-full bg-current" />
+      <Badge tone="success" className={fit}>
+        <span aria-hidden className="size-1.5 shrink-0 rounded-full bg-current" />
         {t("openNow", { time: f.time(status.closesAt) })}
       </Badge>
     );
   }
   const next = status.next;
   return (
-    <Badge tone="neutral">
+    <Badge tone="neutral" className={fit}>
       {next
         ? t(`closedNow.${next.when}`, { time: f.time(next.time), day: tTax(`weekday.${next.day}`) })
         : t("closed")}

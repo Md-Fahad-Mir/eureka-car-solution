@@ -25,7 +25,7 @@ export async function PopularBrands({ index }: { index: number }) {
               className="group relative isolate flex h-full min-h-32 flex-col justify-between gap-6 overflow-hidden p-5 outline-offset-[-2px] sm:min-h-36"
             >
               <span aria-hidden className="absolute inset-0 -z-10 origin-bottom scale-y-0 bg-ink transition-transform duration-500 ease-(--ease-cinema) group-hover:scale-y-100 group-focus-visible:scale-y-100" />
-              <span className="text-2xl font-light tracking-tight transition-colors duration-300 group-hover:text-on-dark group-focus-visible:text-on-dark">{b.name[locale]}</span>
+              <span className="text-xl font-light tracking-tight transition-colors min-[360px]:text-2xl duration-300 group-hover:text-on-dark group-focus-visible:text-on-dark">{b.name[locale]}</span>
               <span className="flex items-end justify-between gap-2 text-xs text-muted transition-colors duration-300 group-hover:text-muted-on-dark group-focus-visible:text-muted-on-dark">
                 <span>
                   {b.country[locale]}

@@ -63,7 +63,8 @@ export function Hero3D() {
 
   // Capability check → immersive or poster.
   useEffect(() => {
-    const wide = window.matchMedia("(min-width: 48rem)");
+    // Same condition as the `immersive` CSS variant (globals.css): wide and not a short landscape phone.
+    const wide = window.matchMedia("(min-width: 48rem) and (min-height: 32rem)");
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
     const webgl = (() => {
       try {

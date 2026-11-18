@@ -69,10 +69,10 @@ export async function QuickSearch({ index }: { index: number }) {
                 </h2>
                 <p className="mt-3 text-[0.9375rem] leading-relaxed text-muted-on-dark">{t("lead")}</p>
               </div>
-              <dl className="grid grid-cols-3 gap-4 border-t border-line-on-dark pt-6">
+              <dl className="grid grid-cols-3 gap-3 border-t sm:gap-4 border-line-on-dark pt-6">
                 {stats.map((s, i) => (
                   <div key={s.key} data-reveal style={stagger(i, 250)} className="flex flex-col-reverse">
-                    <dt className="mt-1 text-xs text-muted-on-dark">{t(`stats.${s.key}`)}</dt>
+                    <dt className="mt-1 text-[0.6875rem] text-muted-on-dark min-[360px]:text-xs">{t(`stats.${s.key}`)}</dt>
                     <dd className="text-3xl font-light tracking-tight sm:text-4xl">
                       <AnimatedNumber value={s.value} countUp />
                     </dd>

@@ -45,7 +45,8 @@ export async function Footer() {
           </div>
         </div>
 
-        {/* Sitemap + contact */}
+        {/* Sitemap + contact. From 1280 px: brand | links | contact. From 1024 to 1279 px the four
+            link columns would be too narrow for their headings, so contact moves to a row below. */}
         <div className="grid gap-12 py-14 lg:grid-cols-12">
           <div data-reveal className="flex flex-col gap-6 lg:col-span-4">
             <Logo tone="light" className="h-14 self-start" />
@@ -56,7 +57,7 @@ export async function Footer() {
             </div>
           </div>
 
-          <nav aria-label={tA11y("footerNav")} className="grid grid-cols-2 gap-8 sm:grid-cols-4 lg:col-span-5">
+          <nav aria-label={tA11y("footerNav")} className="grid grid-cols-2 gap-8 sm:grid-cols-4 lg:col-span-8 xl:col-span-5">
             {footerColumns.map((col, i) => (
               <div key={col.key} data-reveal style={stagger(i + 1)}>
                 <h3 className="eyebrow text-accent-2">{tNav(col.key)}</h3>
@@ -73,7 +74,7 @@ export async function Footer() {
             ))}
           </nav>
 
-          <div data-reveal style={stagger(5)} className="flex flex-col gap-6 text-sm lg:col-span-3">
+          <div data-reveal style={stagger(5)} className="flex flex-col gap-6 text-sm md:grid md:grid-cols-2 md:gap-8 lg:col-span-12 lg:grid-cols-3 xl:col-span-3 xl:flex xl:gap-6">
             <div>
               <h3 className="eyebrow text-accent-2">{t("contact")}</h3>
               <ul className="mt-4 flex flex-col gap-3">
@@ -105,7 +106,8 @@ export async function Footer() {
                 </span>
               </p>
             </div>
-            <div>
+            {/* Tablets: contact and hours stack on the left, showrooms on the right. */}
+            <div className="md:col-start-2 md:row-span-2 md:row-start-1 lg:col-start-3 lg:row-span-1">
               <h3 className="eyebrow text-accent-2">{t("showrooms")}</h3>
               <ul className="mt-4 flex flex-col gap-1.5">
                 {showrooms.map((s) => (

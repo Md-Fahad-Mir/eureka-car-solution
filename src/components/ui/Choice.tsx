@@ -10,7 +10,7 @@ export function Checkbox({
   ...props
 }: Omit<ComponentProps<"input">, "type"> & { label: ReactNode; description?: ReactNode }) {
   return (
-    <label className={cn("group flex cursor-pointer items-start gap-3 text-sm", className)}>
+    <label className={cn("group flex min-h-6 cursor-pointer items-start gap-3 text-sm", className)}>
       <span className="relative mt-0.5 grid size-5 shrink-0 place-items-center">
         <input
           type="checkbox"

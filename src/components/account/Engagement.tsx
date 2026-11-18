@@ -210,12 +210,12 @@ export function Notifications() {
                 <div className="mt-3 flex flex-wrap items-center gap-4 text-sm">
                   <span className="text-xs text-muted">{f.dateTime(n.createdAt)}</span>
                   {n.href ? (
-                    <Link href={n.href} onClick={() => !n.read && markRead([n.id])} className="font-medium text-accent-ink underline-offset-4 hover:underline">
+                    <Link href={n.href} onClick={() => !n.read && markRead([n.id])} className="inline-flex min-h-6 items-center font-medium text-accent-ink underline-offset-4 hover:underline">
                       {t("view")}
                     </Link>
                   ) : null}
                   {!n.read ? (
-                    <button type="button" disabled={busy} onClick={() => markRead([n.id])} className="font-medium text-muted underline-offset-4 hover:text-ink hover:underline">
+                    <button type="button" disabled={busy} onClick={() => markRead([n.id])} className="inline-flex min-h-6 items-center font-medium text-muted underline-offset-4 hover:text-ink hover:underline">
                       {t("markRead")}
                       <span className="sr-only">: {n.title[locale]}</span>
                     </button>

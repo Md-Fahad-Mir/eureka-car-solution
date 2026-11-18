@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, type CSSProperties } from "react";
 import { Award, CalendarCheck, Check, Link2, Minus, Plus, X } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
@@ -200,19 +200,26 @@ export function CompareView() {
         </p>
       </fieldset>
 
-      <ScrollArea label={t("caption")} className="-mx-4 px-4 sm:mx-0 sm:px-0 lg:overflow-visible">
-        <table className="w-full min-w-[640px] border-separate border-spacing-0 text-sm">
+      {/* Phones: a narrow sticky label column and 120 px vehicle columns, so two vehicles sit side by
+          side (from 375 px) and the next one peeks in, showing the table scrolls. The scroll box stays
+          inside the page gutter so the sticky labels and headings line up with the page. From sm up:
+          the original widths. */}
+      <ScrollArea label={t("caption")} className="lg:overflow-visible">
+        <table
+          className="w-full border-separate border-spacing-0 text-sm max-sm:w-[calc(6rem+var(--cols)*7.5rem)] max-sm:table-fixed sm:min-w-[640px]"
+          style={{ "--cols": vehicles.length } as CSSProperties}
+        >
           <caption className="sr-only">{t("caption")}</caption>
           <thead>
             <tr>
-              <th scope="col" className="sticky left-0 z-20 w-40 bg-bg align-bottom lg:top-[var(--header-h-compact)] lg:z-30">
+              <th scope="col" className="sticky left-0 z-20 w-24 bg-bg align-bottom sm:w-40 lg:top-[var(--header-h-compact)] lg:z-30">
                 <span className="sr-only">{t("specColumn")}</span>
               </th>
               {vehicles.map((v) => (
                 <th
                   key={v.id}
                   scope="col"
-                  className="min-w-52 border-b border-line bg-bg px-3 pt-2 pb-4 text-left align-bottom font-normal lg:sticky lg:top-[var(--header-h-compact)] lg:z-20"
+                  className="border-b border-line bg-bg px-3 pt-2 max-sm:w-[7.5rem] sm:min-w-52 pb-4 text-left align-bottom font-normal lg:sticky lg:top-[var(--header-h-compact)] lg:z-20"
                 >
                   <div className="relative">
                     <VehicleImage
@@ -231,7 +238,7 @@ export function CompareView() {
                     </button>
                   </div>
                   <p className="mt-3 text-xs text-muted">{v.brand.name[locale]}</p>
-                  <Link href={vehiclePath(v)} className="block text-base leading-snug font-medium hover:underline">
+                  <Link href={vehiclePath(v)} className="block min-h-6 text-base leading-snug font-medium hover:underline">
                     {v.model} <span className="text-muted">{v.variant}</span>
                   </Link>
                 </th>
@@ -245,16 +252,18 @@ export function CompareView() {
                   <th
                     scope="colgroup"
                     colSpan={vehicles.length + 1}
-                    className="sticky left-0 bg-bg pt-8 pb-3 text-left text-xs font-semibold tracking-[0.18em] text-accent-ink uppercase"
+                    className="bg-bg pt-8 pb-3 text-left text-xs font-semibold tracking-[0.18em] text-accent-ink uppercase"
                   >
-                    {section.title}
+                    {/* The cell spans the whole (scrolling) table, so the text itself is sticky, and kept within
+                        the screen so it wraps instead of being cut off. */}
+                    <span className="sticky left-0 block w-fit max-w-[calc(100vw-2rem)] sm:max-w-none">{section.title}</span>
                   </th>
                 </tr>
                 {section.rows.map((row) => {
                   const best = bestIndexes(row);
                   return (
                     <tr key={row.id}>
-                      <th scope="row" className="sticky left-0 z-10 border-b border-line bg-bg py-3 pr-4 text-left align-top font-normal text-muted">
+                      <th scope="row" className="sticky left-0 z-10 border-b border-line bg-bg py-3 pr-3 text-left align-top font-normal text-muted sm:pr-4">
                         {row.label}
                       </th>
                       {row.cells.map((cell, i) => (

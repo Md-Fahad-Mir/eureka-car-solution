@@ -116,7 +116,9 @@ function Frame({ children }: { children: ReactNode }) {
             </p>
             {signOutButton}
           </div>
-          <nav aria-label={t("navLabel")} className="-mx-4 overflow-x-auto px-4 pb-1">
+          {/* `relative`: the unread count's sr-only text is absolutely positioned and would
+              otherwise escape the scroller and widen the page. */}
+          <nav aria-label={t("navLabel")} className="relative -mx-4 overflow-x-auto px-4 pb-1">
             <ul className="flex gap-2">{links("tabs")}</ul>
           </nav>
         </div>

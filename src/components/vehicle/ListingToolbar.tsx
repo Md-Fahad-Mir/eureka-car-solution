@@ -28,7 +28,8 @@ export function ListingToolbar() {
         <p className="text-sm text-muted" aria-live="polite" aria-atomic>
           {pending ? t("updating") : t("resultCount", { count: total, formatted: f.number(total) })}
         </p>
-        <div className="flex items-center gap-2">
+        {/* Wraps on the narrowest phones (Filters + count badge + sort would not fit in 288 px). */}
+        <div className="flex flex-wrap items-center gap-2">
           <Button
             variant="outline"
             size="sm"

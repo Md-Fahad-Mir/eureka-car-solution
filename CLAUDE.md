@@ -28,6 +28,12 @@ Next.js 16 App Router (Turbopack, `cacheComponents`), React 19, TypeScript stric
 - Reveal on scroll with `data-reveal` (`rise` default, `fade`, `scale`, `mask`, `wipe`, `draw`) and `style={stagger(i, delayMs)}` from `lib/motion`. Put it on wrappers, not on elements with their own hover transitions. Tokens: `--ease-cinema`, `--dur-*`, `--shadow-soft/lift`, `--gold`, `section-gap`.
 - No animation libraries. Numbers that roll or count up use `ui/AnimatedNumber`. Everything must stay visible without JS and with reduced motion.
 
+## Responsive
+- Every page must work from 320 px to 2560 px in both languages, with no horizontal page scroll. Wide tables go in `ui/ScrollArea`.
+- Any horizontal scroller that holds `sr-only` text must be `relative`, or that text widens the page.
+- Short screens (phones in landscape) use the `short:` variant (height < 32rem) to trim secondary chrome.
+- Touch targets are at least 24 px, or spaced per WCAG 2.5.8.
+
 ## i18n rule
 - No hard-coded UI strings in components. Copy goes in `messages/en.json` and `messages/bn.json` by feature namespace.
 - Content data uses `LocalizedText { en, bn }`.
@@ -38,6 +44,7 @@ Next.js 16 App Router (Turbopack, `cacheComponents`), React 19, TypeScript stric
 - No `new Date()` / `Math.random()` in server-rendered code: use `"use cache"` + `cacheLife`, or do it client-side.
 
 ## 3D hero
+- The 3D story runs only when the screen is ≥ 48rem wide **and** ≥ 32rem tall (the `immersive` variant in `globals.css`, the hero scroll-length rule and the check in `Hero3D` must agree). Otherwise the hero shows the poster.
 - `src/components/three/*` (three.js / R3F) is homepage-only and loaded via `next/dynamic` from `components/home/Hero3D.tsx`. Never import it elsewhere.
 - Car model: `public/models/hero-car.glb` (CC BY 4.0). Everything model-specific (credit, paint, feature anchors) is `heroModel` in `config/hero.ts`.
 - `three/choreography.ts` is the pure, tested maths (path, wheel spin = distance / radius, steer from curvature, suspension, intro and keyframes); `heroWorld.ts` is the scene; `glbRig.ts` turns any car glTF into a rig. Never show a stand-in as a specific real vehicle.

@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, type KeyboardEvent, type PointerEvent } from "react";
+import { useRef, useState, type CSSProperties, type KeyboardEvent, type PointerEvent } from "react";
 import { ChevronLeft, ChevronRight, Expand } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { VehicleImage } from "@/components/media/VehicleImage";
@@ -10,6 +10,9 @@ import { cn } from "@/lib/utils";
 import type { BodyType, Media } from "@/types";
 
 type Placeholder = { bodyType: BodyType; paint: string; initial: string };
+
+/** Width ÷ height of each media aspect: the lightbox caps the image's width so its height fits the screen. */
+const RATIO: Record<Media["aspect"], number> = { "16/10": 1.6, "4/3": 4 / 3, "1/1": 1 };
 
 /**
  * Vehicle gallery: main image with previous/next, thumbnails, ←/→ keys,
@@ -52,7 +55,12 @@ export function Gallery({ images, placeholder, title }: { images: Media[]; place
       onKeyDown={onKeyDown}
       onPointerDown={onPointerDown}
       onPointerUp={onPointerUp}
-      className="relative touch-pan-y select-none focus-visible:outline-offset-4"
+      className={cn(
+        "relative touch-pan-y select-none focus-visible:outline-offset-4",
+        // Lightbox: as wide as fits the height left by the title and thumbnails (no thumbnails when short).
+        large && "mx-auto w-full max-w-[calc((100dvh-13rem)*var(--ratio))] short:max-w-[calc((100dvh-6.5rem)*var(--ratio))]",
+      )}
+      style={large ? ({ "--ratio": RATIO[images[index].aspect] } as CSSProperties) : undefined}
     >
       <VehicleImage
         media={images[index]}
@@ -95,7 +103,7 @@ export function Gallery({ images, placeholder, title }: { images: Media[]; place
       <Dialog open={lightbox} onOpenChange={setLightbox} title={title} description={position} placement="full" tone="dark">
         <div className="mx-auto flex h-full max-w-6xl flex-col justify-center gap-4">
           {stage(true)}
-          <Thumbnails images={images} placeholder={placeholder} index={index} onSelect={setIndex} dark />
+          <Thumbnails images={images} placeholder={placeholder} index={index} onSelect={setIndex} dark className="mx-auto w-full max-w-md short:hidden" />
         </div>
       </Dialog>
     </div>
@@ -125,17 +133,19 @@ function Thumbnails({
   index,
   onSelect,
   dark,
+  className,
 }: {
   images: Media[];
   placeholder: Placeholder;
   index: number;
   onSelect: (i: number) => void;
   dark?: boolean;
+  className?: string;
 }) {
   const t = useTranslations("gallery");
   const locale = useLocale();
   return (
-    <ul className="grid grid-cols-4 gap-2 sm:gap-3">
+    <ul className={cn("grid grid-cols-4 gap-2 sm:gap-3", className)}>
       {images.map((m, i) => (
         <li key={`${m.view}-${i}`}>
           <button
