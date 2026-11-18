@@ -35,7 +35,7 @@ type Mode = "pending" | "immersive" | "poster";
 
 /**
  * Homepage hero. The headline, CTAs and search are plain HTML (LCP-safe and
- * usable without 3D). On wide screens without reduced motion, with WebGL and
+ * usable without 3D). On screens at least 32rem tall (phones held upright too) without reduced motion, with WebGL and
  * ≥ 4 GB device memory, the car plays a cinematic intro in a dark studio and a
  * scroll story across `heroConfig.scrollLengthVh`, ending in Explore, where the
  * visitor turns the car themselves. Everywhere else (and if the model fails to
@@ -63,8 +63,8 @@ export function Hero3D() {
 
   // Capability check → immersive or poster.
   useEffect(() => {
-    // Same condition as the `immersive` CSS variant (globals.css): wide and not a short landscape phone.
-    const wide = window.matchMedia("(min-width: 48rem) and (min-height: 32rem)");
+    // Same condition as the `immersive` CSS variant (globals.css): any width, but not a short landscape phone.
+    const wide = window.matchMedia("(min-height: 32rem)");
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
     const webgl = (() => {
       try {
@@ -171,7 +171,7 @@ export function Hero3D() {
         data-header-dark={immersive ? "" : undefined}
         className="relative overflow-hidden immersive:sticky immersive:top-0 immersive:h-svh immersive:bg-[radial-gradient(120%_80%_at_70%_35%,#152036_0%,#0c1322_45%,#070a11_100%)]"
       >
-        {/* Light studio grid behind the poster (phones, reduced motion, no WebGL). */}
+        {/* Light studio grid behind the poster (landscape phones, reduced motion, no WebGL). */}
         <div
           aria-hidden
           className="bg-studio-grid absolute inset-0 opacity-60 [mask-image:radial-gradient(ellipse_70%_60%_at_60%_45%,black,transparent)] immersive:hidden"
@@ -195,6 +195,8 @@ export function Hero3D() {
             aria-hidden
             className={cn(
               "pointer-events-none absolute inset-y-0 left-0 z-[5] w-[62%] bg-gradient-to-r from-[#070a11]/85 via-[#070a11]/45 to-transparent transition-opacity duration-1000",
+              // Phones: the headline spans the top, the car sits below it.
+              "max-md:bottom-auto max-md:h-[62%] max-md:w-full max-md:bg-gradient-to-b",
               showIntro ? "opacity-100" : "opacity-0",
             )}
           />
@@ -205,6 +207,8 @@ export function Hero3D() {
           className={cn(
             "container-page relative z-10 pt-10 pb-8 transition-[opacity,transform] duration-700 ease-out-soft",
             "immersive:absolute immersive:inset-x-0 immersive:top-[calc(var(--header-h)+3vh)] immersive:pt-0 immersive:pb-0 immersive:text-on-dark",
+            // Phones: tighter, so the car has room under the text.
+            "max-sm:immersive:top-[calc(var(--header-h)+1rem)]",
             immersive && !showIntro && "pointer-events-none -translate-y-3 opacity-0",
           )}
         >
@@ -214,26 +218,26 @@ export function Hero3D() {
               <span aria-hidden className="h-px w-10 bg-accent" />
               {t("eyebrow")}
             </p>
-            <h1 id="hero-title" className="display-xl mt-5 motion-safe:animate-[hero-lift_1.2s_var(--ease-cinema)_both] immersive:display-lg">
+            <h1 id="hero-title" className="display-xl mt-5 motion-safe:animate-[hero-lift_1.2s_var(--ease-cinema)_both] immersive:display-lg max-sm:immersive:mt-3">
               {t("title")} <em className="font-light text-accent-ink immersive:text-accent-2">{t("titleAccent")}</em>
             </h1>
-            <p className="mt-5 max-w-lg text-lg leading-relaxed text-muted motion-safe:animate-[hero-rise_1s_var(--ease-cinema)_0.15s_both] immersive:text-muted-on-dark">
+            <p className="mt-5 max-w-lg text-lg leading-relaxed text-muted motion-safe:animate-[hero-rise_1s_var(--ease-cinema)_0.15s_both] immersive:text-muted-on-dark max-sm:immersive:mt-3 max-sm:immersive:text-[0.9375rem]">
               {t("lead")}
             </p>
-            <div className="mt-7 flex flex-wrap gap-3 motion-safe:animate-[hero-rise_1s_var(--ease-cinema)_0.3s_both]">
-              <ButtonLink href="/vehicles" size="lg" className="sheen immersive:bg-on-dark immersive:text-ink immersive:hover:bg-white">
+            <div className="mt-7 flex flex-wrap gap-3 motion-safe:animate-[hero-rise_1s_var(--ease-cinema)_0.3s_both] max-sm:immersive:mt-5 max-sm:immersive:gap-2">
+              <ButtonLink href="/vehicles" size="lg" className="sheen immersive:bg-on-dark immersive:text-ink immersive:hover:bg-white max-sm:immersive:h-11 max-sm:immersive:px-5 max-sm:immersive:text-sm">
                 {t("ctaBrowse")}
               </ButtonLink>
               <ButtonLink
                 href="/test-drive"
                 size="lg"
                 variant="outline"
-                className="immersive:border-line-on-dark immersive:text-on-dark immersive:hover:border-on-dark immersive:hover:bg-white/5"
+                className="immersive:border-line-on-dark immersive:text-on-dark immersive:hover:border-on-dark immersive:hover:bg-white/5 max-sm:immersive:h-11 max-sm:immersive:px-5 max-sm:immersive:text-sm"
               >
                 {t("ctaTestDrive")}
               </ButtonLink>
             </div>
-            <form action={`/${locale}/vehicles`} method="get" role="search" className="relative mt-6 max-w-md motion-safe:animate-[hero-rise_1s_var(--ease-cinema)_0.45s_both]">
+            <form action={`/${locale}/vehicles`} method="get" role="search" className="relative mt-6 max-w-md motion-safe:animate-[hero-rise_1s_var(--ease-cinema)_0.45s_both] max-sm:immersive:mt-4">
               <label htmlFor="hero-search" className="sr-only">
                 {t("searchLabel")}
               </label>
@@ -257,7 +261,7 @@ export function Hero3D() {
           </div>
         </div>
 
-        {/* Static poster: the hero image when there's no 3D (phones, reduced motion, no WebGL, model unavailable).
+        {/* Static poster: the hero image when there's no 3D (landscape phones, reduced motion, no WebGL, model unavailable).
             Hidden wherever the 3D story runs, so it never shows under or cross-fades with the animated car. */}
         <div className="container-page relative pb-24 immersive:hidden">
           <div className="mx-auto w-full max-w-3xl">
@@ -324,7 +328,12 @@ export function Hero3D() {
                 {HERO_CHAPTERS.map((ch, i) => {
                   const title = t(`chapters.${ch}.title`);
                   return (
-                    <div key={ch} data-on={chapter === i ? "" : undefined} className="hero-cap absolute bottom-0 max-w-2xl">
+                    <div
+                      key={ch}
+                      data-on={chapter === i ? "" : undefined}
+                      // On phones the Explore controls take the caption's place.
+                      className={cn("hero-cap absolute bottom-0 max-w-2xl", ch === "explore" && "max-md:hidden")}
+                    >
                       <p className="hero-cap-num eyebrow flex items-center gap-3 text-accent-2">{t(`chapters.${ch}.num`)}</p>
                       <p className="display-lg mt-4">
                         <Reveal text={title} by={locale === "en" ? "letter" : "word"} />{" "}
@@ -343,7 +352,7 @@ export function Hero3D() {
             <div
               inert={!exploring}
               className={cn(
-                "absolute right-6 bottom-24 flex flex-col items-end gap-4 transition-[opacity,transform] duration-700 ease-(--ease-cinema) xl:right-12",
+                "absolute right-6 bottom-24 flex flex-col items-end gap-4 transition-[opacity,transform] duration-700 ease-(--ease-cinema) max-md:left-4 max-md:right-4 max-md:bottom-20 max-md:gap-3 xl:right-12",
                 exploring ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-4 opacity-0",
               )}
             >
@@ -377,18 +386,18 @@ export function Hero3D() {
                   <Undo2 aria-hidden className="size-4" />
                 </button>
               </div>
-              <div className="mt-2 flex flex-wrap justify-end gap-3">
-                <ButtonLink href="/test-drive" size="lg" variant="light" className="sheen">
+              <div className="mt-2 flex flex-wrap justify-end gap-3 max-md:mt-0 max-md:gap-2">
+                <ButtonLink href="/test-drive" size="lg" variant="light" className="sheen max-md:h-11 max-md:px-5 max-md:text-sm">
                   {t("ctaTestDrive")}
                 </ButtonLink>
-                <ButtonLink href="/vehicles" size="lg" variant="outline-light">
+                <ButtonLink href="/vehicles" size="lg" variant="outline-light" className="max-md:h-11 max-md:px-5 max-md:text-sm">
                   {t("ctaBrowse")}
                 </ButtonLink>
               </div>
             </div>
 
             {/* Chapter index */}
-            <nav aria-label={t("chapterNav")} className="absolute top-1/2 right-6 flex -translate-y-1/2 flex-col items-end gap-4 xl:right-12">
+            <nav aria-label={t("chapterNav")} className="absolute top-1/2 right-6 flex -translate-y-1/2 flex-col items-end gap-4 max-md:hidden xl:right-12">
               {HERO_CHAPTERS.map((ch, i) => (
                 <button
                   key={ch}
@@ -415,7 +424,7 @@ export function Hero3D() {
             />
 
             {/* Progress bar + skip + credit */}
-            <div className="container-page absolute inset-x-0 bottom-8 flex items-center gap-6 text-[0.6875rem] text-muted-on-dark">
+            <div className="container-page absolute inset-x-0 bottom-8 flex items-center gap-4 text-[0.6875rem] text-muted-on-dark sm:gap-6">
               {/* The story is long; this jumps straight to the search console below it. */}
               <a
                 href="#find"
@@ -431,7 +440,7 @@ export function Hero3D() {
               <div aria-hidden className="relative h-px flex-1 bg-line-on-dark">
                 <div className="absolute inset-y-0 left-0 bg-gradient-to-r from-on-dark/60 to-accent-2" style={{ width: `${state.progress * 100}%` }} />
               </div>
-              <span className="min-w-36 text-right">{chapter >= 0 ? t(`chapters.${HERO_CHAPTERS[chapter]}.num`) : t("scrollHint")}</span>
+              <span className="text-right sm:min-w-36">{chapter >= 0 ? t(`chapters.${HERO_CHAPTERS[chapter]}.num`) : t("scrollHint")}</span>
             </div>
             {ready ? (
               <p className="absolute right-6 bottom-2 text-[0.625rem] text-muted-on-dark xl:right-12">

@@ -34,7 +34,9 @@ export type HeroCanvasProps = {
  * (ssr: false) on the homepage only, so three.js never ships elsewhere.
  */
 export default function HeroCanvas(props: HeroCanvasProps) {
-  const [dpr, setDpr] = useState<number>(heroConfig.maxDpr);
+  // Phones: a lower pixel-density cap (their screens are dense and their GPUs share power with everything else).
+  const [cap] = useState(() => (window.innerWidth < 768 ? Math.min(heroConfig.maxDpr, heroConfig.phoneMaxDpr) : heroConfig.maxDpr));
+  const [dpr, setDpr] = useState<number>(cap);
   return (
     <Canvas
       aria-hidden
@@ -48,7 +50,7 @@ export default function HeroCanvas(props: HeroCanvasProps) {
       <PerformanceMonitor
         flipflops={3}
         onDecline={() => setDpr(heroConfig.minDpr)}
-        onIncline={() => setDpr(heroConfig.maxDpr)}
+        onIncline={() => setDpr(cap)}
         onFallback={() => setDpr(heroConfig.minDpr)}
       />
       <World {...props} />

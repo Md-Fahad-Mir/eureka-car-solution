@@ -389,6 +389,8 @@ export function createHeroWorld(o: HeroWorldOptions): HeroWorld {
     if (!o.calloutSvg) return;
     o.calloutSvg.style.opacity = alpha.toFixed(3);
     if (alpha < 0.01 || !rig) return;
+    // Phones and any portrait screen: labels stack above the car (no room beside it).
+    if (viewW < 640 || viewW < viewH) return narrowCallouts();
     callouts.forEach((c, i) => {
       _pv.set((c.at[0] * rig!.L) / 2, c.at[1] * rig!.H, (c.at[2] * rig!.W) / 2);
       car.localToWorld(_pv);
@@ -415,6 +417,52 @@ export function createHeroWorld(o: HeroWorldOptions): HeroWorld {
       c.txt.setAttribute("x", (left + 28).toFixed(1));
       c.txt.setAttribute("y", (ly - 8).toFixed(1));
     });
+  };
+
+  /**
+   * Phones: no room for labels beside the car, so they stack in rows in the open space above
+   * it, each against the nearer screen edge, with the leader rising straight to its row. The
+   * label nearest its edge takes the lowest row, so leaders don't cross other labels' lines.
+   */
+  const textW = new Map<Callout, number>();
+  const narrowCallouts = () => {
+    const pts: { c: Callout; ax: number; ay: number; reach: number }[] = [];
+    callouts.forEach((c) => {
+      _pv.set((c.at[0] * rig!.L) / 2, c.at[1] * rig!.H, (c.at[2] * rig!.W) / 2);
+      car.localToWorld(_pv);
+      _pv.project(camera);
+      c.g.style.display = _pv.z > 1 ? "none" : "";
+      if (_pv.z > 1) return;
+      const ax = ((_pv.x + 1) / 2) * viewW;
+      pts.push({ c, ax, ay: ((1 - _pv.y) / 2) * viewH, reach: Math.min(ax, viewW - ax) });
+    });
+    if (!pts.length) return;
+    const ROW = 28, M = 16;
+    pts.sort((p, q) => p.reach - q.reach);
+    const lowest = Math.max(40 + (pts.length - 1) * ROW, Math.min(...pts.map((p) => p.ay)) - 36);
+    const place = (p: { c: Callout; ax: number; ay: number }, ly: number) => {
+      const { c, ax, ay } = p;
+      // Real text width (letter-spaced caps), measured once the font is in.
+      let w = textW.get(c);
+      if (!w) {
+        w = c.txt.getComputedTextLength();
+        if (w > 0 && document.fonts.status === "loaded") textW.set(c, w);
+      }
+      const tw = (w || c.label.length * 9) + 30;
+      const right = ax > viewW / 2;
+      const left = right ? viewW - M - tw : M;
+      const end = right ? viewW - M : M;
+      c.line.setAttribute("d", `M${ax.toFixed(1)} ${ay.toFixed(1)}L${ax.toFixed(1)} ${ly.toFixed(1)}L${end.toFixed(1)} ${ly.toFixed(1)}`);
+      c.ring.setAttribute("cx", ax.toFixed(1));
+      c.ring.setAttribute("cy", ay.toFixed(1));
+      c.dot.setAttribute("cx", ax.toFixed(1));
+      c.dot.setAttribute("cy", ay.toFixed(1));
+      c.num.setAttribute("x", (left + 2).toFixed(1));
+      c.num.setAttribute("y", (ly - 8).toFixed(1));
+      c.txt.setAttribute("x", (left + 28).toFixed(1));
+      c.txt.setAttribute("y", (ly - 8).toFixed(1));
+    };
+    pts.forEach((p, i) => place(p, lowest - i * ROW));
   };
 
   /* ── Pointer parallax ── */
@@ -471,28 +519,47 @@ export function createHeroWorld(o: HeroWorldOptions): HeroWorld {
   const fitCam = new THREE.PerspectiveCamera(30, 1, 0.1, 200);
   const _corner = new THREE.Vector3();
   const fitBeside = (camRel: THREE.Vector3, tgtRel: THREE.Vector3) => {
-    if (!rig) return { offset: 0, zoom: 1 };
+    if (!rig) return { offset: 0, zoom: 1, down: 0 };
     const aspect = viewW / viewH, tanHalf = Math.tan(THREE.MathUtils.degToRad(camera.fov / 2));
     fitCam.aspect = aspect;
     fitCam.position.copy(camRel);
     fitCam.lookAt(tgtRel);
     fitCam.updateMatrixWorld();
     fitCam.updateProjectionMatrix();
-    let x0 = Infinity, x1 = -Infinity;
+    let x0 = Infinity, x1 = -Infinity, y0 = Infinity, y1 = -Infinity;
     for (const cx of [-0.5, 0.5]) for (const cy of [0, 1]) for (const cz of [-0.5, 0.5]) {
       _corner.set(cx * rig.L, cy * rig.H, cz * rig.W).project(fitCam);
       x0 = Math.min(x0, _corner.x);
       x1 = Math.max(x1, _corner.x);
+      y0 = Math.min(y0, _corner.y);
+      y1 = Math.max(y1, _corner.y);
     }
-    const textRight = o.introEl ? o.introEl.getBoundingClientRect().right / viewW : 0;
-    // Landscape: the car sits right of the headline. Portrait (tablets held upright): the headline
-    // spans the top and the car already sits below it, so it may use the full width instead of
-    // being squeezed (and cut off) beside the text.
-    const lo = aspect < 1 ? 2 * 0.03 - 1 : 2 * Math.min(0.6, textRight + 0.03) - 1, hi = 2 * 0.97 - 1;
-    const zoom = Math.max(0.55, Math.min(1, (hi - lo) / (x1 - x0)));
-    const shift = (lo + hi) / 2 - ((x0 + x1) / 2) * zoom;
-    return { offset: (shift * 35 * tanHalf * aspect) / zoom, zoom };
+    const text = o.introEl?.getBoundingClientRect();
+    const textRight = text ? text.right / viewW : 0;
+    // Landscape: the car sits right of the headline. Portrait (tablets and phones held upright): the
+    // headline spans the top, so the car uses the full width and sits in the space below the text.
+    const portrait = aspect < 1;
+    const lo = portrait ? 2 * 0.03 - 1 : 2 * Math.min(0.6, textRight + 0.03) - 1, hi = 2 * 0.97 - 1;
+    const zoom = Math.max(portrait ? 0.25 : 0.55, Math.min(1, (hi - lo) / (x1 - x0)));
+    let down = 0, z = zoom;
+    if (portrait && text) {
+      // Fit the car into the space between the text's bottom and the progress bar (px, in the
+      // canvas): small enough for its height too, then centred there.
+      const top = renderer.domElement.getBoundingClientRect().top;
+      const a = Math.min(viewH * 0.8, text.bottom - top + 12), b = viewH - 64;
+      z = Math.max(0.2, Math.min(zoom, (0.94 * 2 * (b - a)) / viewH / (y1 - y0)));
+      const want = 1 - (a + b) / viewH; // NDC y of that centre
+      down = ((((y0 + y1) / 2) * z - want) / 2) * viewH;
+    }
+    const shiftZ = (lo + hi) / 2 - ((x0 + x1) / 2) * z;
+    return { offset: (shiftZ * 35 * tanHalf * aspect) / z, zoom: z, down };
   };
+  /**
+   * Portrait screens see less horizontally (the field of view is vertical), so the camera pulls
+   * back in proportion: the car keeps the share of the width it has on a landscape screen.
+   * 1 for every screen at least 1.3:1 (desktops, laptops, landscape tablets), so those are unchanged.
+   */
+  const narrowZoom = () => Math.min(1, viewW / viewH / 1.3);
 
   /* ── Frame ── */
   let clockT = 0, cur = 0, introClock = 0;
@@ -501,6 +568,8 @@ export function createHeroWorld(o: HeroWorldOptions): HeroWorld {
   let lastState: HeroWorldState = { cap: -2, progress: -1 };
   const camRel = new THREE.Vector3(), tgtRel = new THREE.Vector3(), camWant = new THREE.Vector3(), tgtWant = new THREE.Vector3();
   let camInit = false;
+  /** Portrait only: px the car is raised in the frame during the story (eased). */
+  let lift = 0;
   // Vehicle dynamics state.
   let lastDist = 0, speed = 0, lastSpeed = 0, accel = 0, dynInit = false;
   const pitchS = { x: 0, v: 0 }, rollS = { x: 0, v: 0 }, heaveS = { x: 0, v: 0 };
@@ -581,14 +650,24 @@ export function createHeroWorld(o: HeroWorldOptions): HeroWorld {
     camera.lookAt(tgtWorld);
     // Hero composition: the car sits in the space right of the headline, then centres as the story starts.
     const beside = 1 - smooth(clamp01(tKey / 0.8));
+    const base = narrowZoom();
+    // Portrait: during the story the captions (and Explore's controls) take the lower part of the
+    // screen, so the car rides higher in the frame; eased so chapter changes glide.
+    const liftWant = viewW < viewH ? -(exploring ? 0.2 : 0.1) * viewH * (1 - beside) : 0;
+    lift += (liftWant - lift) * Math.min(1, dt * 3);
+    let down = lift;
     if (beside > 0.001) {
       const fit = fitBeside(camRel, tgtRel);
       camera.filmOffset = -fit.offset * beside;
-      camera.zoom = 1 + (fit.zoom - 1) * beside;
+      camera.zoom = base + (fit.zoom - base) * beside;
+      down += fit.down * beside;
     } else {
       camera.filmOffset = 0;
-      camera.zoom = 1;
+      camera.zoom = base;
     }
+    // Vertical placement (portrait intro only): shift the rendered view, so perspective is untouched.
+    if (Math.abs(down) > 0.5) camera.setViewOffset(viewW, viewH, 0, -down, viewW, viewH);
+    else if (camera.view) camera.clearViewOffset();
     camera.updateProjectionMatrix();
 
     // Studio lights rise from black (reveal); rims come first so the silhouette appears before the body.
@@ -637,6 +716,9 @@ export function createHeroWorld(o: HeroWorldOptions): HeroWorld {
     mirrorCam.aspect = camera.aspect;
     mirrorCam.near = camera.near;
     mirrorCam.far = camera.far;
+    // The mirror camera is the main camera reflected in the floor, so it takes the same view offset.
+    if (camera.view?.enabled) mirrorCam.setViewOffset(viewW, viewH, camera.view.offsetX, camera.view.offsetY, viewW, viewH);
+    else if (mirrorCam.view) mirrorCam.clearViewOffset();
     mirrorCam.updateProjectionMatrix();
     mirrorCam.position.set(camera.position.x, -camera.position.y, camera.position.z);
     mirrorCam.up.set(0, -1, 0);

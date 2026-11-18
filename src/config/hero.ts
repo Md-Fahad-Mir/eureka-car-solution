@@ -51,6 +51,8 @@ export const heroConfig = {
   scrollLengthVh: 1000,
   /** Rendering budget. */
   maxDpr: 1.75,
+  /** Cap on phones (< 768 px wide), where the screen is dense and the GPU small. */
+  phoneMaxDpr: 1.5,
   minDpr: 1,
 } as const;
 
